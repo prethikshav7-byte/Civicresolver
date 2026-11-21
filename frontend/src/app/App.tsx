@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { LanguageProvider } from '../i18n/translations';
 import { Header } from '../components/common/Header';
-import { Footer } from '../components/common/Footer';
 import { LandingPage } from '../pages/public/LandingPage';
 import { LiveMapPage } from '../pages/map/LiveMapPage';
 import { ReportComplaintPage } from '../pages/citizen/ReportComplaintPage';
@@ -51,8 +50,6 @@ export const App: React.FC = () => {
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </main>
-
-          <Footer />
 
           {/* Global Persistent Civic AI Assistant */}
           <CivicAiAssistant currentRole={currentRole} />

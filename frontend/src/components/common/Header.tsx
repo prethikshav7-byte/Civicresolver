@@ -36,20 +36,7 @@ export const Header: React.FC<HeaderProps> = ({
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-[#E2ECE5] shadow-2xs font-sans">
       
-      {/* 1. Exact Top Strip from 4th Reference Image: Dark Municipal Green Banner */}
-      <div className="bg-[#12382C] text-emerald-100 text-[11px] py-1.5 px-4 font-mono flex items-center justify-between flex-wrap gap-2">
-        <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-          <span className="font-semibold text-white tracking-wide">
-            {t.topBanner}
-          </span>
-        </div>
-        <div className="text-[10px] text-emerald-300 hidden md:block">
-          {t.demoMode}
-        </div>
-      </div>
-
-      {/* 2. Main Navigation Bar */}
+      {/* Main Navigation Bar */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 gap-3">
           
