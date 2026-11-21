@@ -1,12 +1,12 @@
 import os
 from pydantic_settings import BaseSettings
-from typing import List
+from typing import List, Union
 
 class Settings(BaseSettings):
     PROJECT_NAME: str = "CivicResolve"
     PROJECT_VERSION: str = "1.0.0"
     ENVIRONMENT: str = "development"
-    PORT: int = 8000
+    PORT: int = int(os.environ.get("PORT", "8080"))
     API_V1_PREFIX: str = "/api/v1"
     
     # CORS
@@ -14,7 +14,8 @@ class Settings(BaseSettings):
         "http://localhost:5173",
         "http://127.0.0.1:5173",
         "http://localhost:3000",
-        "https://civicresolve.vercel.app"
+        "https://civicresolve.vercel.app",
+        "https://civicresolver.vercel.app"
     ]
     
     # Supabase Database & Auth

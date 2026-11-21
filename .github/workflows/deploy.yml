@@ -1,0 +1,66 @@
+name: CivicResolve CI/CD & Cloud Deployment Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  verify-and-test:
+    name: Verify Quality, Tests & 10MB Strict Limit
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Verify Single Branch Compliance
+        run: |
+          CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+          echo "Active branch is: $CURRENT_BRANCH"
+          if [ "$CURRENT_BRANCH" != "main" ]; then
+            echo "Error: Only 'main' branch is permitted."
+            exit 1
+          fi
+
+      - name: Verify Repository Strict 10MB Limit
+        run: |
+          TOTAL_BYTES=$(git ls-files | xargs -r du -cb | tail -1 | awk '{print $1}')
+          TOTAL_MB=$(awk "BEGIN {print $TOTAL_BYTES / 1048576}")
+          echo "Tracked files size: $TOTAL_BYTES bytes (~$TOTAL_MB MB)"
+          if [ "$TOTAL_BYTES" -gt 10485760 ]; then
+            echo "ERROR: Tracked files exceed 10 MB limit!"
+            exit 1
+          fi
+          echo "SUCCESS: Repository size is well below 10 MB limit."
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Backend Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r backend/requirements.txt
+
+      - name: Run Backend Automated Test Suite
+        run: |
+          python -u backend/tests/run_tests.py
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install Frontend Dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Verify Frontend Production Build (Vite)
+        working-directory: frontend
+        run: npm run build

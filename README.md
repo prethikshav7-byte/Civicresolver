@@ -176,25 +176,81 @@ For judges and evaluators, the header includes an instant **Role Switcher** that
 
 ---
 
-## 8. Deployment Preparation
+## 8. Cloud Deployment Configuration
 
-- **Frontend (Vercel)**:
-  - Framework Preset: `Vite`
-  - Root Directory: `frontend`
-  - Build Command: `npm run build`
-  - Output Directory: `dist`
-  - Environment Variables: `VITE_API_BASE_URL`
+### Architecture Overview
+- **Frontend**: Vercel (SPA routing, global edge CDN)
+- **Backend**: Google Cloud Run (Containerized FastAPI, auto-scaling, request-based billing)
+- **Database & Auth**: Supabase PostgreSQL with Row Level Security (RLS) & Supabase Storage
+- **AI Intelligence**: Google Gemini API via official `google-genai` SDK
+- **GIS Services**: Leaflet + OpenStreetMap (Attributed, zero paid Google Maps API dependencies)
 
-- **Backend (Render)**:
-  - Environment: `Python 3`
-  - Build Command: `pip install -r backend/requirements.txt`
-  - Start Command: `uvicorn backend.app.main:app --host 0.0.0.0 --port 8000`
-  - Environment Variables: `GEMINI_API_KEY`, `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `CORS_ORIGINS`
+---
 
-- **Database (Supabase)**:
-  - Execute `database/migrations/001_initial_schema.sql`
-  - Execute `database/migrations/002_rls_policies.sql`
-  - Execute `database/seed/seed_data.sql`
+### Backend Deployment (Google Cloud Run)
+1. **Container Image**: Built via `backend/Dockerfile` based on `python:3.11-slim`, running with an unprivileged system user (`appuser`).
+2. **Dynamic Port Binding**: Uvicorn dynamically binds to the Cloud Run `${PORT:-8080}` environment variable.
+3. **Health Probes**: Startup and liveness probes target `GET /health`.
+4. **Cost Guardrails & Scaling Settings**:
+   - **Scale to Zero**: `minScale: 0` ensures zero compute cost during idle periods (request-based billing).
+   - **Max Instances**: `maxScale: 3` enforces a hard cost ceiling against unexpected traffic spikes.
+   - **Resource Limits**: 1 vCPU, 512 MiB RAM, 80 concurrent requests per container.
+   - **CORS Restriction**: Strict CORS whitelist matching only the deployed frontend domains.
+
+Deploy with the Google Cloud CLI:
+```bash
+# Submit build and deploy to Cloud Run in asia-south1 (Mumbai)
+gcloud builds submit --tag gcr.io/$PROJECT_ID/civicresolve-backend:latest -f backend/Dockerfile .
+
+gcloud run deploy civicresolve-backend \
+  --image gcr.io/$PROJECT_ID/civicresolve-backend:latest \
+  --platform managed \
+  --region asia-south1 \
+  --allow-unauthenticated \
+  --port 8080 \
+  --min-instances 0 \
+  --max-instances 3 \
+  --cpu 1 \
+  --memory 512Mi \
+  --concurrency 80 \
+  --timeout 60s \
+  --set-env-vars ENVIRONMENT=production,CITY_FOCUS=Coimbatore,GEMINI_MODEL=gemini-2.5-flash \
+  --set-env-vars CORS_ORIGINS="https://civicresolver.vercel.app,https://civicresolve.vercel.app"
+```
+
+---
+
+### Frontend Deployment (Vercel)
+1. **Build Configuration**:
+   - Framework Preset: `Vite`
+   - Root Directory: `frontend` (or repository root using `vercel.json`)
+   - Build Command: `npm run build`
+   - Output Directory: `dist`
+2. **SPA Routing Rewrites**: Handled automatically via `vercel.json`:
+   ```json
+   {
+     "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+   }
+   ```
+3. **Production Environment Variables**:
+   - `VITE_API_BASE_URL`: URL of the deployed Cloud Run service (e.g. `https://civicresolve-backend-xxx.a.run.app`)
+   - `VITE_SUPABASE_URL`: Supabase project URL
+   - `VITE_SUPABASE_ANON_KEY`: Supabase anon/public key
+
+---
+
+### Database & Storage (Supabase)
+Execute SQL migrations in the Supabase SQL Editor:
+1. `database/migrations/001_initial_schema.sql` (Creates 14 tables and spatial indexes)
+2. `database/migrations/002_rls_policies.sql` (Enforces Row Level Security policies)
+3. `database/seed/seed_data.sql` (Populates verified Coimbatore zones, wards, and seed complaints)
+
+---
+
+### Cost & Security Controls
+- **Google Cloud Budget Alerts**: Configured in Google Cloud Console (`Billing > Budgets & alerts`) with 50%, 80%, and 100% threshold alerts.
+- **Gemini API Quota Limits**: Monitored via Google AI Studio / Google Cloud Console to prevent quota exhaustion.
+- **Zero Committed Secrets**: `.env` is strictly gitignored; all secrets are supplied via Cloud Run and Vercel dashboards.
 
 ---
 

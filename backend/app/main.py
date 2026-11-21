@@ -13,12 +13,22 @@ app = FastAPI(
     redoc_url="/redoc"
 )
 
+# Parse allowed origins from environment or settings
+env_cors = os.environ.get("CORS_ORIGINS", "")
+if env_cors:
+    allowed_origins = [orig.strip() for orig in env_cors.split(",") if orig.strip()]
+elif settings.ENVIRONMENT == "production":
+    allowed_origins = settings.CORS_ORIGINS
+else:
+    # Development mode: local vite, local ports, and vercel preview
+    allowed_origins = settings.CORS_ORIGINS + ["http://localhost:5173", "http://127.0.0.1:5173", "https://civicresolver.vercel.app"]
+
 # CORS Middleware setup
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allows all origins for local dev and preview deployments
+    allow_origins=allowed_origins,
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
 
@@ -68,4 +78,5 @@ def root():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("backend.app.main:app", host="0.0.0.0", port=settings.PORT, reload=True)
+    port = int(os.environ.get("PORT", settings.PORT))
+    uvicorn.run("backend.app.main:app", host="0.0.0.0", port=port, reload=(settings.ENVIRONMENT == "development"))
