@@ -177,17 +177,6 @@ export const ReportComplaintPage: React.FC = () => {
     breakdown: PriorityScoreBreakdown;
   } | null>(null);
 
-  // Sample Report Click Handler
-  const handleSelectSample = (sample: SampleReportOption) => {
-    setDescription(sample.desc);
-    setTitle(sample.title);
-    setCategory(sample.category);
-    setLocationText(sample.location);
-    setLat(sample.lat);
-    setLng(sample.lng);
-    setCitizenName('Anand Kumar');
-  };
-
   // GPS Auto-Detect Handler
   const handleGpsDetect = () => {
     if (!navigator.geolocation) {
@@ -463,33 +452,6 @@ export const ReportComplaintPage: React.FC = () => {
             <p className="text-xs sm:text-sm text-slate-600 mt-1">
               {t.reportSubtitle}
             </p>
-          </div>
-
-          {/* Try a Sample Report Box */}
-          <div className="bg-[#E8F4EC]/60 border border-[#C6E4CF] rounded-2xl p-4 space-y-2.5">
-            <span className="text-xs font-bold text-slate-800 block">
-              {t.trySampleReport}
-            </span>
-
-            <div className="flex flex-wrap gap-2">
-              {[
-                { s: SAMPLE_REPORTS[0], label: t.samplePothole },
-                { s: SAMPLE_REPORTS[1], label: t.sampleGarbage },
-                { s: SAMPLE_REPORTS[2], label: t.sampleWire },
-                { s: SAMPLE_REPORTS[3], label: t.samplePipe },
-                { s: SAMPLE_REPORTS[4], label: t.sampleLights }
-              ].map(({ s, label }) => (
-                <button
-                  type="button"
-                  key={s.id}
-                  onClick={() => handleSelectSample(s)}
-                  className="px-3 py-1.5 bg-white border border-slate-200 hover:border-[#167A4D] rounded-xl text-xs font-semibold text-slate-700 hover:text-[#167A4D] transition shadow-2xs flex items-center gap-1.5"
-                >
-                  <span className="text-slate-400">#</span>
-                  <span>{label}</span>
-                </button>
-              ))}
-            </div>
           </div>
 
           {errorMessage && (
