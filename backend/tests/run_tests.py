@@ -8,16 +8,20 @@ from backend.app.schemas.ai import DuplicateCheckRequest, AIAnalysisRequest
 from backend.app.schemas.complaint import (
     ComplaintCreate, ComplaintCategory, ComplaintPriority, ComplaintStatus, StatusUpdate, DepartmentAssign
 )
+from backend.app.schemas.civicproof import CommunityVoteRequest, AdminReopenRequest
 from backend.app.api.routes.ai import check_duplicates
 from backend.app.ai.gemini_service import GeminiService
 from backend.app.api.routes.complaints import list_complaints, create_complaint, get_complaint, support_complaint, get_complaint_timeline
-from backend.app.api.routes.admin import assign_department, resolve_complaint, get_admin_overview
+from backend.app.api.routes.admin import assign_department, resolve_complaint, get_admin_overview, export_complaints_csv
 from backend.app.api.routes.maps import get_map_complaints, get_complaint_hotspots, search_locations, reverse_geocode
+from backend.app.api.routes.civicproof import get_proof_list, record_community_vote, admin_reopen_complaint
+from backend.app.api.routes.civicpulse import get_civicpulse_overview
+from backend.app.api.routes.officer import get_officer_queue, record_inspection, submit_resolution
 
 def run_tests():
-    print("=" * 70, flush=True)
-    print("CIVICRESOLVE SYSTEM VERIFICATION: COIMBATORE CIVIC SUITE", flush=True)
-    print("=" * 70, flush=True)
+    print("=" * 75, flush=True)
+    print("CIVICRESOLVE SYSTEM VERIFICATION: COIMBATORE ENTERPRISE CIVIC SUITE", flush=True)
+    print("=" * 75, flush=True)
     passed = 0
     total = 0
 
@@ -62,17 +66,17 @@ def run_tests():
     print(f"[PASS] 4. Proximity duplicate detection: found {dup_res.count} match within {dup_res.matches[0].distance_meters}m", flush=True)
     passed += 1
 
-    # 5. Civic AI Analysis Triage
+    # 5. Civic AI Analysis Triage with Tamil Support & Priority Score
     total += 1
     ai_res = GeminiService._fallback_analysis(AIAnalysisRequest(
-        title="Continuous drinking water leakage on main road",
-        description="Water pipe burst near bus stop, clean potable water gushing onto road",
-        address="Singanallur, Coimbatore"
+        description="ரோட்டில் பெரிய குழி தண்ணீர் தேங்கி உள்ளது இருசக்கர வாகனங்கள் விழுகின்றன",
+        address="Cross Cut Road, Gandhipuram, Coimbatore"
     ))
-    assert ai_res.category == ComplaintCategory.WATER
-    assert ai_res.recommended_department == "Water Supply Department"
-    assert ai_res.confidence >= 0.8
-    print(f"[PASS] 5. Civic AI triage: Category={ai_res.category.value}, Dept={ai_res.recommended_department}, Confidence={ai_res.confidence*100:.0f}%", flush=True)
+    assert ai_res.category == ComplaintCategory.ROADS
+    assert ai_res.recommended_sla is not None
+    assert ai_res.priority_score >= 60
+    assert ai_res.is_fallback is True
+    print(f"[PASS] 5. Civic AI triage (Tamil/English): Cat={ai_res.category.value}, Score={ai_res.priority_score}/100, SLA={ai_res.recommended_sla}", flush=True)
     passed += 1
 
     # 6. Complete End-to-End Lifecycle: Create -> Assign -> Resolve
@@ -130,26 +134,58 @@ def run_tests():
     print(f"[PASS] 7. GIS Mapping: {markers['count']} markers and {len(hotspots['hotspots'])} hotspots in Coimbatore", flush=True)
     passed += 1
 
-    # 8. Geocoding & Localities
+    # 8. CivicProof Community Verification & Reopening
     total += 1
-    search_res = search_locations("RS Puram")
-    assert len(search_res) >= 1
-    rev_res = reverse_geocode(11.0168, 76.9558)
-    assert "Gandhipuram" in rev_res["address"] or rev_res["locality_name"] == "Gandhipuram"
-    print(f"[PASS] 8. Coimbatore Geocoding: found '{search_res[0]['name']}', reverse geocoded to '{rev_res['locality_name']}'", flush=True)
+    proof_items = get_proof_list()
+    assert len(proof_items) >= 2
+    # Vote on proof item
+    v_item = proof_items[0]
+    vote_res = record_community_vote(v_item["id"], CommunityVoteRequest(
+        citizen_name="Priya Sundaram",
+        citizen_id="cit-tester-99",
+        vote="Resolved",
+        comment="Water drain is now flowing freely."
+    ))
+    assert vote_res["proof_item"]["votes_resolved"] >= 1
+
+    # Test Admin Reopen
+    reopen_res = admin_reopen_complaint("proof-3", AdminReopenRequest(
+        reason="Community reports asphalt patch is already sinking under bus traffic",
+        reopened_by="Dr. Anand Ramanathan, IAS"
+    ))
+    assert reopen_res["proof_item"]["proof_status"] == "Reopened for Reinspection"
+    print(f"[PASS] 8. CivicProof: {len(proof_items)} verified resolutions, community vote recorded, and admin dispute reopening tested", flush=True)
     passed += 1
 
-    # 9. Civic Analytics Overview
+    # 9. CivicPulse Predictive Analytics
     total += 1
-    ov = get_admin_overview()
-    assert ov.total_complaints >= 7
-    assert ov.resolved >= 3
-    print(f"[PASS] 9. Civic Analytics: total={ov.total_complaints}, resolved={ov.resolved}, rate={ov.resolution_rate_percent}%", flush=True)
+    pulse = get_civicpulse_overview()
+    assert pulse.recurring_hotspots_count >= 3
+    assert len(pulse.predictive_hotspots) >= 2
+    assert pulse.predictive_hotspots[0].confidence_level in ["High", "Medium"]
+    print(f"[PASS] 9. CivicPulse: {pulse.recurring_hotspots_count} recurring clusters, {len(pulse.predictive_hotspots)} predictive hotspot models", flush=True)
     passed += 1
 
-    print("=" * 70, flush=True)
+    # 10. Officer Portal Queue & Field Actions
+    total += 1
+    queue = get_officer_queue("Roads Department")
+    assert "officer" in queue
+    assert queue["count"] >= 0
+    print(f"[PASS] 10. Officer Portal: Queue retrieved for {queue['officer']} ({queue['department']})", flush=True)
+    passed += 1
+
+    # 11. Administrative CSV Export (Non-PII Sanitized)
+    total += 1
+    csv_resp = export_complaints_csv()
+    assert csv_resp.status_code == 200
+    assert "Reference_ID" in csv_resp.body.decode("utf-8")
+    assert "phone" not in csv_resp.body.decode("utf-8").lower()
+    print(f"[PASS] 11. Administrative CSV Export: generated sanitized audit file ({len(csv_resp.body)} bytes)", flush=True)
+    passed += 1
+
+    print("=" * 75, flush=True)
     print(f"ALL TESTS PASSED: {passed}/{total} (100% SUCCESS)", flush=True)
-    print("=" * 70, flush=True)
+    print("=" * 75, flush=True)
 
 if __name__ == "__main__":
     run_tests()

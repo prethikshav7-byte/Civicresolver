@@ -35,6 +35,9 @@ export interface Complaint {
   category: ComplaintCategory;
   issue_type?: string;
   priority: ComplaintPriority;
+  priority_score?: number; // 1-100
+  urgency_reason?: string;
+  recommended_sla?: string;
   severity: number; // 1 to 5
   status: ComplaintStatus;
   latitude: number;
@@ -49,6 +52,7 @@ export interface Complaint {
   resolution_notes?: string | null;
   resolved_at?: string | null;
   image_url?: string | null;
+  after_image_url?: string | null;
   supports_count: number;
   created_at: string;
   updated_at: string;
@@ -59,6 +63,11 @@ export interface AIAnalysisResult {
   category: ComplaintCategory;
   issue_type: string;
   priority: ComplaintPriority;
+  priority_score?: number; // 1-100
+  urgency_reason?: string;
+  safety_risks?: string[];
+  public_impact?: string;
+  recommended_sla?: string;
   severity: number;
   safety_risk: string;
   recommended_department: string;
@@ -67,6 +76,7 @@ export interface AIAnalysisResult {
   explanation: string;
   is_emergency?: boolean;
   is_ai_generated?: boolean;
+  is_fallback?: boolean;
 }
 
 export interface DuplicateMatch {
@@ -144,4 +154,104 @@ export interface HotspotItem {
   lng: number;
   intensity: number;
   category: string;
+}
+
+// ==========================================
+// CivicProof: Community Verification
+// ==========================================
+export type CivicProofStatus = 
+  | 'Community Verified' 
+  | 'Awaiting Community Verification' 
+  | 'Disputed / Escalated' 
+  | 'Reopened for Reinspection';
+
+export interface CivicProofItem {
+  id: string;
+  complaint_id: string;
+  complaint_reference: string;
+  title: string;
+  locality_name: string;
+  ward_number: number;
+  department_name: string;
+  assigned_officer_name: string;
+  resolved_at: string;
+  before_image_url: string;
+  after_image_url: string;
+  rectification_summary: string;
+  ai_vision_assessment?: string;
+  votes_resolved: number;
+  votes_partial: number;
+  votes_still_exists: number;
+  proof_status: CivicProofStatus;
+  admin_reopened_reason?: string | null;
+  voters?: string[];
+}
+
+export interface CommunityVoteRequest {
+  citizen_name?: string;
+  citizen_id?: string;
+  vote: 'Resolved' | 'Partially resolved' | 'Still exists';
+  comment?: string;
+}
+
+export interface AdminReopenRequest {
+  reason: string;
+  reopened_by?: string;
+}
+
+// ==========================================
+// CivicPulse: Predictive Civic Intelligence
+// ==========================================
+export interface RecurringClusterItem {
+  cluster_id: string;
+  locality_name: string;
+  ward_number: number;
+  primary_issue: string;
+  recurrence_count: number;
+  first_reported: string;
+  latest_reported: string;
+  ai_pattern_analysis: string;
+  infrastructure_age_years?: number;
+  risk_level: 'High' | 'Medium' | 'Low';
+}
+
+export interface PredictiveHotspotItem {
+  hotspot_id: string;
+  locality_name: string;
+  ward_number: number;
+  predicted_issue_type: string;
+  risk_probability_percent: number;
+  forecast_window: string;
+  trigger_factors: string[];
+  recommended_preventive_action: string;
+  methodology: string;
+  confidence_level: 'High' | 'Medium' | 'Low';
+}
+
+export interface DepartmentBacklogItem {
+  department: string;
+  open_count: number;
+  sla_breached_count: number;
+  avg_resolution_days: number;
+  active_squads: number;
+}
+
+export interface CivicPulseOverview {
+  generated_at: string;
+  total_analyzed_incidents: number;
+  recurring_hotspots_count: number;
+  high_risk_wards: number[];
+  department_backlogs: DepartmentBacklogItem[];
+  recurring_clusters: RecurringClusterItem[];
+  predictive_hotspots: PredictiveHotspotItem[];
+}
+
+// ==========================================
+// Officer Execution Queue
+// ==========================================
+export interface OfficerQueueResponse {
+  department: string;
+  officer: string;
+  count: number;
+  items: Complaint[];
 }

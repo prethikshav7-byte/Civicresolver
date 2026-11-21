@@ -7,8 +7,11 @@ import { LiveMapPage } from '../pages/map/LiveMapPage';
 import { ReportComplaintPage } from '../pages/citizen/ReportComplaintPage';
 import { TrackComplaintPage } from '../pages/citizen/TrackComplaintPage';
 import { CitizenDashboard } from '../pages/citizen/CitizenDashboard';
-import { AdminDashboard } from '../pages/admin/AdminDashboard';
+import { CivicProofPage } from '../pages/citizen/CivicProofPage';
+import { CivicPulsePage } from '../pages/analytics/CivicPulsePage';
 import { CivicAnalyticsPage } from '../pages/analytics/CivicAnalyticsPage';
+import { OfficerPortalPage } from '../pages/officer/OfficerPortalPage';
+import { AdminDashboard } from '../pages/admin/AdminDashboard';
 import { AuthPage } from '../pages/auth/AuthPage';
 
 export const App: React.FC = () => {
@@ -25,6 +28,9 @@ export const App: React.FC = () => {
             <Route path="/report" element={<ReportComplaintPage />} />
             <Route path="/track" element={<TrackComplaintPage />} />
             <Route path="/dashboard" element={<CitizenDashboard />} />
+            <Route path="/proof" element={<CivicProofPage />} />
+            <Route path="/pulse" element={<CivicPulsePage />} />
+            <Route path="/officer" element={<OfficerPortalPage />} />
             <Route path="/analytics" element={<CivicAnalyticsPage />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/auth" element={<AuthPage onLogin={(role) => setCurrentRole(role)} />} />

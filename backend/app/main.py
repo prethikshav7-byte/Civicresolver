@@ -3,7 +3,10 @@ from datetime import datetime
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from backend.app.core.config import settings
-from backend.app.api.routes import complaints, ai, maps, admin, analytics, authentication
+from backend.app.api.routes import (
+    complaints, ai, maps, admin, analytics, authentication,
+    civicproof, civicpulse, officer
+)
 
 app = FastAPI(
     title="CivicResolve API",
@@ -41,6 +44,9 @@ app.include_router(maps.router, prefix=api_v1_prefix)
 app.include_router(admin.router, prefix=api_v1_prefix)
 app.include_router(analytics.router, prefix=api_v1_prefix)
 app.include_router(authentication.router, prefix=api_v1_prefix)
+app.include_router(civicproof.router, prefix=api_v1_prefix)
+app.include_router(civicpulse.router, prefix=api_v1_prefix)
+app.include_router(officer.router, prefix=api_v1_prefix)
 
 @app.get("/health", tags=["System Health"])
 def health_check():

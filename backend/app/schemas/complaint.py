@@ -28,11 +28,12 @@ class ComplaintStatus(str, Enum):
     REOPENED = "Reopened"
 
 class ComplaintBase(BaseModel):
-    title: str = Field(..., min_length=5, max_length=255)
-    description: str = Field(..., min_length=15, max_length=2000)
+    title: Optional[str] = None
+    description: str = Field(..., min_length=5, max_length=2000)
     category: ComplaintCategory = ComplaintCategory.ROADS
     issue_type: Optional[str] = None
     priority: ComplaintPriority = ComplaintPriority.MEDIUM
+    priority_score: Optional[int] = Field(default=60, ge=1, le=100)
     severity: int = Field(default=3, ge=1, le=5)
     latitude: float = Field(..., ge=-90.0, le=90.0)
     longitude: float = Field(..., ge=-180.0, le=180.0)
@@ -40,6 +41,8 @@ class ComplaintBase(BaseModel):
     locality_name: Optional[str] = None
     ward_number: Optional[int] = None
     image_url: Optional[str] = None
+    after_image_url: Optional[str] = None
+    language: Optional[str] = "en"
 
 class ComplaintCreate(ComplaintBase):
     citizen_name: Optional[str] = "Anonymous Citizen"
@@ -70,6 +73,7 @@ class StatusTimelineItem(BaseModel):
 class ComplaintResponse(ComplaintBase):
     id: str
     complaint_reference: str
+    title: str
     citizen_id: Optional[str] = None
     citizen_name: Optional[str] = None
     citizen_email: Optional[str] = None

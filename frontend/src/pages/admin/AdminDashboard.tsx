@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { 
   LayoutDashboard, Search, Filter, ShieldAlert, CheckCircle2, 
-  Clock, AlertTriangle, Building2, User, Eye, Check, X, ArrowUpDown 
+  Clock, AlertTriangle, Building2, User, Eye, Check, X, ArrowUpDown,
+  Download, ShieldCheck, BrainCircuit, Briefcase 
 } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { CivicApi } from '../../services/api';
@@ -104,29 +106,72 @@ export const AdminDashboard: React.FC = () => {
     await loadAdminData();
   };
 
+  const handleExportCsv = async () => {
+    await CivicApi.exportAuditCsv();
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-      {/* Title */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      {/* Title & Quick Actions */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white border border-civic-border rounded-2xl p-6 shadow-sm">
         <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-civic-soft text-civic-brand text-xs font-semibold mb-2">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-civic-primary text-xs font-semibold mb-2 border border-blue-200">
             <LayoutDashboard className="w-3.5 h-3.5" />
-            <span>Coimbatore Corporation Control Room</span>
+            <span>Coimbatore City Municipal Corporation</span>
           </div>
-          <h1 className="text-3xl font-display font-extrabold text-civic-text tracking-tight">
-            Municipal Administration Portal
+          <h1 className="text-2xl sm:text-3xl font-display font-extrabold text-civic-text tracking-tight">
+            Municipal Command & Control Room
           </h1>
-          <p className="text-xs text-civic-muted mt-1">
-            Authoritative triage, departmental assignment, officer dispatch and resolution verification.
+          <p className="text-xs text-civic-muted mt-1 max-w-xl">
+            Authoritative department triage, field squad dispatch, CivicProof community dispute audits, and non-PII compliance export.
           </p>
+
+          {/* Quick Sub-System Navigation Pills */}
+          <div className="flex items-center gap-2 mt-4 flex-wrap">
+            <Link
+              to="/officer"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-civic-bg text-civic-text text-xs font-semibold hover:bg-slate-200 border border-civic-border transition shadow-xs"
+            >
+              <Briefcase className="w-3.5 h-3.5 text-civic-primary" />
+              <span>Officer Execution Queue</span>
+            </Link>
+
+            <Link
+              to="/proof"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-civic-bg text-civic-text text-xs font-semibold hover:bg-slate-200 border border-civic-border transition shadow-xs"
+            >
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+              <span>CivicProof Audits</span>
+            </Link>
+
+            <Link
+              to="/pulse"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-civic-bg text-civic-text text-xs font-semibold hover:bg-slate-200 border border-civic-border transition shadow-xs"
+            >
+              <BrainCircuit className="w-3.5 h-3.5 text-civic-primary" />
+              <span>CivicPulse Radar</span>
+            </Link>
+          </div>
         </div>
 
-        <div className="p-2.5 rounded-xl bg-civic-surface border border-civic-border text-xs flex items-center gap-3 shadow-xs">
-          <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-          <div className="text-left">
-            <span className="font-semibold text-civic-text block">Live Municipal Feed</span>
-            <span className="text-[10px] text-civic-muted">Dr. Anand Ramanathan, IAS (Commissioner)</span>
+        {/* Right Admin Controls */}
+        <div className="flex flex-col items-start md:items-end gap-3 shrink-0">
+          <div className="p-2.5 rounded-xl bg-civic-bg border border-civic-border text-xs flex items-center gap-3">
+            <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+            <div className="text-left md:text-right">
+              <span className="font-bold text-civic-text block">Dr. Anand Ramanathan, IAS</span>
+              <span className="text-[10px] text-civic-muted">Municipal Commissioner • Active Session</span>
+            </div>
           </div>
+
+          <button
+            onClick={handleExportCsv}
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-civic-primary hover:bg-civic-primary-hover text-white text-xs font-bold transition shadow-sm"
+            title="Download sanitized non-PII audit report in CSV format"
+          >
+            <Download className="w-4 h-4" />
+            <span>Export Non-PII Audit CSV</span>
+          </button>
         </div>
       </div>
 

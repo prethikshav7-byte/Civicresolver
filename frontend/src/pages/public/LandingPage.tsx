@@ -264,47 +264,67 @@ export const LandingPage: React.FC = () => {
       {/* How It Works Section */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="text-center max-w-2xl mx-auto mb-12">
-          <span className="text-xs font-semibold uppercase tracking-wider text-civic-brand">
+          <span className="text-xs font-semibold uppercase tracking-wider text-civic-primary">
             Intelligent Civic Architecture
           </span>
-          <h2 className="text-3xl font-display font-bold text-civic-text mt-1">
+          <h2 className="text-3xl font-display font-extrabold text-civic-text mt-1">
             How CivicResolve Operates
           </h2>
           <p className="text-sm text-civic-muted mt-2">
-            A frictionless feedback loop connecting Coimbatore citizens directly with municipal execution teams.
+            A frictionless feedback loop connecting Coimbatore citizens directly with municipal execution teams and predictive intelligence.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <div className="bg-civic-surface p-6 rounded-xl border border-civic-border space-y-3">
-            <span className="text-2xl font-display font-bold text-civic-brand/40">01</span>
-            <h3 className="font-bold text-base text-civic-text">Citizen Reports</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          <div className="bg-white p-5 rounded-2xl border border-civic-border shadow-xs space-y-2">
+            <span className="text-xl font-display font-bold text-civic-primary/40">01</span>
+            <h3 className="font-bold text-sm text-civic-text">Citizen Reports</h3>
             <p className="text-xs text-civic-muted leading-relaxed">
-              Describe the grievance in English or Tamil. Pin exact Coimbatore location and optionally attach photographic evidence.
+              Describe in English or தமிழ். Pin location on live Coimbatore map with photos.
             </p>
           </div>
 
-          <div className="bg-civic-surface p-6 rounded-xl border border-civic-border space-y-3">
-            <span className="text-2xl font-display font-bold text-civic-brand/40">02</span>
-            <h3 className="font-bold text-base text-civic-text">Civic AI Triage</h3>
+          <div className="bg-white p-5 rounded-2xl border border-civic-border shadow-xs space-y-2">
+            <span className="text-xl font-display font-bold text-civic-primary/40">02</span>
+            <h3 className="font-bold text-sm text-civic-text">Civic AI Triage</h3>
             <p className="text-xs text-civic-muted leading-relaxed">
-              Google Gemini classifies problem type, assesses public safety risk, assigns priority, and identifies duplicate complaints nearby.
+              GenAI classifies department, explains urgency score (1-100), and flags duplicates.
             </p>
           </div>
 
-          <div className="bg-civic-surface p-6 rounded-xl border border-civic-border space-y-3">
-            <span className="text-2xl font-display font-bold text-civic-brand/40">03</span>
-            <h3 className="font-bold text-base text-civic-text">Department Routing</h3>
+          <div className="bg-white p-5 rounded-2xl border border-civic-border shadow-xs space-y-2">
+            <span className="text-xl font-display font-bold text-civic-primary/40">03</span>
+            <h3 className="font-bold text-sm text-civic-text">Field Dispatch</h3>
             <p className="text-xs text-civic-muted leading-relaxed">
-              Zonal control room allocates issue directly to the relevant municipal department (Roads, Sanitation, Electrical, Water, Drainage).
+              Assigned directly to ward engineers with SLA timers and live audit trails.
             </p>
           </div>
 
-          <div className="bg-civic-surface p-6 rounded-xl border border-civic-border space-y-3">
-            <span className="text-2xl font-display font-bold text-civic-brand/40">04</span>
-            <h3 className="font-bold text-base text-civic-text">Verified Resolution</h3>
+          <div className="bg-white p-5 rounded-2xl border border-civic-border shadow-xs space-y-2">
+            <span className="text-xl font-display font-bold text-civic-primary/40">04</span>
+            <h3 className="font-bold text-sm text-civic-text">Officer Repair</h3>
             <p className="text-xs text-civic-muted leading-relaxed">
-              Officers document site rectification with resolution notes and photographic evidence. Status updates stream live to citizen.
+              Field crews complete repairs, recording technical notes and after-photo evidence.
+            </p>
+          </div>
+
+          <div className="bg-white p-5 rounded-2xl border border-emerald-200 bg-emerald-50/20 shadow-xs space-y-2">
+            <span className="text-xl font-display font-bold text-emerald-600/50">05</span>
+            <h3 className="font-bold text-sm text-emerald-900 flex items-center gap-1">
+              CivicProof Audit
+            </h3>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              Community audits before/after photos and votes whether work is genuinely resolved.
+            </p>
+          </div>
+
+          <div className="bg-white p-5 rounded-2xl border border-blue-200 bg-blue-50/20 shadow-xs space-y-2">
+            <span className="text-xl font-display font-bold text-civic-primary/50">06</span>
+            <h3 className="font-bold text-sm text-civic-primary flex items-center gap-1">
+              CivicPulse Radar
+            </h3>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              Poisson modeling forecasts infrastructure failure hotspots before breakdowns occur.
             </p>
           </div>
         </div>

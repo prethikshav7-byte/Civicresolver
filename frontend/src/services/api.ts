@@ -1,6 +1,7 @@
 import { 
   Complaint, AIAnalysisResult, DuplicateCheckResult, 
-  AdminStats, DepartmentMetric, MapMarkerItem, HotspotItem, UserProfile 
+  AdminStats, DepartmentMetric, MapMarkerItem, HotspotItem, UserProfile,
+  CivicProofItem, CommunityVoteRequest, AdminReopenRequest, CivicPulseOverview, OfficerQueueResponse
 } from '../types';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL 
@@ -185,8 +186,172 @@ const INITIAL_COIMBATORE_COMPLAINTS: Complaint[] = [
   }
 ];
 
+// Initial CivicProof items for community verification
+const INITIAL_CIVICPROOF_ITEMS: CivicProofItem[] = [
+  {
+    id: "proof-1",
+    complaint_id: "c-1005",
+    complaint_reference: "CR-2026-00005",
+    title: "Monsoon stormwater channel desilting",
+    locality_name: "Singanallur",
+    ward_number: 55,
+    department_name: "Drainage Department",
+    assigned_officer_name: "Assistant Engineer M. Balaji",
+    resolved_at: new Date(Date.now() - 36 * 3600000).toISOString(),
+    before_image_url: "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=600&q=80",
+    after_image_url: "https://images.unsplash.com/photo-1584467735871-8e85353a8413?auto=format&fit=crop&w=600&q=80",
+    rectification_summary: "Channel desilted using suction machines; 4.2 metric tons of wet silt evacuated. Flow rate restored.",
+    ai_vision_assessment: "De-silted canal cross-section verified clear. Zero standing sludge detected.",
+    votes_resolved: 18,
+    votes_partial: 1,
+    votes_still_exists: 0,
+    proof_status: "Community Verified"
+  },
+  {
+    id: "proof-2",
+    complaint_id: "c-1006",
+    complaint_reference: "CR-2026-00006",
+    title: "Broken public park swing set & perimeter fence",
+    locality_name: "Race Course",
+    ward_number: 72,
+    department_name: "Parks & Horticulture",
+    assigned_officer_name: "Horticulture Officer K. Malathi",
+    resolved_at: new Date(Date.now() - 12 * 3600000).toISOString(),
+    before_image_url: "https://images.unsplash.com/photo-1519331379826-f10be5486c6f?auto=format&fit=crop&w=600&q=80",
+    after_image_url: "https://images.unsplash.com/photo-1588880331179-bc9b93a8cb5e?auto=format&fit=crop&w=600&q=80",
+    rectification_summary: "Installed new reinforced steel chains, replacement safety swing seats, and welded chain-link perimeter fence.",
+    ai_vision_assessment: "Park apparatus safety inspection confirmed complete with structural welds.",
+    votes_resolved: 7,
+    votes_partial: 2,
+    votes_still_exists: 1,
+    proof_status: "Awaiting Community Verification"
+  },
+  {
+    id: "proof-3",
+    complaint_id: "c-1001",
+    complaint_reference: "CR-2026-00001",
+    title: "Deep crater pothole patch repair",
+    locality_name: "Gandhipuram",
+    ward_number: 70,
+    department_name: "Roads Department",
+    assigned_officer_name: "Er. Vigneshwaran K.",
+    resolved_at: new Date(Date.now() - 4 * 3600000).toISOString(),
+    before_image_url: "https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=600&q=80",
+    after_image_url: "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=600&q=80",
+    rectification_summary: "Emergency cold-mix bitumen patching completed. Surface compacted level with surrounding carriageway.",
+    ai_vision_assessment: "Surface filled with bitumen aggregate. Level requires secondary roller compaction.",
+    votes_resolved: 2,
+    votes_partial: 3,
+    votes_still_exists: 1,
+    proof_status: "Disputed / Escalated"
+  }
+];
+
+const INITIAL_CIVICPULSE_OVERVIEW: CivicPulseOverview = {
+  generated_at: new Date().toISOString(),
+  total_analyzed_incidents: 1420,
+  recurring_hotspots_count: 4,
+  high_risk_wards: [70, 38, 55, 84],
+  department_backlogs: [
+    { department: "Roads Department", open_count: 24, sla_breached_count: 3, avg_resolution_days: 2.8, active_squads: 6 },
+    { department: "Drainage Department", open_count: 19, sla_breached_count: 5, avg_resolution_days: 3.4, active_squads: 4 },
+    { department: "Sanitation Department", open_count: 12, sla_breached_count: 1, avg_resolution_days: 1.2, active_squads: 14 },
+    { department: "Electrical Department", open_count: 9, sla_breached_count: 0, avg_resolution_days: 0.9, active_squads: 8 },
+    { department: "Water Supply Department", open_count: 15, sla_breached_count: 2, avg_resolution_days: 2.1, active_squads: 5 }
+  ],
+  recurring_clusters: [
+    {
+      cluster_id: "cl-1",
+      locality_name: "Gandhipuram Bus Stand Carriageway",
+      ward_number: 70,
+      primary_issue: "Chronic Bitumen Erosion & Heavy Bus Axle Potholes",
+      recurrence_count: 14,
+      first_reported: "2025-04-12",
+      latest_reported: "2026-11-20",
+      ai_pattern_analysis: "High turning moment of heavy intra-district buses combined with sub-base moisture seepage causes repeated asphalt stripping within 45 days of patch repair.",
+      infrastructure_age_years: 11,
+      risk_level: "High"
+    },
+    {
+      cluster_id: "cl-2",
+      locality_name: "Singanallur Trichy Road Underpass",
+      ward_number: 55,
+      primary_issue: "Stormwater Inundation & Silt Choking",
+      recurrence_count: 9,
+      first_reported: "2025-06-15",
+      latest_reported: "2026-11-18",
+      ai_pattern_analysis: "Inadequate drain slope gradient causes reverse runoff from railway culvert during precipitation > 20mm/hr.",
+      infrastructure_age_years: 16,
+      risk_level: "High"
+    },
+    {
+      cluster_id: "cl-3",
+      locality_name: "Saravanampatti IT Corridor Service Road",
+      ward_number: 38,
+      primary_issue: "Nighttime Streetlight Circuit Overloads",
+      recurrence_count: 8,
+      first_reported: "2025-08-01",
+      latest_reported: "2026-11-17",
+      ai_pattern_analysis: "Phase load imbalance across high-density commercial transformers causes feeder trips on alternate poles.",
+      infrastructure_age_years: 4,
+      risk_level: "Medium"
+    },
+    {
+      cluster_id: "cl-4",
+      locality_name: "Ukkadam Fish Market Perimeter",
+      ward_number: 84,
+      primary_issue: "Organic Waste Dump Overflow & Drain Clogging",
+      recurrence_count: 12,
+      first_reported: "2025-05-10",
+      latest_reported: "2026-11-19",
+      ai_pattern_analysis: "Bi-daily commercial market volume exceeds dumper placer capacity by 180%; uncollected effluent enters lake bund canal.",
+      infrastructure_age_years: 8,
+      risk_level: "High"
+    }
+  ],
+  predictive_hotspots: [
+    {
+      hotspot_id: "pred-1",
+      locality_name: "Singanallur Trichy Road Underpass",
+      ward_number: 55,
+      predicted_issue_type: "Severe Stormwater Flooding & Traffic Paralysis",
+      risk_probability_percent: 88,
+      forecast_window: "Next 7-14 Days (Early Monsoon Onset)",
+      trigger_factors: ["Current silt deposit depth > 60%", "Forecasted thunderstorm > 25mm/hr", "Low terrain gradient"],
+      recommended_preventive_action: "Pre-monsoon super-sucker mechanical desilting and standby dewatering diesel pump deployment.",
+      methodology: "Spatio-temporal Poisson regression over 24-month rainfall, monsoon water-logging recurrence, and soil permeability data.",
+      confidence_level: "High"
+    },
+    {
+      hotspot_id: "pred-2",
+      locality_name: "Peelamedu Avinashi Road Flyover Descent",
+      ward_number: 38,
+      predicted_issue_type: "Micro-Trench Pavement Subsidence & Skid Zone",
+      risk_probability_percent: 74,
+      forecast_window: "Next 15-30 Days",
+      trigger_factors: ["Recent uncompacted telecom fiber trenching", "Heavy commercial vehicle braking zone", "Thermal pavement fatigue"],
+      recommended_preventive_action: "Mandate contractor reinstatement with mastic asphalt and core density compaction testing.",
+      methodology: "Urban utility excavation overlay crossed with accelerometer telemetry and two-wheeler accident historical reports.",
+      confidence_level: "Medium"
+    },
+    {
+      hotspot_id: "pred-3",
+      locality_name: "RS Puram West Venkatasamy Road",
+      ward_number: 23,
+      predicted_issue_type: "Drinking Water Supply Pipeline Burst",
+      risk_probability_percent: 69,
+      forecast_window: "Next 30 Days",
+      trigger_factors: ["Pilloor-II ductile iron distribution line age > 22 years", "Pressure surge from booster pump station", "Ground vibration from commercial construction"],
+      recommended_preventive_action: "Acoustic leak detection sweep and pressure relief valve calibration at Ward 23 manifold.",
+      methodology: "Hydraulic pressure transient simulation coupled with pipe material degradation lifespan matrix.",
+      confidence_level: "Medium"
+    }
+  ]
+};
+
 // Fallback in-memory storage for reactive UI updates
 let localStoreComplaints = [...INITIAL_COIMBATORE_COMPLAINTS];
+let localStoreProof = [...INITIAL_CIVICPROOF_ITEMS];
 let complaintCounter = 1007;
 
 export const CivicApi = {
@@ -557,5 +722,210 @@ export const CivicApi = {
       return target.supports_count;
     }
     return 1;
+  },
+
+  // ==========================================
+  // CivicProof: Community Verification Methods
+  // ==========================================
+  async getProofList(status?: string): Promise<CivicProofItem[]> {
+    try {
+      const url = status && status !== 'All' 
+        ? `${API_BASE}/civicproof/list?status=${encodeURIComponent(status)}` 
+        : `${API_BASE}/civicproof/list`;
+      const res = await fetch(url, { signal: AbortSignal.timeout(3000) });
+      if (res.ok) return await res.json();
+    } catch (e) {}
+
+    if (status && status !== 'All') {
+      return localStoreProof.filter(p => p.proof_status.toLowerCase() === status.toLowerCase());
+    }
+    return localStoreProof;
+  },
+
+  async voteProof(idOrRef: string, payload: CommunityVoteRequest): Promise<CivicProofItem | null> {
+    try {
+      const res = await fetch(`${API_BASE}/civicproof/${idOrRef}/vote`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+        signal: AbortSignal.timeout(3000)
+      });
+      if (res.ok) {
+        const data = await res.json();
+        return data.proof_item;
+      }
+    } catch (e) {}
+
+    const p = localStoreProof.find(item => item.id === idOrRef || item.complaint_reference === idOrRef);
+    if (p) {
+      if (payload.vote === 'Resolved') p.votes_resolved += 1;
+      else if (payload.vote === 'Partially resolved') p.votes_partial += 1;
+      else if (payload.vote === 'Still exists') p.votes_still_exists += 1;
+
+      const total = p.votes_resolved + p.votes_partial + p.votes_still_exists;
+      if (p.votes_still_exists + p.votes_partial >= 3) {
+        p.proof_status = "Disputed / Escalated";
+      } else if (p.votes_resolved / total >= 0.7 && total >= 3) {
+        p.proof_status = "Community Verified";
+      }
+      return { ...p };
+    }
+    return null;
+  },
+
+  async reopenProof(idOrRef: string, payload: AdminReopenRequest): Promise<CivicProofItem | null> {
+    try {
+      const res = await fetch(`${API_BASE}/civicproof/${idOrRef}/reopen`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+        signal: AbortSignal.timeout(3000)
+      });
+      if (res.ok) {
+        const data = await res.json();
+        return data.proof_item;
+      }
+    } catch (e) {}
+
+    const p = localStoreProof.find(item => item.id === idOrRef || item.complaint_reference === idOrRef);
+    if (p) {
+      p.proof_status = "Reopened for Reinspection";
+      p.admin_reopened_reason = payload.reason;
+      return { ...p };
+    }
+    return null;
+  },
+
+  // ==========================================
+  // CivicPulse: Predictive Analytics
+  // ==========================================
+  async getPulseOverview(): Promise<CivicPulseOverview> {
+    try {
+      const res = await fetch(`${API_BASE}/civicpulse/overview`, { signal: AbortSignal.timeout(3000) });
+      if (res.ok) return await res.json();
+    } catch (e) {}
+    return INITIAL_CIVICPULSE_OVERVIEW;
+  },
+
+  // ==========================================
+  // Officer Execution Queue
+  // ==========================================
+  async getOfficerQueue(department: string = "Roads Department"): Promise<OfficerQueueResponse> {
+    try {
+      const res = await fetch(`${API_BASE}/officer/queue?department=${encodeURIComponent(department)}`, {
+        signal: AbortSignal.timeout(3000)
+      });
+      if (res.ok) return await res.json();
+    } catch (e) {}
+
+    const assigned = localStoreComplaints.filter(
+      c => (c.department_name || "").toLowerCase() === department.toLowerCase() &&
+           ['Assigned', 'In Progress', 'Reopened'].includes(c.status)
+    );
+    return {
+      department,
+      officer: "Er. Vigneshwaran K.",
+      count: assigned.length,
+      items: assigned
+    };
+  },
+
+  async recordInspection(idOrRef: string, notes: string): Promise<Complaint | null> {
+    try {
+      const res = await fetch(`${API_BASE}/officer/inspect/${idOrRef}?notes=${encodeURIComponent(notes)}`, {
+        method: 'POST',
+        signal: AbortSignal.timeout(3000)
+      });
+      if (res.ok) {
+        const data = await res.json();
+        return data.complaint;
+      }
+    } catch (e) {}
+
+    const target = localStoreComplaints.find(c => c.complaint_reference === idOrRef || c.id === idOrRef);
+    if (target) {
+      target.status = 'In Progress';
+      target.updated_at = new Date().toISOString();
+      target.timeline?.push({
+        id: `t-${Date.now()}`,
+        previous_status: "Assigned",
+        new_status: "In Progress",
+        change_reason: `Field inspection conducted: ${notes}`,
+        changed_by: "Er. Vigneshwaran K. (Executive Engineer)",
+        created_at: new Date().toISOString()
+      });
+      return target;
+    }
+    return null;
+  },
+
+  async submitOfficerResolution(idOrRef: string, notes: string, afterImageUrl?: string): Promise<Complaint | null> {
+    try {
+      const query = new URLSearchParams({ resolution_notes: notes });
+      if (afterImageUrl) query.append('after_image_url', afterImageUrl);
+      const res = await fetch(`${API_BASE}/officer/resolve/${idOrRef}?${query.toString()}`, {
+        method: 'POST',
+        signal: AbortSignal.timeout(3000)
+      });
+      if (res.ok) {
+        const data = await res.json();
+        return data.complaint;
+      }
+    } catch (e) {}
+
+    const target = localStoreComplaints.find(c => c.complaint_reference === idOrRef || c.id === idOrRef);
+    if (target) {
+      target.status = 'Resolved';
+      target.resolution_notes = notes;
+      target.resolved_at = new Date().toISOString();
+      target.after_image_url = afterImageUrl;
+      target.updated_at = new Date().toISOString();
+      target.timeline?.push({
+        id: `t-${Date.now()}`,
+        previous_status: "In Progress",
+        new_status: "Resolved",
+        change_reason: notes,
+        changed_by: "Er. Vigneshwaran K. (Executive Engineer)",
+        created_at: new Date().toISOString()
+      });
+      return target;
+    }
+    return null;
+  },
+
+  // ==========================================
+  // Administrative CSV Audit Export
+  // ==========================================
+  async exportAuditCsv(): Promise<void> {
+    try {
+      const res = await fetch(`${API_BASE}/admin/export/csv`, { signal: AbortSignal.timeout(5000) });
+      if (res.ok) {
+        const blob = await res.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `civicresolve_audit_coimbatore_${new Date().toISOString().slice(0, 10)}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(url);
+        return;
+      }
+    } catch (e) {}
+
+    // Fallback CSV download from local memory
+    const headers = "Reference_ID,Title,Category,Priority,Status,Locality,Ward,Department,Assigned_Officer,Created_At,Resolved_At\n";
+    const rows = localStoreComplaints.map(c => 
+      `"${c.complaint_reference}","${c.title.replace(/"/g, '""')}","${c.category}","${c.priority}","${c.status}","${c.locality_name || ''}","${c.ward_number || ''}","${c.department_name || ''}","${c.assigned_officer_name || ''}","${c.created_at}","${c.resolved_at || ''}"`
+    ).join("\n");
+    const blob = new Blob([headers + rows], { type: "text/csv;charset=utf-8;" });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `civicresolve_audit_coimbatore_${new Date().toISOString().slice(0, 10)}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    window.URL.revokeObjectURL(url);
   }
 };

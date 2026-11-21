@@ -67,3 +67,46 @@ def list_departments():
 @router.get("/audit-logs")
 def get_audit_logs():
     return local_store.audit_logs[:50]
+
+@router.get("/export/csv")
+def export_complaints_csv():
+    """Generates sanitized, non-PII CSV export of municipal grievances for audit compliance."""
+    import io
+    import csv
+    from fastapi.responses import Response
+
+    output = io.StringIO()
+    writer = csv.writer(output)
+    
+    # Headers without PII (no citizen phone/email)
+    writer.writerow([
+        "Reference_ID", "Title", "Category", "Priority", "Severity", 
+        "Status", "Locality", "Ward_Number", "Department", 
+        "Assigned_Officer", "Created_At", "Resolved_At", "Resolution_Summary"
+    ])
+
+    for c in local_store.complaints:
+        writer.writerow([
+            c.get("complaint_reference", ""),
+            c.get("title", ""),
+            c.get("category", ""),
+            c.get("priority", ""),
+            c.get("severity", 3),
+            c.get("status", ""),
+            c.get("locality_name", ""),
+            c.get("ward_number", 70),
+            c.get("department_name", ""),
+            c.get("assigned_officer_name", "Unassigned"),
+            c.get("created_at", ""),
+            c.get("resolved_at", ""),
+            (c.get("resolution_notes") or "").replace("\n", " ")
+        ])
+
+    csv_data = output.getvalue()
+    return Response(
+        content=csv_data,
+        media_type="text/csv",
+        headers={
+            "Content-Disposition": "attachment; filename=civicresolve_coimbatore_audit.csv"
+        }
+    )

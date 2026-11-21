@@ -27,10 +27,13 @@ export const Footer: React.FC = () => {
           <div>
             <h4 className="font-semibold text-civic-text mb-3">Civic Services</h4>
             <ul className="space-y-2">
-              <li><Link to="/report" className="hover:text-civic-brand transition">File Infrastructure Grievance</Link></li>
-              <li><Link to="/track" className="hover:text-civic-brand transition">Track Reference CR-2026</Link></li>
-              <li><Link to="/map" className="hover:text-civic-brand transition">Live Coimbatore GIS Map</Link></li>
-              <li><Link to="/analytics" className="hover:text-civic-brand transition">Public Transparency Portal</Link></li>
+              <li><Link to="/report" className="hover:text-civic-primary transition">File Infrastructure Grievance</Link></li>
+              <li><Link to="/track" className="hover:text-civic-primary transition">Track Reference CR-2026</Link></li>
+              <li><Link to="/map" className="hover:text-civic-primary transition">Live Coimbatore GIS Map</Link></li>
+              <li><Link to="/proof" className="hover:text-civic-primary transition font-medium text-emerald-700">CivicProof Community Audit</Link></li>
+              <li><Link to="/pulse" className="hover:text-civic-primary transition font-medium text-civic-primary">CivicPulse Predictive Radar</Link></li>
+              <li><Link to="/officer" className="hover:text-civic-primary transition">Officer Execution Queue</Link></li>
+              <li><Link to="/analytics" className="hover:text-civic-primary transition">Public Transparency Portal</Link></li>
             </ul>
           </div>
 
