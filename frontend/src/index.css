@@ -48,6 +48,39 @@
   100% { transform: scale(0.95); opacity: 0.8; }
 }
 
+/* High Contrast Mode */
+.high-contrast {
+  --tw-bg-opacity: 1;
+  background-color: #000000 !important;
+  color: #FFFFFF !important;
+}
+.high-contrast .bg-white {
+  background-color: #121212 !important;
+  color: #FFFFFF !important;
+  border-color: #4B5563 !important;
+}
+.high-contrast .bg-civic-bg {
+  background-color: #1F2937 !important;
+}
+.high-contrast .text-civic-text, 
+.high-contrast .text-slate-800,
+.high-contrast .text-slate-900 {
+  color: #FFFFFF !important;
+}
+.high-contrast .text-civic-muted,
+.high-contrast .text-slate-500,
+.high-contrast .text-slate-600 {
+  color: #E5E7EB !important;
+}
+.high-contrast .border-civic-border {
+  border-color: #4B5563 !important;
+}
+
+/* Font Scaling Accessibility Mode */
+.font-scale-lg {
+  font-size: 112.5% !important;
+}
+
 .map-pulse {
   animation: pulse-ring 2s infinite ease-in-out;
 }

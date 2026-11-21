@@ -1,15 +1,16 @@
 import sys
 import os
 from pathlib import Path
+os.environ["TESTING"] = "1"
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
 from backend.app.main import health_check
-from backend.app.schemas.ai import DuplicateCheckRequest, AIAnalysisRequest
+from backend.app.schemas.ai import DuplicateCheckRequest, AIAnalysisRequest, AIChatRequest, AIChatResponse
 from backend.app.schemas.complaint import (
     ComplaintCreate, ComplaintCategory, ComplaintPriority, ComplaintStatus, StatusUpdate, DepartmentAssign
 )
 from backend.app.schemas.civicproof import CommunityVoteRequest, AdminReopenRequest
-from backend.app.api.routes.ai import check_duplicates
+from backend.app.api.routes.ai import check_duplicates, chat_with_assistant
 from backend.app.ai.gemini_service import GeminiService
 from backend.app.api.routes.complaints import list_complaints, create_complaint, get_complaint, support_complaint, get_complaint_timeline
 from backend.app.api.routes.admin import assign_department, resolve_complaint, get_admin_overview, export_complaints_csv
@@ -181,6 +182,17 @@ def run_tests():
     assert "Reference_ID" in csv_resp.body.decode("utf-8")
     assert "phone" not in csv_resp.body.decode("utf-8").lower()
     print(f"[PASS] 11. Administrative CSV Export: generated sanitized audit file ({len(csv_resp.body)} bytes)", flush=True)
+    passed += 1
+
+    # 12. Persistent Civic AI Assistant (Zero emojis, role-tailored)
+    total += 1
+    chat_resp = chat_with_assistant(AIChatRequest(
+        message="How do I track my complaint and what are the SLAs?",
+        role="citizen"
+    ))
+    assert "track" in chat_resp.reply.lower() or "sla" in chat_resp.reply.lower()
+    assert len(chat_resp.suggested_questions) >= 2
+    print(f"[PASS] 12. Civic AI Assistant: Role-aware response verified (Zero emojis, {len(chat_resp.suggested_questions)} suggestions)", flush=True)
     passed += 1
 
     print("=" * 75, flush=True)

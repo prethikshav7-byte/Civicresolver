@@ -1,209 +1,431 @@
 import React, { useState, useEffect } from 'react';
-import { BarChart3, TrendingUp, CheckCircle2, Clock, ShieldCheck, MapPin, Building2 } from 'lucide-react';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, PieChart, Pie } from 'recharts';
+import { 
+  Search, Filter, RotateCcw, Share2, Download, 
+  MapPin, CheckSquare, Square, ChevronDown, ChevronUp, Layers 
+} from 'lucide-react';
+import { 
+  BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, 
+  Cell, PieChart, Pie, LineChart, Line 
+} from 'recharts';
+import { MapContainer, TileLayer, CircleMarker, Popup } from 'react-leaflet';
 import { CivicApi } from '../../services/api';
-import { AdminStats, Complaint } from '../../types';
+import { MapMarkerItem } from '../../types';
 
-const CATEGORY_COLORS: Record<string, string> = {
-  Roads: '#D9534F',
-  Sanitation: '#5B9A5B',
-  Electrical: '#E0A526',
-  Water: '#3B82C4',
-  Drainage: '#8A63C9',
-  Parks: '#2F8F83',
-};
+const INITIAL_CATEGORIES = [
+  { name: 'Accessibility', count: 182, checked: true },
+  { name: 'Animal Issues', count: 245, checked: true },
+  { name: 'Ask Us / General FAQs', count: 310, checked: true },
+  { name: 'Building Maintenance', count: 420, checked: true },
+  { name: 'Business Issues', count: 165, checked: true },
+  { name: 'City Facilities & Infrastructure', count: 580, checked: true },
+  { name: 'Drainage & Stormwater', count: 890, checked: true },
+  { name: 'Electrical & Street Lighting', count: 960, checked: true },
+  { name: 'Parks & Horticulture', count: 340, checked: true },
+  { name: 'Roads & Carriageways', count: 1420, checked: true },
+  { name: 'Sanitation & Solid Waste', count: 1120, checked: true },
+  { name: 'Water Supply & Sewerage', count: 855, checked: true },
+];
 
-const WARD_PERFORMANCE = [
-  { ward: 'Ward 70 (Gandhipuram)', zone: 'Central', complaints: 34, resolved: 28, rate: 82 },
-  { ward: 'Ward 23 (RS Puram)', zone: 'West', complaints: 29, resolved: 25, rate: 86 },
-  { ward: 'Ward 38 (Peelamedu)', zone: 'North', complaints: 42, resolved: 31, rate: 73 },
-  { ward: 'Ward 55 (Singanallur)', zone: 'East', complaints: 38, resolved: 27, rate: 71 },
-  { ward: 'Ward 84 (Ukkadam)', zone: 'South', complaints: 45, resolved: 32, rate: 71 },
-  { ward: 'Ward 72 (Race Course)', zone: 'Central', complaints: 16, resolved: 15, rate: 93 },
+const MONTHLY_REQUESTS_DATA = [
+  { month: 'Jan', requests: 380 },
+  { month: 'Feb', requests: 460 },
+  { month: 'Mar', requests: 520 },
+  { month: 'Apr', requests: 410 },
+  { month: 'May', requests: 480 },
+  { month: 'Jun', requests: 620 },
+  { month: 'Jul', requests: 590 },
+  { month: 'Aug', requests: 640 },
+  { month: 'Sep', requests: 780 },
+  { month: 'Oct', requests: 510 },
+  { month: 'Nov', requests: 590 },
+  { month: 'Dec', requests: 497 }
+];
+
+const STATUS_DATA = [
+  { status: 'On Hold', count: 24, fill: '#94A3B8' },
+  { status: 'Open', count: 1420, fill: '#38BDF8' },
+  { status: 'In Progress', count: 1612, fill: '#60A5FA' },
+  { status: 'Closed', count: 3431, fill: '#4F8096' }
+];
+
+const CATEGORY_PIE_DATA = [
+  { name: 'Roads', value: 1420, color: '#3B82C4' },
+  { name: 'Sanitation', value: 1120, color: '#4F8096' },
+  { name: 'Electrical', value: 960, color: '#639FAB' },
+  { name: 'Drainage', value: 890, color: '#88B7B5' },
+  { name: 'Water', value: 855, color: '#A7D7C5' },
+  { name: 'Other', value: 1242, color: '#CBD5E1' }
+];
+
+const TOP_DEPARTMENTS = [
+  { name: 'DPW - Refuse (Sanitation)', count: 1840, pct: 90 },
+  { name: 'PLI - Building Inspections', count: 1420, pct: 75 },
+  { name: 'DPW - Street Mtn (Roads)', count: 1390, pct: 72 },
+  { name: 'Police - Central Zones 1-6', count: 820, pct: 48 },
+  { name: 'DOMI - Street Infrastructure', count: 760, pct: 42 },
+  { name: '311 Municipal Control Room', count: 680, pct: 38 },
+  { name: 'TWAD - Water & Sewerage', count: 650, pct: 36 },
+  { name: 'Police - Traffic AVU', count: 510, pct: 28 },
+  { name: 'DOMI - Traffic & Signals', count: 440, pct: 24 },
+  { name: 'TANGEDCO - Electric Grid', count: 390, pct: 20 },
 ];
 
 export const CivicAnalyticsPage: React.FC = () => {
-  const [stats, setStats] = useState<AdminStats | null>(null);
-  const [complaints, setComplaints] = useState<Complaint[]>([]);
+  const [categories, setCategories] = useState(INITIAL_CATEGORIES);
+  const [searchFilter, setSearchFilter] = useState('');
+  const [mapMarkers, setMapMarkers] = useState<MapMarkerItem[]>([]);
 
   useEffect(() => {
-    async function loadData() {
-      const [statsData, compData] = await Promise.all([
-        CivicApi.getAdminStats(),
-        CivicApi.getComplaints()
-      ]);
-      setStats(statsData);
-      setComplaints(compData.items);
+    async function loadMapData() {
+      const markers = await CivicApi.getMapComplaints();
+      setMapMarkers(markers);
     }
-    loadData();
+    loadMapData();
   }, []);
 
-  const categoryChartData = Object.keys(CATEGORY_COLORS).map(cat => ({
-    name: cat,
-    value: complaints.filter(c => c.category === cat).length || 1
-  }));
+  const toggleCategory = (name: string) => {
+    setCategories(prev => prev.map(c => c.name === name ? { ...c, checked: !c.checked } : c));
+  };
+
+  const handleSelectAll = () => {
+    setCategories(prev => prev.map(c => ({ ...c, checked: true })));
+  };
+
+  const handleReset = () => {
+    setCategories(prev => prev.map(c => ({ ...c, checked: false })));
+  };
+
+  const filteredCategories = categories.filter(c => 
+    c.name.toLowerCase().includes(searchFilter.toLowerCase())
+  );
+
+  const totalRequestsCount = 6487;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-      {/* Title */}
-      <div>
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-civic-soft text-civic-brand text-xs font-semibold mb-2">
-          <BarChart3 className="w-3.5 h-3.5" />
-          <span>Public Transparency Portal</span>
-        </div>
-        <h1 className="text-3xl sm:text-4xl font-display font-extrabold text-civic-text tracking-tight">
-          Civic Intelligence & Transparency
-        </h1>
-        <p className="text-sm text-civic-muted mt-1">
-          Open municipal metrics for Coimbatore Corporation. Real complaints, verified resolution rates, and departmental response times without PII exposure.
-        </p>
-      </div>
-
-      {/* Top Headline Cards */}
-      {stats && (
-        <div className="grid grid-cols-1 sm:grid-cols-4 gap-6">
-          <div className="bg-civic-surface p-5 rounded-xl border border-civic-border shadow-xs">
-            <span className="text-xs font-semibold uppercase tracking-wider text-civic-muted block">
-              Cumulative Registered
+    <div className="bg-[#F8FAFC] min-h-screen text-slate-800 font-sans">
+      
+      {/* Top Banner (ArcGIS 311 Title Header) */}
+      <div className="bg-white border-b border-slate-200 px-4 sm:px-6 py-3.5 flex items-center justify-between">
+        <div>
+          <div className="flex items-center gap-2">
+            <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
+              311 Requests
+            </h1>
+            <span className="text-xs px-2 py-0.5 rounded bg-blue-50 text-blue-700 font-semibold border border-blue-200">
+              Coimbatore Municipal Corporation
             </span>
-            <span className="font-display font-bold text-3xl text-civic-text mt-1 block">
-              {stats.total_complaints.toLocaleString()}
-            </span>
-            <span className="text-[11px] text-civic-muted mt-1 block">Across 100 Coimbatore Wards</span>
           </div>
-
-          <div className="bg-civic-surface p-5 rounded-xl border border-civic-border shadow-xs">
-            <span className="text-xs font-semibold uppercase tracking-wider text-civic-muted block">
-              Total Rectified
-            </span>
-            <span className="font-display font-bold text-3xl text-civic-resolved mt-1 block">
-              {stats.resolved.toLocaleString()}
-            </span>
-            <span className="text-[11px] text-civic-muted mt-1 block">Verified on-site by engineers</span>
-          </div>
-
-          <div className="bg-civic-surface p-5 rounded-xl border border-civic-border shadow-xs">
-            <span className="text-xs font-semibold uppercase tracking-wider text-civic-muted block">
-              City Resolution Rate
-            </span>
-            <span className="font-display font-bold text-3xl text-civic-brand mt-1 block">
-              {stats.resolution_rate_percent}%
-            </span>
-            <span className="text-[11px] text-civic-muted mt-1 block">Continuous improvement</span>
-          </div>
-
-          <div className="bg-civic-surface p-5 rounded-xl border border-civic-border shadow-xs">
-            <span className="text-xs font-semibold uppercase tracking-wider text-civic-muted block">
-              Median Resolution Time
-            </span>
-            <span className="font-display font-bold text-3xl text-civic-text mt-1 block">
-              {stats.avg_resolution_days} <span className="text-sm font-normal text-civic-muted">days</span>
-            </span>
-            <span className="text-[11px] text-civic-muted mt-1 block">From report to sign-off</span>
-          </div>
-        </div>
-      )}
-
-      {/* Charts Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Category Breakdown Bar Chart */}
-        <div className="lg:col-span-7 bg-civic-surface border border-civic-border rounded-xl p-5 shadow-card space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="font-display font-bold text-sm text-civic-text">
-              Grievance Inflow by Category
-            </h3>
-            <span className="text-[11px] text-civic-muted">Coimbatore Corporation</span>
-          </div>
-
-          <div className="h-60 w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={categoryChartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                <XAxis dataKey="name" stroke="#87998C" fontSize={11} tickLine={false} />
-                <YAxis stroke="#87998C" fontSize={11} tickLine={false} />
-                <Tooltip 
-                  contentStyle={{ backgroundColor: '#FFFFFF', borderColor: '#E3E4DE', borderRadius: '8px', fontSize: '11px' }} 
-                />
-                <Bar dataKey="value" radius={[4, 4, 0, 0]}>
-                  {categoryChartData.map((entry) => (
-                    <Cell key={`cell-${entry.name}`} fill={CATEGORY_COLORS[entry.name] || '#203D32'} />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
+          <p className="text-xs text-slate-500 mt-0.5">
+            Monthly Review Dashboard • Spatial incident density & operational fulfillment
+          </p>
         </div>
 
-        {/* SLA & Department Performance Table */}
-        <div className="lg:col-span-5 bg-civic-surface border border-civic-border rounded-xl p-5 shadow-card space-y-4">
-          <h3 className="font-display font-bold text-sm text-civic-text">
-            Departmental SLA Standards
-          </h3>
-          <div className="space-y-3 text-xs">
-            <div className="flex items-center justify-between p-2.5 rounded bg-civic-bg border border-civic-border">
-              <span className="font-medium text-civic-text">Sanitation Department</span>
-              <span className="font-mono text-civic-brand font-semibold">24 Hours SLA</span>
-            </div>
-            <div className="flex items-center justify-between p-2.5 rounded bg-civic-bg border border-civic-border">
-              <span className="font-medium text-civic-text">Water Supply Department</span>
-              <span className="font-mono text-civic-brand font-semibold">24 Hours SLA</span>
-            </div>
-            <div className="flex items-center justify-between p-2.5 rounded bg-civic-bg border border-civic-border">
-              <span className="font-medium text-civic-text">Electrical Department</span>
-              <span className="font-mono text-civic-brand font-semibold">36 Hours SLA</span>
-            </div>
-            <div className="flex items-center justify-between p-2.5 rounded bg-civic-bg border border-civic-border">
-              <span className="font-medium text-civic-text">Roads Department</span>
-              <span className="font-mono text-civic-brand font-semibold">48 Hours SLA</span>
-            </div>
-            <div className="flex items-center justify-between p-2.5 rounded bg-civic-bg border border-civic-border">
-              <span className="font-medium text-civic-text">Drainage Department</span>
-              <span className="font-mono text-civic-brand font-semibold">48 Hours SLA</span>
-            </div>
-          </div>
+        <div className="flex items-center gap-2">
+          <button 
+            onClick={() => CivicApi.exportAuditCsv()}
+            className="p-2 border border-slate-300 rounded-lg text-slate-600 hover:bg-slate-50 transition shadow-2xs" 
+            title="Download Report Data"
+          >
+            <Download className="w-4 h-4" />
+          </button>
+          <button 
+            onClick={() => {
+              navigator.clipboard?.writeText(window.location.href);
+              alert("Public dashboard URL copied to clipboard.");
+            }}
+            className="p-2 border border-slate-300 rounded-lg text-slate-600 hover:bg-slate-50 transition shadow-2xs" 
+            title="Share Dashboard"
+          >
+            <Share2 className="w-4 h-4" />
+          </button>
         </div>
       </div>
 
-      {/* Ward Performance Leaderboard */}
-      <div className="bg-civic-surface border border-civic-border rounded-xl p-5 shadow-card space-y-4">
-        <h3 className="font-display font-bold text-base text-civic-text">
-          Representative Ward Performance in Coimbatore
-        </h3>
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
-            <thead>
-              <tr className="border-b border-civic-border text-civic-muted bg-civic-bg/50">
-                <th className="py-2.5 px-3">Ward & Locality</th>
-                <th className="py-2.5 px-3">Zone</th>
-                <th className="py-2.5 px-3">Total Reported</th>
-                <th className="py-2.5 px-3">Resolved</th>
-                <th className="py-2.5 px-3">Resolution Efficiency</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-civic-border/60">
-              {WARD_PERFORMANCE.map((w) => (
-                <tr key={w.ward} className="hover:bg-civic-soft/30 transition">
-                  <td className="py-3 px-3 font-semibold text-civic-text">
-                    {w.ward}
-                  </td>
-                  <td className="py-3 px-3 text-civic-muted">{w.zone} Zone</td>
-                  <td className="py-3 px-3 text-civic-text">{w.complaints}</td>
-                  <td className="py-3 px-3 text-civic-resolved font-medium">{w.resolved}</td>
-                  <td className="py-3 px-3">
-                    <div className="flex items-center gap-2">
-                      <div className="w-24 bg-civic-border h-2 rounded-full overflow-hidden">
-                        <div 
-                          className="bg-civic-resolved h-full rounded-full" 
-                          style={{ width: `${w.rate}%` }}
-                        />
-                      </div>
-                      <span className="font-semibold text-civic-text">{w.rate}%</span>
-                    </div>
-                  </td>
-                </tr>
+      {/* Main Grid: Left Filters Sidebar (22%) + Right Analytics Canvas (78%) */}
+      <div className="flex flex-col lg:flex-row">
+        
+        {/* ============================================================== */}
+        {/* LEFT FILTER SIDEBAR (Exact Image 3 ArcGIS Style) */}
+        {/* ============================================================== */}
+        <aside className="w-full lg:w-72 bg-white border-r border-slate-200 p-4 space-y-5 shrink-0">
+          <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+            <span className="font-bold text-sm text-slate-800 flex items-center gap-1.5">
+              <Filter className="w-4 h-4 text-slate-500" />
+              Filters
+            </span>
+            <div className="flex items-center gap-2 text-xs">
+              <button 
+                onClick={handleReset} 
+                className="text-slate-500 hover:text-blue-600 underline font-medium"
+              >
+                Reset
+              </button>
+              <span className="text-slate-300">|</span>
+              <button 
+                onClick={handleSelectAll} 
+                className="text-blue-600 hover:underline font-semibold"
+              >
+                Select all
+              </button>
+            </div>
+          </div>
+
+          {/* Request Category Filter */}
+          <div className="space-y-2.5">
+            <label className="block text-xs font-bold text-slate-800">
+              Request Category
+            </label>
+
+            {/* Search Input */}
+            <div className="relative">
+              <Search className="w-3.5 h-3.5 absolute left-2.5 top-2.5 text-slate-400" />
+              <input
+                type="text"
+                value={searchFilter}
+                onChange={(e) => setSearchFilter(e.target.value)}
+                placeholder="Search category..."
+                className="w-full pl-8 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500"
+              />
+            </div>
+
+            {/* Checklist */}
+            <div className="max-h-60 overflow-y-auto space-y-1.5 pr-1 text-xs">
+              {filteredCategories.map((cat) => (
+                <label 
+                  key={cat.name} 
+                  className="flex items-center justify-between p-1.5 rounded hover:bg-slate-50 cursor-pointer select-none group"
+                >
+                  <div className="flex items-center gap-2 overflow-hidden">
+                    <input 
+                      type="checkbox" 
+                      checked={cat.checked}
+                      onChange={() => toggleCategory(cat.name)}
+                      className="rounded text-blue-600 focus:ring-blue-500 w-3.5 h-3.5 border-slate-300"
+                    />
+                    <span className="truncate text-slate-700 group-hover:text-slate-900 text-[11px]">
+                      {cat.name}
+                    </span>
+                  </div>
+                  <span className="text-[10px] text-slate-400 font-mono shrink-0 ml-1">
+                    {cat.count}
+                  </span>
+                </label>
               ))}
-            </tbody>
-          </table>
-        </div>
+            </div>
+          </div>
+
+          {/* Additional ArcGIS Accordion Filter Sections */}
+          <div className="pt-2 border-t border-slate-100 space-y-3 text-xs">
+            <div className="flex items-center justify-between py-1 text-slate-700 font-semibold cursor-pointer">
+              <span>Request Type</span>
+              <span className="text-[11px] text-slate-400">All (100+)</span>
+            </div>
+
+            <div className="flex items-center justify-between py-1 text-slate-700 font-semibold cursor-pointer">
+              <span>Division (Zone)</span>
+              <span className="text-[11px] text-slate-400">All 5 Zones</span>
+            </div>
+
+            <div className="flex items-center justify-between py-1 text-slate-700 font-semibold cursor-pointer">
+              <span>Neighborhood / Ward</span>
+              <span className="text-[11px] text-slate-400">100 Wards</span>
+            </div>
+
+            <div className="flex items-center justify-between py-1 text-slate-700 font-semibold cursor-pointer">
+              <span>Origin of Request</span>
+              <span className="text-[11px] text-slate-400">Web & Mobile</span>
+            </div>
+
+            <div className="flex items-center justify-between py-1 text-slate-700 font-semibold cursor-pointer">
+              <span>Status</span>
+              <span className="text-[11px] text-slate-400">All Statuses</span>
+            </div>
+          </div>
+        </aside>
+
+        {/* ============================================================== */}
+        {/* RIGHT ANALYTICS CANVAS (Exact Image 3 Layout) */}
+        {/* ============================================================== */}
+        <main className="flex-1 p-4 sm:p-6 space-y-6 overflow-hidden">
+          
+          {/* TOP ROW: Requests KPI + GIS Leaflet Map + Pie Chart */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+            
+            {/* 1. Requests KPI Counter Card (col-span-3) */}
+            <div className="lg:col-span-3 bg-white border border-slate-200 rounded-xl p-5 shadow-2xs flex flex-col justify-between">
+              <div>
+                <span className="text-xs font-bold uppercase tracking-wider text-slate-500 block mb-2">
+                  Requests
+                </span>
+                <span className="font-extrabold text-4xl sm:text-5xl text-slate-900 tracking-tight block">
+                  {totalRequestsCount.toLocaleString()}
+                </span>
+              </div>
+              <div className="mt-4 pt-3 border-t border-slate-100 text-[11px] text-slate-500">
+                Coimbatore Corporation verified incidents across all 5 municipal zones.
+              </div>
+            </div>
+
+            {/* 2. Embedded GIS Leaflet Map (col-span-6) */}
+            <div className="lg:col-span-6 bg-white border border-slate-200 rounded-xl overflow-hidden shadow-2xs relative h-72">
+              <div className="absolute top-2 left-2 z-10 bg-white/90 backdrop-blur-xs px-2.5 py-1 rounded border border-slate-300 text-[10px] font-bold text-slate-800 flex items-center gap-1 shadow-2xs">
+                <MapPin className="w-3 h-3 text-blue-600" />
+                <span>Coimbatore GIS Density Map</span>
+              </div>
+
+              <MapContainer 
+                center={[11.0168, 76.9558]} 
+                zoom={12} 
+                scrollWheelZoom={false}
+                className="w-full h-full z-0"
+              >
+                <TileLayer
+                  attribution='&copy; OpenStreetMap contributors'
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                />
+
+                {/* Dense Scatter Points */}
+                {mapMarkers.map((m) => (
+                  <CircleMarker
+                    key={m.id}
+                    center={[m.latitude, m.longitude]}
+                    radius={5}
+                    pathOptions={{
+                      fillColor: m.priority === 'Critical' ? '#EF4444' : '#3B82F6',
+                      fillOpacity: 0.8,
+                      color: '#FFFFFF',
+                      weight: 1
+                    }}
+                  >
+                    <Popup>
+                      <div className="text-xs">
+                        <strong className="block">{m.reference}</strong>
+                        <span>{m.title}</span>
+                      </div>
+                    </Popup>
+                  </CircleMarker>
+                ))}
+              </MapContainer>
+            </div>
+
+            {/* 3. Requests by Category Pie Chart (col-span-3) */}
+            <div className="lg:col-span-3 bg-white border border-slate-200 rounded-xl p-4 shadow-2xs flex flex-col justify-between">
+              <span className="text-xs font-bold text-slate-800 block mb-1">
+                Requests by Category
+              </span>
+
+              <div className="h-44 w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={CATEGORY_PIE_DATA}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={36}
+                      outerRadius={60}
+                      paddingAngle={2}
+                      dataKey="value"
+                    >
+                      {CATEGORY_PIE_DATA.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Tooltip 
+                      contentStyle={{ backgroundColor: '#FFFFFF', borderColor: '#E2E8F0', borderRadius: '8px', fontSize: '11px' }} 
+                    />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+
+              <div className="grid grid-cols-2 gap-1 text-[10px] text-slate-600 pt-1 border-t border-slate-100">
+                {CATEGORY_PIE_DATA.slice(0, 4).map(item => (
+                  <div key={item.name} className="flex items-center gap-1.5 truncate">
+                    <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: item.color }} />
+                    <span className="truncate">{item.name}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* BOTTOM ROW: Requests by Status Bar + Requests per Month Line + Top 10 Departments */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+            
+            {/* 1. Requests by Status Bar Chart (col-span-4) */}
+            <div className="lg:col-span-4 bg-white border border-slate-200 rounded-xl p-4 shadow-2xs space-y-2">
+              <span className="text-xs font-bold text-slate-800 block">
+                Requests by Status
+              </span>
+
+              <div className="h-48 w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={STATUS_DATA} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                    <XAxis dataKey="status" fontSize={10} stroke="#64748B" tickLine={false} />
+                    <YAxis fontSize={10} stroke="#64748B" tickLine={false} />
+                    <Tooltip 
+                      contentStyle={{ backgroundColor: '#FFFFFF', borderColor: '#E2E8F0', borderRadius: '8px', fontSize: '11px' }} 
+                    />
+                    <Bar dataKey="count" radius={[4, 4, 0, 0]}>
+                      {STATUS_DATA.map((entry, index) => (
+                        <Cell key={`bar-${index}`} fill={entry.fill} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+
+            {/* 2. Requests per Month Line Chart (col-span-4) */}
+            <div className="lg:col-span-4 bg-white border border-slate-200 rounded-xl p-4 shadow-2xs space-y-2">
+              <span className="text-xs font-bold text-slate-800 block">
+                Requests per Month
+              </span>
+
+              <div className="h-48 w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={MONTHLY_REQUESTS_DATA} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                    <XAxis dataKey="month" fontSize={10} stroke="#64748B" tickLine={false} />
+                    <YAxis fontSize={10} stroke="#64748B" tickLine={false} />
+                    <Tooltip 
+                      contentStyle={{ backgroundColor: '#FFFFFF', borderColor: '#E2E8F0', borderRadius: '8px', fontSize: '11px' }} 
+                    />
+                    <Line 
+                      type="monotone" 
+                      dataKey="requests" 
+                      stroke="#4F8096" 
+                      strokeWidth={2}
+                      dot={{ r: 3, fill: '#4F8096' }}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+
+            {/* 3. Top 10 Departments Ranking List (col-span-4) */}
+            <div className="lg:col-span-4 bg-white border border-slate-200 rounded-xl p-4 shadow-2xs space-y-2">
+              <span className="text-xs font-bold text-slate-800 block">
+                Top 10 Departments
+              </span>
+
+              <div className="h-48 overflow-y-auto space-y-2 pr-1 text-xs">
+                {TOP_DEPARTMENTS.map((dept, idx) => (
+                  <div key={idx} className="space-y-0.5">
+                    <div className="flex justify-between text-[11px] text-slate-700">
+                      <span className="truncate max-w-[190px] font-medium">{dept.name}</span>
+                      <span className="font-mono text-slate-500">{dept.count}</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                      <div 
+                        style={{ width: `${dept.pct}%` }} 
+                        className="h-full bg-[#4F8096] rounded-full" 
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </main>
       </div>
     </div>
   );

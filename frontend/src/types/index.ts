@@ -59,11 +59,32 @@ export interface Complaint {
   timeline?: StatusTimelineItem[];
 }
 
+export interface PriorityScoreBreakdown {
+  urgency_pts: number;
+  urgency_label: string;
+  impact_pts: number;
+  impact_label: string;
+  safety_pts: number;
+  safety_label: string;
+  context_pts: number;
+  context_label: string;
+}
+
+export interface AIChatMessage {
+  id: string;
+  sender: 'user' | 'assistant';
+  text: string;
+  timestamp: string;
+  suggested_questions?: string[];
+}
+
 export interface AIAnalysisResult {
   category: ComplaintCategory;
   issue_type: string;
   priority: ComplaintPriority;
   priority_score?: number; // 1-100
+  breakdown?: PriorityScoreBreakdown;
+  triage_badge?: string;
   urgency_reason?: string;
   safety_risks?: string[];
   public_impact?: string;

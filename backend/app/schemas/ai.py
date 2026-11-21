@@ -49,3 +49,13 @@ class DuplicateCheckResponse(BaseModel):
     count: int
     matches: List[DuplicateMatch]
     recommendation: str
+
+class AIChatRequest(BaseModel):
+    message: str = Field(..., min_length=1)
+    role: str = Field(default="citizen", description="Role context: citizen, officer, or commissioner")
+    complaint_reference: Optional[str] = None
+
+class AIChatResponse(BaseModel):
+    reply: str
+    role: str
+    suggested_questions: List[str]

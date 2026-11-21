@@ -927,5 +927,38 @@ export const CivicApi = {
     a.click();
     a.remove();
     window.URL.revokeObjectURL(url);
+  },
+
+  // ==========================================
+  // Persistent Civic AI Assistant Chat
+  // ==========================================
+  async chatWithAssistant(message: string, role: string = 'citizen', complaintRef?: string): Promise<{ reply: string; suggested_questions: string[] }> {
+    try {
+      const res = await fetch(`${API_BASE}/ai/chat`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message, role, complaint_reference: complaintRef }),
+        signal: AbortSignal.timeout(4000)
+      });
+      if (res.ok) return await res.json();
+    } catch (e) {}
+
+    const lower = message.toLowerCase();
+    if (lower.includes('track') || lower.includes('reference')) {
+      return {
+        reply: "To track a grievance, enter your reference number (such as CR-2026-00001 or CR-2026-80019) on the Track Issue page. The system details the full chronological history from Reported to Resolved with before/after audit photos.",
+        suggested_questions: ["What are the resolution SLAs?", "How does CivicProof voting work?", "Which department handles potholes?"]
+      };
+    }
+    if (lower.includes('sla') || lower.includes('time')) {
+      return {
+        reply: "Standard resolution SLAs: Critical emergencies (live wires, water main bursts) are targeted within 4 to 12 hours. Carriageway potholes and sanitation spills are scheduled within 24 to 48 hours.",
+        suggested_questions: ["How do I report a new issue?", "How do I endorse an existing issue?", "What is CivicPulse?"]
+      };
+    }
+    return {
+      reply: `CivicResolve Assistant (${role.toUpperCase()} mode): How can I assist you with municipal operations, GIS mapping, or resolution auditing in Coimbatore today?`,
+      suggested_questions: ["How do I report a grievance?", "What are the standard resolution SLAs?", "How does CivicProof verify repairs?"]
+    };
   }
 };

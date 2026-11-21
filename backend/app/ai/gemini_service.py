@@ -3,7 +3,7 @@ import json
 import logging
 from typing import Optional
 from backend.app.core.config import settings
-from backend.app.schemas.ai import AIAnalysisRequest, AIAnalysisResponse
+from backend.app.schemas.ai import AIAnalysisRequest, AIAnalysisResponse, AIChatRequest, AIChatResponse
 from backend.app.schemas.complaint import ComplaintCategory, ComplaintPriority
 from backend.app.ai.prompts import CIVIC_ANALYSIS_SYSTEM_PROMPT
 
@@ -243,3 +243,102 @@ Location: {req.address or 'Coimbatore'}
             return cls._fallback_analysis(req)
 
         return cls._fallback_analysis(req)
+
+    @classmethod
+    def chat_assistant(cls, req: AIChatRequest) -> AIChatResponse:
+        """
+        Role-aware Civic AI Assistant powered by Google Gemini with deterministic GovTech fallback.
+        Strictly zero emojis and professional GovTech information hierarchy.
+        """
+        user_msg = req.message.lower().strip()
+        role = req.role.lower()
+
+        # Try live Gemini model if key is configured and not in test environment
+        api_key = settings.GEMINI_API_KEY
+        if os.environ.get("TESTING") != "1" and api_key and api_key != "your-gemini-api-key-here" and api_key != "":
+            try:
+                from google import genai
+                client = genai.Client(api_key=api_key)
+                system_instruction = f"""You are the official CivicResolve Municipal Intelligence Assistant for Coimbatore City Municipal Corporation.
+Role context: {role.upper()}.
+Guidelines:
+1. Provide accurate, professional, concise answers about municipal grievances, department routing, SLAs, GIS mapping, and resolution verification in Coimbatore.
+2. NEVER use any emoji characters anywhere in your reply.
+3. Be respectful, authoritative, and direct.
+4. If asked about reporting, explain the Report Issue interface, GPS detection, and automated AI scoring.
+5. If asked about tracking, explain reference format (CR-2026-XXXXX) and the 5-stage lifecycle.
+6. If asked about verification, explain CivicProof community auditing with before/after photos.
+7. If asked about predictive radar, explain CivicPulse Poisson spatio-temporal modeling."""
+
+                prompt = f"User ({role}): {req.message}"
+                response = client.models.generate_content(
+                    model=settings.GEMINI_MODEL,
+                    contents=prompt,
+                    config={"system_instruction": system_instruction}
+                )
+                if response and response.text:
+                    clean_text = response.text.replace("😊", "").replace("🚨", "").replace("📍", "").replace("🛠️", "").replace("✅", "")
+                    suggested = [
+                        "How do I track my complaint?",
+                        "What are the standard resolution SLAs?",
+                        "How does CivicProof community verification work?"
+                    ] if role == "citizen" else [
+                        "How do I submit after-repair photographic proof?",
+                        "What triggers an SLA breach alert?",
+                        "How are priority scores calculated?"
+                    ]
+                    return AIChatResponse(reply=clean_text.strip(), role=role, suggested_questions=suggested)
+            except Exception as e:
+                logger.warning(f"Gemini chat failed, using GovTech knowledge base: {e}")
+
+        # Deterministic GovTech Knowledge Base Fallback
+        if role == "officer":
+            suggested = [
+                "How do I submit after-repair photographic proof?",
+                "What triggers an SLA breach alert?",
+                "How are priority scores calculated?"
+            ]
+            if "inspect" in user_msg or "field" in user_msg:
+                reply = "Field inspections must be logged via the Officer Portal by selecting the assigned grievance and entering technical observations. This automatically updates the complaint status to 'In Progress' and notifies the zonal administration."
+            elif "proof" in user_msg or "photo" in user_msg or "resolve" in user_msg:
+                reply = "To submit a resolution, field engineers must provide both a written technical rectification summary and an after-repair photographic proof URL. Once submitted, the ticket status changes to 'Resolved' and is forwarded to CivicProof for community citizen auditing."
+            elif "sla" in user_msg or "deadline" in user_msg:
+                reply = "Municipal resolution SLAs: Critical emergencies (live electrical cables, water main bursts) require response within 4 to 8 hours. High-priority carriageway potholes and silted drains are targeted within 24 to 48 hours. Unresolved tickets approaching 80% SLA trigger automated alerts."
+            else:
+                reply = "Officer Console Support: You have access to your department execution queue, field inspection logging, and resolution submission. All submitted repairs are routed to CivicProof for public community verification."
+
+        elif role == "commissioner" or role == "admin":
+            suggested = [
+                "What is the citywide resolution rate?",
+                "Which wards have chronic waterlogging?",
+                "How do I export non-PII audit reports?"
+            ]
+            if "export" in user_msg or "csv" in user_msg or "report" in user_msg:
+                reply = "Authorized non-PII audit reports can be exported directly from the Municipal Control Room via the 'Export Non-PII Audit CSV' button. The generated file includes reference IDs, categories, wards, officers, and resolution timestamps while redacting personal citizen phone numbers and emails."
+            elif "rate" in user_msg or "statistic" in user_msg or "kpi" in user_msg:
+                reply = "Current Coimbatore Corporation metrics: Total complaints filed: 6,487 (seeded historical + active); Resolution rate: 71%; Average resolution duration: 2.3 days across all 5 municipal zones."
+            elif "ward" in user_msg or "hotspot" in user_msg or "pulse" in user_msg:
+                reply = "Ward Intelligence indicates chronic recurrence clusters in Ward 70 (Gandhipuram Bus Stand road fatigue), Ward 55 (Singanallur Trichy Road underpass drainage), and Ward 38 (Peelamedu Avinashi Road streetlight circuit trips). CivicPulse uses spatio-temporal Poisson modeling to forecast failures before monsoon onset."
+            else:
+                reply = "Commissioner Executive Command: Real-time oversight across all 100 Coimbatore wards, departmental SLA compliance telemetry, CivicProof dispute auditing, and administrative re-inspection ordering."
+
+        else: # citizen
+            suggested = [
+                "How do I track my complaint?",
+                "What are the standard resolution SLAs?",
+                "Which department handles broken streetlights?"
+            ]
+            if "report" in user_msg or "file" in user_msg or "submit" in user_msg:
+                reply = "To report a civic grievance, open the Report Issue tab. Enter the detailed problem description in English or Tamil, select the location or use the GPS button, and attach optional photos. Our AI engine triages the category and assigns a reference ID (CR-2026-XXXXX)."
+            elif "track" in user_msg or "reference" in user_msg or "status" in user_msg:
+                reply = "You can track any grievance by entering its reference ID (e.g. CR-2026-00001) in the Track Issue section. The five-stage municipal lifecycle is: Reported -> Under Review -> Assigned -> In Progress -> Resolved, accompanied by verifiable audit timestamps."
+            elif "sla" in user_msg or "time" in user_msg or "long" in user_msg:
+                reply = "Resolution SLA benchmarks: Critical hazards (live exposed wires, main water bursts) are addressed within 4 to 12 hours. Carriageway potholes and overflowing waste bins are targeted within 24 to 48 hours. General maintenance is scheduled within 7 days."
+            elif "proof" in user_msg or "audit" in user_msg or "verify" in user_msg:
+                reply = "CivicProof allows citizens to inspect before-and-after photographic evidence of completed repairs and vote whether the work is genuinely resolved, partial, or if the hazard still exists. Disputed work is automatically escalated for commissioner re-inspection."
+            elif "department" in user_msg or "who" in user_msg:
+                reply = "Coimbatore Municipal Corporation departments: Roads & Highways (potholes, cave-ins), Sanitation & Solid Waste (garbage, dumping), Electrical (streetlights, live cables), Water Supply (pipe leaks, supply disruption), Stormwater Drainage (flooding, silted channels), and Parks & Horticulture."
+            else:
+                reply = "Welcome to CivicResolve Coimbatore Citizen Support. You can report infrastructure problems, track grievance status with reference IDs, inspect live GIS maps, and audit repairs on CivicProof."
+
+        return AIChatResponse(reply=reply, role=role, suggested_questions=suggested)

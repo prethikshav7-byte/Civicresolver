@@ -13,14 +13,31 @@ import { CivicAnalyticsPage } from '../pages/analytics/CivicAnalyticsPage';
 import { OfficerPortalPage } from '../pages/officer/OfficerPortalPage';
 import { AdminDashboard } from '../pages/admin/AdminDashboard';
 import { AuthPage } from '../pages/auth/AuthPage';
+import { CivicAiAssistant } from '../components/chat/CivicAiAssistant';
 
 export const App: React.FC = () => {
   const [currentRole, setCurrentRole] = useState<'citizen' | 'admin' | 'officer'>('citizen');
+  const [highContrast, setHighContrast] = useState(false);
+  const [fontScale, setFontScale] = useState(false);
+  const [language, setLanguage] = useState('en');
 
   return (
     <BrowserRouter>
-      <div className="min-h-screen flex flex-col bg-civic-bg text-civic-text font-sans">
-        <Header currentRole={currentRole} onRoleChange={(role) => setCurrentRole(role)} />
+      <div className={`min-h-screen flex flex-col font-sans transition-colors duration-150 ${
+        highContrast ? 'high-contrast bg-black text-white' : 'bg-[#F8FAFC] text-slate-800'
+      } ${fontScale ? 'font-scale-lg' : ''}`}>
+        
+        <Header 
+          currentRole={currentRole} 
+          onRoleChange={(role) => setCurrentRole(role)}
+          highContrast={highContrast}
+          onToggleHighContrast={() => setHighContrast(!highContrast)}
+          fontScale={fontScale}
+          onToggleFontScale={() => setFontScale(!fontScale)}
+          language={language}
+          onLanguageChange={(l) => setLanguage(l)}
+        />
+
         <main className="flex-1">
           <Routes>
             <Route path="/" element={<LandingPage />} />
@@ -33,11 +50,16 @@ export const App: React.FC = () => {
             <Route path="/officer" element={<OfficerPortalPage />} />
             <Route path="/analytics" element={<CivicAnalyticsPage />} />
             <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/commissioner" element={<AdminDashboard />} />
             <Route path="/auth" element={<AuthPage onLogin={(role) => setCurrentRole(role)} />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>
+
         <Footer />
+
+        {/* Global Persistent Civic AI Assistant (Zero emojis, role-tailored) */}
+        <CivicAiAssistant currentRole={currentRole} />
       </div>
     </BrowserRouter>
   );
