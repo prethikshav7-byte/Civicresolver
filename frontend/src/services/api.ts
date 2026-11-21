@@ -3,6 +3,7 @@ import {
   AdminStats, DepartmentMetric, MapMarkerItem, HotspotItem, UserProfile,
   CivicProofItem, CommunityVoteRequest, AdminReopenRequest, CivicPulseOverview, OfficerQueueResponse
 } from '../types';
+import { PROOF_SVGS } from '../assets/proofImages';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL 
   ? `${import.meta.env.VITE_API_BASE_URL}/api/v1` 
@@ -198,8 +199,8 @@ const INITIAL_CIVICPROOF_ITEMS: CivicProofItem[] = [
     department_name: "Drainage Department",
     assigned_officer_name: "Assistant Engineer M. Balaji",
     resolved_at: new Date(Date.now() - 36 * 3600000).toISOString(),
-    before_image_url: "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=600&q=80",
-    after_image_url: "https://images.unsplash.com/photo-1584467735871-8e85353a8413?auto=format&fit=crop&w=600&q=80",
+    before_image_url: PROOF_SVGS.stormwaterBefore,
+    after_image_url: PROOF_SVGS.stormwaterAfter,
     rectification_summary: "Channel desilted using suction machines; 4.2 metric tons of wet silt evacuated. Flow rate restored.",
     ai_vision_assessment: "De-silted canal cross-section verified clear. Zero standing sludge detected.",
     votes_resolved: 18,
@@ -217,8 +218,8 @@ const INITIAL_CIVICPROOF_ITEMS: CivicProofItem[] = [
     department_name: "Parks & Horticulture",
     assigned_officer_name: "Horticulture Officer K. Malathi",
     resolved_at: new Date(Date.now() - 12 * 3600000).toISOString(),
-    before_image_url: "https://images.unsplash.com/photo-1519331379826-f10be5486c6f?auto=format&fit=crop&w=600&q=80",
-    after_image_url: "https://images.unsplash.com/photo-1588880331179-bc9b93a8cb5e?auto=format&fit=crop&w=600&q=80",
+    before_image_url: PROOF_SVGS.treeBefore,
+    after_image_url: PROOF_SVGS.treeAfter,
     rectification_summary: "Installed new reinforced steel chains, replacement safety swing seats, and welded chain-link perimeter fence.",
     ai_vision_assessment: "Park apparatus safety inspection confirmed complete with structural welds.",
     votes_resolved: 7,
@@ -236,8 +237,8 @@ const INITIAL_CIVICPROOF_ITEMS: CivicProofItem[] = [
     department_name: "Roads Department",
     assigned_officer_name: "Er. Vigneshwaran K.",
     resolved_at: new Date(Date.now() - 4 * 3600000).toISOString(),
-    before_image_url: "https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=600&q=80",
-    after_image_url: "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=600&q=80",
+    before_image_url: PROOF_SVGS.potholeBefore,
+    after_image_url: PROOF_SVGS.potholeAfter,
     rectification_summary: "Emergency cold-mix bitumen patching completed. Surface compacted level with surrounding carriageway.",
     ai_vision_assessment: "Surface filled with bitumen aggregate. Level requires secondary roller compaction.",
     votes_resolved: 2,

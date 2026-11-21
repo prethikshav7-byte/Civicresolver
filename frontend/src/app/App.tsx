@@ -16,21 +16,16 @@ import { AuthPage } from '../pages/auth/AuthPage';
 import { CivicAiAssistant } from '../components/chat/CivicAiAssistant';
 
 export const App: React.FC = () => {
-  const [currentRole, setCurrentRole] = useState<'citizen' | 'admin' | 'officer'>('citizen');
-  const [highContrast, setHighContrast] = useState(false);
+  const [currentRole, setCurrentRole] = useState<'citizen' | 'admin'>('citizen');
 
   return (
     <LanguageProvider>
       <BrowserRouter>
-        <div className={`min-h-screen flex flex-col font-sans transition-colors duration-150 ${
-          highContrast ? 'high-contrast bg-black text-white' : 'bg-[#F8FAFC] text-slate-800'
-        }`}>
+        <div className="min-h-screen flex flex-col font-sans bg-[#F8FAFC] text-slate-800">
           
           <Header 
             currentRole={currentRole} 
             onRoleChange={(role) => setCurrentRole(role)}
-            highContrast={highContrast}
-            onToggleHighContrast={() => setHighContrast(!highContrast)}
           />
 
           <main className="flex-1">

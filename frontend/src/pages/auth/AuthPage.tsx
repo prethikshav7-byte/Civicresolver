@@ -4,7 +4,7 @@ import { MapPin, ShieldAlert, CheckCircle2, Compass, ArrowRight, User, ShieldChe
 import { useTranslation } from '../../i18n/translations';
 
 interface AuthPageProps {
-  onLogin: (role: 'citizen' | 'admin' | 'officer') => void;
+  onLogin: (role: 'citizen' | 'admin') => void;
 }
 
 export const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
@@ -249,18 +249,10 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
               <span>·</span>
               <button 
                 type="button" 
-                onClick={() => { onLogin('officer'); navigate('/officer'); }}
-                className="text-slate-700 font-bold hover:underline"
-              >
-                Officer
-              </button>
-              <span>·</span>
-              <button 
-                type="button" 
                 onClick={() => { onLogin('admin'); navigate('/admin'); }}
                 className="text-[#12382C] font-bold hover:underline"
               >
-                Admin
+                Administrator
               </button>
             </div>
           </div>

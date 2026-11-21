@@ -8,7 +8,7 @@ import { AIChatMessage } from '../../types';
 import { useTranslation } from '../../i18n/translations';
 
 interface CivicAiAssistantProps {
-  currentRole: 'citizen' | 'officer' | 'admin';
+  currentRole: 'citizen' | 'admin';
 }
 
 const INITIAL_SUGGESTIONS: Record<string, Record<string, string[]>> = {
@@ -77,8 +77,8 @@ const INITIAL_SUGGESTIONS: Record<string, Record<string, string[]>> = {
 export const CivicAiAssistant: React.FC<CivicAiAssistantProps> = ({ currentRole }) => {
   const { language, t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
-  const [activeRole, setActiveRole] = useState<'citizen' | 'officer' | 'commissioner'>(
-    currentRole === 'admin' ? 'commissioner' : currentRole
+  const [activeRole, setActiveRole] = useState<'citizen' | 'commissioner'>(
+    currentRole === 'admin' ? 'commissioner' : 'citizen'
   );
   const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -226,20 +226,23 @@ export const CivicAiAssistant: React.FC<CivicAiAssistantProps> = ({ currentRole 
           <div className="bg-[#E8F4EC] p-2 border-b border-emerald-100 flex items-center justify-between text-[11px] font-semibold">
             <span className="text-emerald-900 text-[10px] uppercase font-bold pl-1">Role:</span>
             <div className="flex items-center gap-1">
-              {(['citizen', 'officer', 'commissioner'] as const).map((r) => (
+              {[
+                { id: 'citizen' as const, label: 'Citizen' },
+                { id: 'commissioner' as const, label: 'Administrator' }
+              ].map(({ id, label }) => (
                 <button
-                  key={r}
+                  key={id}
                   onClick={() => {
-                    setActiveRole(r);
+                    setActiveRole(id);
                     handleClearHistory();
                   }}
-                  className={`px-2.5 py-1 rounded-md capitalize transition ${
-                    activeRole === r 
+                  className={`px-3 py-1 rounded-md text-[11px] transition ${
+                    activeRole === id 
                       ? 'bg-[#167A4D] text-white shadow-2xs font-bold' 
-                      : 'text-emerald-900 hover:text-emerald-950 hover:bg-white/80'
+                      : 'text-emerald-900 hover:text-emerald-950 hover:bg-white/80 font-medium'
                   }`}
                 >
-                  {r}
+                  {label}
                 </button>
               ))}
             </div>

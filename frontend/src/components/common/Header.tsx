@@ -8,17 +8,13 @@ import {
 import { useTranslation, SupportedLanguage } from '../../i18n/translations';
 
 interface HeaderProps {
-  currentRole: 'citizen' | 'admin' | 'officer';
-  onRoleChange: (role: 'citizen' | 'admin' | 'officer') => void;
-  highContrast?: boolean;
-  onToggleHighContrast?: () => void;
+  currentRole: 'citizen' | 'admin';
+  onRoleChange: (role: 'citizen' | 'admin') => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({ 
   currentRole, 
-  onRoleChange,
-  highContrast = false,
-  onToggleHighContrast
+  onRoleChange
 }) => {
   const location = useLocation();
   const { language, setLanguage, t } = useTranslation();
@@ -27,7 +23,6 @@ export const Header: React.FC<HeaderProps> = ({
 
   const roles = [
     { id: 'citizen', name: 'Citizen', identity: 'Priya Sundaram (Ward 70)', badge: 'Public' },
-    { id: 'officer', name: 'Field Officer', identity: 'Er. Vigneshwaran K.', badge: 'Roads Dept' },
     { id: 'admin', name: 'Administrator', identity: 'Dr. Anand Ramanathan, IAS', badge: 'Municipal Admin' },
   ] as const;
 
@@ -80,17 +75,6 @@ export const Header: React.FC<HeaderProps> = ({
             </Link>
 
             <Link
-              to="/analytics"
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition ${
-                location.pathname === '/analytics'
-                  ? 'bg-[#E8F4EC] text-[#167A4D] font-bold border border-[#C6E4CF]'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
-              }`}
-            >
-              {t.navDashboard}
-            </Link>
-
-            <Link
               to="/map"
               className={`px-3 py-1.5 rounded-lg text-xs font-medium transition ${
                 location.pathname === '/map'
@@ -124,17 +108,6 @@ export const Header: React.FC<HeaderProps> = ({
             </Link>
 
             <Link
-              to="/officer"
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition ${
-                location.pathname === '/officer'
-                  ? 'bg-slate-900 text-white'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
-              }`}
-            >
-              {t.navOfficer}
-            </Link>
-
-            <Link
               to="/admin"
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition ${
                 location.pathname === '/admin'
@@ -146,7 +119,7 @@ export const Header: React.FC<HeaderProps> = ({
             </Link>
           </nav>
 
-          {/* Right Action Tools: Track complaint Button, Language, Contrast, Role */}
+          {/* Right Action Tools: Track complaint Button, Language, Role */}
           <div className="flex items-center gap-2.5">
             
             {/* Prominent Track Complaint Button (from 4th image) */}
@@ -169,18 +142,6 @@ export const Header: React.FC<HeaderProps> = ({
               <option value="ta">தமிழ் (Tamil)</option>
               <option value="hi">हिंदी (Hindi)</option>
             </select>
-
-            {/* High Contrast Toggle */}
-            <button
-              onClick={onToggleHighContrast}
-              className={`hidden md:inline-flex items-center gap-1 text-xs px-2.5 py-1.5 border rounded-xl font-medium transition shadow-2xs ${
-                highContrast
-                  ? 'bg-black text-white border-black font-bold'
-                  : 'border-slate-300 text-slate-700 hover:bg-slate-50'
-              }`}
-            >
-              <span>{t.highContrast}</span>
-            </button>
 
             {/* Role Switcher */}
             <div className="relative">
@@ -253,13 +214,6 @@ export const Header: React.FC<HeaderProps> = ({
               {t.navTrack}
             </Link>
             <Link
-              to="/analytics"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block px-3 py-2 rounded-lg text-xs font-medium text-slate-700 hover:bg-slate-100"
-            >
-              {t.navDashboard}
-            </Link>
-            <Link
               to="/map"
               onClick={() => setMobileMenuOpen(false)}
               className="block px-3 py-2 rounded-lg text-xs font-medium text-slate-700 hover:bg-slate-100"
@@ -279,13 +233,6 @@ export const Header: React.FC<HeaderProps> = ({
               className="block px-3 py-2 rounded-lg text-xs font-medium text-slate-800 hover:bg-slate-100"
             >
               {t.navPulse}
-            </Link>
-            <Link
-              to="/officer"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block px-3 py-2 rounded-lg text-xs font-semibold text-slate-800 hover:bg-slate-100"
-            >
-              {t.navOfficer}
             </Link>
             <Link
               to="/admin"

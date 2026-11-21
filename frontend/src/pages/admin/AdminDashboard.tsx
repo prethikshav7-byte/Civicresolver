@@ -138,14 +138,6 @@ export const AdminDashboard: React.FC = () => {
               </span>
 
               <Link
-                to="/officer"
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-900/50 hover:bg-emerald-900 text-emerald-200 text-xs font-semibold transition"
-              >
-                <Briefcase className="w-3.5 h-3.5" />
-                <span>Officer Execution</span>
-              </Link>
-
-              <Link
                 to="/proof"
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-900/50 hover:bg-emerald-900 text-emerald-200 text-xs font-semibold transition"
               >

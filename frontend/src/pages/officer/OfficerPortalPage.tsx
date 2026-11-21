@@ -19,7 +19,7 @@ export const OfficerPortalPage: React.FC = () => {
   // Resolution Modal State
   const [resolveTarget, setResolveTarget] = useState<Complaint | null>(null);
   const [rectificationSummary, setRectificationSummary] = useState('');
-  const [afterPhotoUrl, setAfterPhotoUrl] = useState('https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=600&q=80');
+  const [afterPhotoUrl, setAfterPhotoUrl] = useState('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="600" height="340" viewBox="0 0 600 340"><rect width="600" height="340" fill="%23F0FDF4"/><circle cx="300" cy="140" r="40" fill="%2316A34A" fill-opacity="0.2" stroke="%2316A34A" stroke-width="3"/><text x="300" y="146" font-family="sans-serif" font-size="28" font-weight="bold" fill="%2316A34A" text-anchor="middle">✓</text><text x="300" y="220" font-family="sans-serif" font-size="14" font-weight="bold" fill="%2316A34A" text-anchor="middle">FIELD RECTIFICATION VERIFIED</text></svg>');
   const [isResolving, setIsResolving] = useState(false);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
