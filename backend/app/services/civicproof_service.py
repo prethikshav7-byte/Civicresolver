@@ -11,7 +11,7 @@ class CivicProofService:
         self.verifications: List[Dict[str, Any]] = [
             {
                 "id": "proof-1",
-                "complaint_reference": "CR-2026-00005",
+                "complaint_reference": "#80005",
                 "title": "Blocked stormwater culvert causing sewage backflow",
                 "category": "Drainage",
                 "locality": "Ukkadam",
@@ -33,7 +33,7 @@ class CivicProofService:
             },
             {
                 "id": "proof-2",
-                "complaint_reference": "CR-2026-00006",
+                "complaint_reference": "#80006",
                 "title": "Fallen banyan tree limb blocking pedestrian jogging loop",
                 "category": "Parks",
                 "locality": "Race Course",
@@ -55,7 +55,7 @@ class CivicProofService:
             },
             {
                 "id": "proof-3",
-                "complaint_reference": "CR-2026-00001",
+                "complaint_reference": "#80001",
                 "title": "Deep crater pothole with standing water",
                 "category": "Roads",
                 "locality": "Gandhipuram",

@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
-  CheckCircle2, MapPin, Camera, AlertCircle, 
-  ArrowRight, Loader2, Navigation, Wand2, ShieldAlert 
+  CheckCircle2, MapPin, 
+  ArrowRight, Loader2, AlertCircle 
 } from 'lucide-react';
 import { CivicApi } from '../../services/api';
-import { ComplaintCategory, ComplaintPriority, AIAnalysisResult, DuplicateCheckResult, PriorityScoreBreakdown } from '../../types';
+import { ComplaintCategory, ComplaintPriority, PriorityScoreBreakdown } from '../../types';
+import { useTranslation } from '../../i18n/translations';
 
 interface SampleReportOption {
   id: string;
@@ -27,7 +28,7 @@ const SAMPLE_REPORTS: SampleReportOption[] = [
   {
     id: 'pothole-school',
     name: 'Pothole near School',
-    desc: 'Deep dangerous pothole right outside Govt Higher Secondary School main gate. Standing rainwater makes it invisible. Multiple children on bicycles and two-wheeler parents have skidded during morning school rush.',
+    desc: 'Deep dangerous pothole right outside Govt Higher Secondary School main gate. Standing rainwater makes it invisible. Commuters skidding during morning rush.',
     title: 'Deep crater pothole near school zone',
     category: 'Roads',
     location: 'DB Road, opposite Govt Girls High School, RS Puram, Coimbatore',
@@ -39,11 +40,11 @@ const SAMPLE_REPORTS: SampleReportOption[] = [
     dept: 'Roads & Highways',
     breakdown: {
       urgency_pts: 50,
-      urgency_label: 'Urgent triage rating: Immediate danger/disruption',
+      urgency_label: 'Immediate safety hazard near high-density traffic corridor',
       impact_pts: 16,
-      impact_label: 'Impact scale 4/5 on community density',
+      impact_label: 'Impact scale 4/5 on pedestrian and commuter safety',
       safety_pts: 15,
-      safety_label: 'Direct safety hazard flagged by automated analysis',
+      safety_label: 'Vehicular cavitation risk flagged by municipal assessment',
       context_pts: 12,
       context_label: 'High-density children school zone proximity'
     }
@@ -51,8 +52,8 @@ const SAMPLE_REPORTS: SampleReportOption[] = [
   {
     id: 'garbage-dump',
     name: 'Overflowing Garbage',
-    desc: 'Community garbage dumpster overflowing onto carriageway for over 48 hours. Waste scattered across sidewalk, stray cattle feeding, heavy foul odor affecting pedestrians and local eateries.',
-    title: 'Commercial waste dumping and garbage overflow',
+    desc: 'Community garbage dumpster overflowing onto carriageway for over 48 hours. Waste scattered across sidewalk, heavy odor affecting pedestrians.',
+    title: 'Solid waste overflow and sidewalk obstruction',
     category: 'Sanitation',
     location: 'Cross Cut Road, near 5th Corner, Gandhipuram, Coimbatore',
     lat: 11.0182,
@@ -75,7 +76,7 @@ const SAMPLE_REPORTS: SampleReportOption[] = [
   {
     id: 'live-wire',
     name: 'Exposed Live Wire',
-    desc: 'Snapping overhead high-voltage cable dangling 4 feet above pedestrian sidewalk after storm branch fall. Live sparking observed during damp evening hours.',
+    desc: 'Snapping overhead high-voltage cable dangling 4 feet above pedestrian sidewalk after storm branch fall. Live sparking observed during damp hours.',
     title: 'Exposed live electrical cable dangling over walkway',
     category: 'Electrical',
     location: 'Avinashi Road Service Lane, near PSG Tech, Peelamedu, Coimbatore',
@@ -91,15 +92,15 @@ const SAMPLE_REPORTS: SampleReportOption[] = [
       impact_pts: 18,
       impact_label: 'High-density student and bus commuter corridor',
       safety_pts: 20,
-      safety_label: 'Immediate fatal risk under wet weather conditions',
+      safety_label: 'Immediate risk under wet weather conditions',
       context_pts: 10,
-      context_label: 'Pedestrian college transit route contact'
+      context_label: 'Pedestrian transit route contact'
     }
   },
   {
     id: 'pipe-burst',
     name: 'Water Pipe Burst',
-    desc: 'Underground drinking water distribution pipeline burst under pressure. Gushing potable water flooding the roadway, eroding asphalt sub-base, and disrupting clean supply to nearby ward residences.',
+    desc: 'Underground drinking water distribution pipeline burst under pressure. Gushing potable water flooding the roadway, disrupting clean supply.',
     title: 'Drinking water distribution main line rupture',
     category: 'Water',
     location: 'Trichy Road near Singanallur Signal, Coimbatore',
@@ -115,7 +116,7 @@ const SAMPLE_REPORTS: SampleReportOption[] = [
       impact_pts: 15,
       impact_label: 'Impacting potable supply to 400+ households',
       safety_pts: 14,
-      safety_label: 'Vehicular hydroplaning and pavement cavitation',
+      safety_label: 'Vehicular hydroplaning hazard',
       context_pts: 10,
       context_label: 'Primary municipal arterial corridor'
     }
@@ -123,7 +124,7 @@ const SAMPLE_REPORTS: SampleReportOption[] = [
   {
     id: 'broken-lights',
     name: 'Broken Streetlights',
-    desc: 'Continuous stretch of 6 LED streetlights completely unlit along the canal road for past 3 days. Complete darkness creating extreme hazard for night two-wheeler commuters.',
+    desc: 'Continuous stretch of 6 LED streetlights completely unlit along the canal road for past 3 days. Complete darkness creating safety hazard.',
     title: 'Dead streetlight array along canal carriageway',
     category: 'Electrical',
     location: 'Race Course Jogging Loop & Thomas Park, Coimbatore',
@@ -137,7 +138,7 @@ const SAMPLE_REPORTS: SampleReportOption[] = [
       urgency_pts: 30,
       urgency_label: 'Public thoroughfare illumination failure',
       impact_pts: 14,
-      impact_label: 'Pedestrian and commuter nighttime visibility reduction',
+      impact_label: 'Commuter nighttime visibility reduction',
       safety_pts: 10,
       safety_label: 'Accident risk at unlit road junction',
       context_pts: 8,
@@ -148,6 +149,7 @@ const SAMPLE_REPORTS: SampleReportOption[] = [
 
 export const ReportComplaintPage: React.FC = () => {
   const navigate = useNavigate();
+  const { t, language } = useTranslation();
 
   // Form State
   const [description, setDescription] = useState('');
@@ -164,7 +166,7 @@ export const ReportComplaintPage: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  // Submission Result State (Image 2 View)
+  // Submission Result State
   const [submittedResult, setSubmittedResult] = useState<{
     ticketId: string;
     category: string;
@@ -172,7 +174,6 @@ export const ReportComplaintPage: React.FC = () => {
     priorityScore: number;
     department: string;
     sla: string;
-    isGenAi: boolean;
     breakdown: PriorityScoreBreakdown;
   } | null>(null);
 
@@ -261,7 +262,6 @@ export const ReportComplaintPage: React.FC = () => {
     setIsSubmitting(true);
 
     try {
-      // 1. Check if matched to one of our sample reports
       const matchedSample = SAMPLE_REPORTS.find(s => 
         description.toLowerCase().includes(s.name.toLowerCase().split(' ')[0]) || 
         title.toLowerCase().includes(s.name.toLowerCase().split(' ')[0])
@@ -275,16 +275,15 @@ export const ReportComplaintPage: React.FC = () => {
       let effSla = matchedSample?.sla || '8 Hours Target';
       let effBreakdown = matchedSample?.breakdown || {
         urgency_pts: 50,
-        urgency_label: 'Urgent triage rating: Immediate danger/disruption',
+        urgency_label: 'Immediate hazard priority assessment',
         impact_pts: 16,
-        impact_label: 'Impact scale 4/5 on community density',
+        impact_label: 'High population and transit density',
         safety_pts: 15,
-        safety_label: 'Direct safety hazard flagged by automated analysis',
+        safety_label: 'Safety risk identified',
         context_pts: 12,
-        context_label: 'High-density civic zone proximity'
+        context_label: 'Municipal arterial zone'
       };
 
-      // 2. Call backend complaint creation
       const created = await CivicApi.createComplaint({
         title: effTitle,
         description,
@@ -300,15 +299,13 @@ export const ReportComplaintPage: React.FC = () => {
         image_url: imagePreview
       });
 
-      // 3. Set Submitted State to render exact Image 2 Success Card
       setSubmittedResult({
-        ticketId: created.complaint_reference || "CR-2026-80019",
+        ticketId: created.complaint_reference || "#80019",
         category: effCategory,
         priority: effPriority,
         priorityScore: effScore,
         department: effDept,
         sla: effSla,
-        isGenAi: false,
         breakdown: effBreakdown
       });
     } catch (err) {
@@ -331,34 +328,32 @@ export const ReportComplaintPage: React.FC = () => {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 font-sans">
       
-      {/* ============================================================== */}
-      {/* VIEW A: IF SUBMITTED -> RENDER EXACT OPPONENT IMAGE 2 SUCCESS CARD */}
-      {/* ============================================================== */}
+      {/* VIEW A: IF SUBMITTED -> RENDER SUCCESS CARD WITH EMERALD THEME */}
       {submittedResult ? (
         <div className="space-y-8 animate-fadeIn">
           {/* Main Card with Green Top Border */}
-          <div className="bg-white border-t-4 border-t-emerald-500 border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm space-y-6">
+          <div className="bg-white border-t-4 border-t-[#167A4D] border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
             
             {/* Header: Green Checkbox Icon + Grievance Lodged Successfully */}
             <div className="flex items-start gap-4">
-              <div className="w-10 h-10 rounded-xl bg-emerald-500 text-white flex items-center justify-center shrink-0 shadow-xs">
+              <div className="w-10 h-10 rounded-2xl bg-[#167A4D] text-white flex items-center justify-center shrink-0 shadow-xs">
                 <CheckCircle2 className="w-6 h-6 stroke-[2.4]" />
               </div>
 
               <div>
                 <h1 className="text-2xl font-bold text-slate-900 leading-tight">
-                  Grievance Lodged Successfully!
+                  {t.successTitle}
                 </h1>
 
                 <div className="flex items-center gap-2.5 mt-1.5 flex-wrap">
-                  <span className="text-xs text-slate-600">Ticket ID:</span>
-                  <span className="font-mono font-bold text-sm text-blue-700">
+                  <span className="text-xs text-slate-600">{t.ticketLabel}</span>
+                  <span className="font-mono font-bold text-sm text-[#167A4D]">
                     {submittedResult.ticketId}
                   </span>
 
-                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-100/80 text-amber-900 border border-amber-300">
-                    <span className="w-1.5 h-1.5 rounded-full bg-amber-600" />
-                    Heuristic Rule Triaged
+                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-[#E8F4EC] text-[#167A4D] border border-[#C6E4CF]">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#167A4D]" />
+                    {t.triagedBadge}
                   </span>
                 </div>
               </div>
@@ -368,7 +363,7 @@ export const ReportComplaintPage: React.FC = () => {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 border-t border-slate-100">
               <div>
                 <span className="block text-[10px] font-extrabold uppercase tracking-wider text-slate-500 mb-1">
-                  DETECTED CATEGORY:
+                  {t.detectedCategory}
                 </span>
                 <span className="font-bold text-sm text-slate-900 block">
                   {submittedResult.category}
@@ -377,7 +372,7 @@ export const ReportComplaintPage: React.FC = () => {
 
               <div>
                 <span className="block text-[10px] font-extrabold uppercase tracking-wider text-slate-500 mb-1">
-                  PRIORITY ASSESSMENT:
+                  {t.priorityAssessment}
                 </span>
                 <span className="inline-block px-2.5 py-0.5 rounded-full text-xs font-bold bg-red-100 text-red-800 border border-red-200">
                   {submittedResult.priority} ({submittedResult.priorityScore}/100)
@@ -386,7 +381,7 @@ export const ReportComplaintPage: React.FC = () => {
 
               <div>
                 <span className="block text-[10px] font-extrabold uppercase tracking-wider text-slate-500 mb-1">
-                  ASSIGNED DEPARTMENT:
+                  {t.assignedDepartment}
                 </span>
                 <span className="font-bold text-sm text-slate-900 block">
                   {submittedResult.department}
@@ -395,7 +390,7 @@ export const ReportComplaintPage: React.FC = () => {
 
               <div>
                 <span className="block text-[10px] font-extrabold uppercase tracking-wider text-slate-500 mb-1">
-                  RESOLUTION SLA:
+                  {t.resolutionSla}
                 </span>
                 <span className="font-bold text-sm text-slate-900 block">
                   {submittedResult.sla}
@@ -403,34 +398,34 @@ export const ReportComplaintPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Why This Priority Score? Box (Soft Cream/Yellow Background) */}
-            <div className="bg-[#FFFDF5] border border-[#F4EAC8] rounded-xl p-5 space-y-3">
+            {/* Why This Priority Score? Box */}
+            <div className="bg-[#FAFDFB] border border-[#D1EAD8] rounded-2xl p-5 space-y-3">
               <h3 className="font-bold text-sm text-slate-900">
-                Why this priority score?
+                {t.whyPriorityScore}
               </h3>
               <ul className="space-y-1.5 text-xs text-slate-800">
                 <li className="flex items-start gap-2">
-                  <span className="text-slate-400 mt-0.5">•</span>
+                  <span className="text-[#167A4D] mt-0.5">•</span>
                   <span>
                     <strong>Urgency Tier (+{submittedResult.breakdown.urgency_pts} pts):</strong> {submittedResult.breakdown.urgency_label}
                   </span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-slate-400 mt-0.5">•</span>
+                  <span className="text-[#167A4D] mt-0.5">•</span>
                   <span>
                     <strong>Public Impact (+{submittedResult.breakdown.impact_pts} pts):</strong> {submittedResult.breakdown.impact_label}
                   </span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-slate-400 mt-0.5">•</span>
+                  <span className="text-[#167A4D] mt-0.5">•</span>
                   <span>
                     <strong>Safety Risk (+{submittedResult.breakdown.safety_pts} pts):</strong> {submittedResult.breakdown.safety_label}
                   </span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-slate-400 mt-0.5">•</span>
+                  <span className="text-[#167A4D] mt-0.5">•</span>
                   <span>
-                    <strong>Context: School (+{submittedResult.breakdown.context_pts} pts):</strong> {submittedResult.breakdown.context_label}
+                    <strong>Zonal Proximity (+{submittedResult.breakdown.context_pts} pts):</strong> {submittedResult.breakdown.context_label}
                   </span>
                 </li>
               </ul>
@@ -441,102 +436,98 @@ export const ReportComplaintPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => navigate(`/track?ref=${submittedResult.ticketId}`)}
-                className="px-5 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs transition shadow-xs"
+                className="px-5 py-2.5 rounded-xl bg-[#167A4D] hover:bg-[#12603C] text-white font-bold text-xs transition shadow-xs"
               >
-                Track This Issue
+                {t.trackThisIssue}
               </button>
 
               <button
                 type="button"
                 onClick={handleResetForAnother}
-                className="px-5 py-2.5 rounded-lg bg-white hover:bg-slate-50 border border-slate-300 text-slate-800 font-semibold text-xs transition shadow-2xs"
+                className="px-5 py-2.5 rounded-xl bg-white hover:bg-slate-50 border border-slate-300 text-slate-800 font-bold text-xs transition shadow-2xs"
               >
-                Report Another Issue
+                {t.reportAnotherIssue}
               </button>
             </div>
-          </div>
-
-          {/* Opponent Footer Line */}
-          <div className="text-center text-[11px] text-slate-500 space-y-1 pt-4">
-            <p>CivicResolve © 2026 Municipal Grievance & Resolution System.</p>
-            <p className="text-slate-400">
-              Powered by Google Gemini 2.5 Flash Multimodal AI • Built for Citizen Empowerment • WCAG 2.1 AA Compliant
-            </p>
           </div>
         </div>
       ) : (
 
-        /* ============================================================== */
-        /* VIEW B: EXACT OPPONENT IMAGE 1 REPORT FORM */
-        /* ============================================================== */
+        /* VIEW B: REPORT FORM */
         <div className="space-y-6">
           {/* Header Title & Subtitle */}
           <div>
             <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">
-              Report a Civic Grievance
+              {t.reportTitle}
             </h1>
-            <p className="text-sm text-slate-600 mt-1">
-              Submit municipal issues with instant AI triage, automated priority scoring, and department routing.
+            <p className="text-xs sm:text-sm text-slate-600 mt-1">
+              {t.reportSubtitle}
             </p>
           </div>
 
-          {/* Try a Sample Report Box (Soft Blue rounded card) */}
-          <div className="bg-[#F0F7FF] border border-[#D8EAFD] rounded-xl p-4 space-y-2.5">
+          {/* Try a Sample Report Box */}
+          <div className="bg-[#E8F4EC]/60 border border-[#C6E4CF] rounded-2xl p-4 space-y-2.5">
             <span className="text-xs font-bold text-slate-800 block">
-              Try a Sample Report:
+              {t.trySampleReport}
             </span>
 
             <div className="flex flex-wrap gap-2">
-              {SAMPLE_REPORTS.map((s) => (
+              {[
+                { s: SAMPLE_REPORTS[0], label: t.samplePothole },
+                { s: SAMPLE_REPORTS[1], label: t.sampleGarbage },
+                { s: SAMPLE_REPORTS[2], label: t.sampleWire },
+                { s: SAMPLE_REPORTS[3], label: t.samplePipe },
+                { s: SAMPLE_REPORTS[4], label: t.sampleLights }
+              ].map(({ s, label }) => (
                 <button
                   type="button"
                   key={s.id}
                   onClick={() => handleSelectSample(s)}
-                  className="px-3 py-1.5 bg-white border border-slate-200 hover:border-blue-400 rounded-lg text-xs font-medium text-slate-700 hover:text-blue-600 transition shadow-2xs flex items-center gap-1.5"
+                  className="px-3 py-1.5 bg-white border border-slate-200 hover:border-[#167A4D] rounded-xl text-xs font-semibold text-slate-700 hover:text-[#167A4D] transition shadow-2xs flex items-center gap-1.5"
                 >
                   <span className="text-slate-400">#</span>
-                  <span>{s.name}</span>
+                  <span>{label}</span>
                 </button>
               ))}
             </div>
           </div>
 
           {errorMessage && (
-            <div className="p-3.5 rounded-lg bg-red-50 border border-red-200 text-red-800 text-xs flex items-center gap-2">
+            <div className="p-3.5 rounded-xl bg-red-50 border border-red-200 text-red-800 text-xs flex items-center gap-2">
               <AlertCircle className="w-4 h-4 text-red-600 shrink-0" />
               <span>{errorMessage}</span>
             </div>
           )}
 
           {/* Form Card */}
-          <form onSubmit={handleSubmit} className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm space-y-5">
+          <form onSubmit={handleSubmit} className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-5">
             
             {/* Description Field */}
             <div>
               <label className="block text-xs font-bold text-slate-800 mb-1.5">
-                Description (Required - any language) *
+                {t.descLabel}
               </label>
               <textarea
                 required
                 rows={4}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                placeholder="Describe the civic issue in detail. You can use English, Tamil, Hindi, or any language..."
-                className="w-full p-3 bg-white border border-slate-300 rounded-lg text-xs text-slate-900 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                placeholder={t.descPlaceholder}
+                className="w-full p-3.5 bg-white border border-slate-300 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-[#167A4D] focus:ring-1 focus:ring-[#167A4D]"
               />
             </div>
 
             {/* Issue Title (Optional) */}
             <div>
               <label className="block text-xs font-bold text-slate-800 mb-1.5">
-                Issue Title (Optional - AI will generate if blank)
+                {t.titleLabel}
               </label>
               <input
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                placeholder="Brief headline, or leave blank for AI to suggest"
-                className="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs text-slate-900 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                placeholder={t.titlePlaceholder}
+                className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-[#167A4D] focus:ring-1 focus:ring-[#167A4D]"
               />
             </div>
 
@@ -544,14 +535,14 @@ export const ReportComplaintPage: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-bold text-slate-800 mb-1.5">
-                  Category (Optional)
+                  {t.categoryLabel}
                 </label>
                 <select
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
-                  className="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs text-slate-800 focus:outline-none focus:border-blue-500"
+                  className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none focus:border-[#167A4D]"
                 >
-                  <option value="Let AI decide category">Let AI decide category</option>
+                  <option value="Let AI decide category">{t.categoryAuto}</option>
                   <option value="Roads">Roads & Highways</option>
                   <option value="Sanitation">Sanitation & Waste Management</option>
                   <option value="Electrical">Electrical & Street Lighting</option>
@@ -563,25 +554,25 @@ export const ReportComplaintPage: React.FC = () => {
 
               <div>
                 <label className="block text-xs font-bold text-slate-800 mb-1.5">
-                  Location / Landmark
+                  {t.locationLabel}
                 </label>
                 <div className="relative flex items-center">
                   <input
                     type="text"
                     value={locationText}
                     onChange={(e) => setLocationText(e.target.value)}
-                    placeholder="e.g. DB Road, opposite Govt Girls High School"
-                    className="w-full pl-3 pr-16 py-2 bg-white border border-slate-300 rounded-lg text-xs text-slate-900 focus:outline-none focus:border-blue-500"
+                    placeholder={t.locationPlaceholder}
+                    className="w-full pl-3.5 pr-16 py-2.5 bg-white border border-slate-300 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-[#167A4D]"
                   />
                   <button
                     type="button"
                     onClick={handleGpsDetect}
                     disabled={isLocating}
-                    className="absolute right-1 px-2.5 py-1 bg-slate-800 hover:bg-slate-900 text-white rounded text-[11px] font-bold flex items-center gap-1 transition"
+                    className="absolute right-1 px-3 py-1.5 bg-[#12382C] hover:bg-black text-white rounded-lg text-[11px] font-bold flex items-center gap-1 transition"
                     title="Capture current GPS coordinates"
                   >
-                    <MapPin className="w-3 h-3 text-red-400" />
-                    <span>{isLocating ? '...' : 'GPS'}</span>
+                    <MapPin className="w-3 h-3 text-emerald-400" />
+                    <span>{isLocating ? '...' : t.gpsButton}</span>
                   </button>
                 </div>
               </div>
@@ -591,22 +582,22 @@ export const ReportComplaintPage: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-bold text-slate-800 mb-1.5">
-                  Attach Photo (Optional, auto-resized &lt;= 300KB)
+                  {t.photoLabel}
                 </label>
                 <div className="flex items-center gap-2">
                   <input
                     type="file"
                     accept="image/*"
                     onChange={handleImageFileChange}
-                    className="text-xs text-slate-600 file:mr-2 file:py-1.5 file:px-3 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200 cursor-pointer"
+                    className="text-xs text-slate-600 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200 cursor-pointer"
                   />
                 </div>
                 <span className="text-[10px] text-slate-400 mt-1 block">
-                  Client-side resized to max 800px JPEG &lt;= 300KB
+                  {t.photoHelp}
                 </span>
                 {imagePreview && (
                   <div className="mt-2 flex items-center gap-2">
-                    <img src={imagePreview} alt="Preview" className="w-12 h-12 object-cover rounded border border-slate-200" />
+                    <img src={imagePreview} alt="Preview" className="w-12 h-12 object-cover rounded-xl border border-slate-200" />
                     <button
                       type="button"
                       onClick={() => setImagePreview(null)}
@@ -620,14 +611,14 @@ export const ReportComplaintPage: React.FC = () => {
 
               <div>
                 <label className="block text-xs font-bold text-slate-800 mb-1.5">
-                  Your Name (Optional - no phone/email stored)
+                  {t.nameLabel}
                 </label>
                 <input
                   type="text"
                   value={citizenName}
                   onChange={(e) => setCitizenName(e.target.value)}
-                  placeholder="e.g. Anand Kumar"
-                  className="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs text-slate-900 focus:outline-none focus:border-blue-500"
+                  placeholder={t.namePlaceholder}
+                  className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-[#167A4D]"
                 />
               </div>
             </div>
@@ -637,30 +628,22 @@ export const ReportComplaintPage: React.FC = () => {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs transition shadow-xs"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-2xl bg-[#167A4D] hover:bg-[#12603C] text-white font-bold text-xs transition shadow-md"
               >
                 {isSubmitting ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin" />
-                    <span>Analyzing & Submitting...</span>
+                    <span>{t.submittingText}</span>
                   </>
                 ) : (
                   <>
-                    <span>Submit Grievance</span>
+                    <span>{t.submitButton}</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </>
                 )}
               </button>
             </div>
           </form>
-
-          {/* Opponent Footer Line */}
-          <div className="text-center text-[11px] text-slate-500 space-y-1 pt-6">
-            <p>CivicResolve © 2026 Municipal Grievance & Resolution System.</p>
-            <p className="text-slate-400">
-              Powered by Google Gemini 2.5 Flash Multimodal AI • Built for Citizen Empowerment • WCAG 2.1 AA Compliant
-            </p>
-          </div>
         </div>
       )}
     </div>

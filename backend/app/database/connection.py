@@ -56,7 +56,7 @@ class LocalDataStore:
         self.complaints = [
             {
                 "id": "c-1001",
-                "complaint_reference": "CR-2026-00001",
+                "complaint_reference": "#80001",
                 "title": "Deep crater pothole with standing water",
                 "description": "Dangerous pothole near Gandhipuram Central Bus Stand entry gate. Multiple two-wheelers have skidded during evening hours.",
                 "category": "Roads",
@@ -86,7 +86,7 @@ class LocalDataStore:
             },
             {
                 "id": "c-1002",
-                "complaint_reference": "CR-2026-00002",
+                "complaint_reference": "#80002",
                 "title": "Overflowing community garbage container",
                 "description": "Commercial waste from nearby eateries overflowing onto DB Road sidewalk for over 36 hours. Stray cattle feeding.",
                 "category": "Sanitation",
@@ -114,7 +114,7 @@ class LocalDataStore:
             },
             {
                 "id": "c-1003",
-                "complaint_reference": "CR-2026-00003",
+                "complaint_reference": "#80003",
                 "title": "Cluster of 5 dead LED streetlights",
                 "description": "Complete blackout on Avinashi Road service lane near PSG Tech junction creating safety hazard for pedestrians and students.",
                 "category": "Electrical",
@@ -141,7 +141,7 @@ class LocalDataStore:
             },
             {
                 "id": "c-1004",
-                "complaint_reference": "CR-2026-00004",
+                "complaint_reference": "#80004",
                 "title": "High-pressure drinking water main line rupture",
                 "description": "Massive potable water leakage flooding Trichy Road main carriageway. Clean water gushing continuously into road gutter.",
                 "category": "Water",
@@ -169,7 +169,7 @@ class LocalDataStore:
             },
             {
                 "id": "c-1005",
-                "complaint_reference": "CR-2026-00005",
+                "complaint_reference": "#80005",
                 "title": "Blocked stormwater culvert causing sewage backflow",
                 "description": "Heavy silt and plastic debris accumulation blocking open canal near Ukkadam Periyakulam, flooding adjacent residential street.",
                 "category": "Drainage",
@@ -200,7 +200,7 @@ class LocalDataStore:
             },
             {
                 "id": "c-1006",
-                "complaint_reference": "CR-2026-00006",
+                "complaint_reference": "#80006",
                 "title": "Fallen banyan tree limb blocking pedestrian jogging loop",
                 "description": "Large branch snapped during heavy winds, resting across the walkway near Thomas Park. Obstructing senior citizens and joggers.",
                 "category": "Parks",

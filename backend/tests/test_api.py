@@ -20,10 +20,10 @@ def test_list_complaints():
     assert len(data["items"]) >= 6
 
 def test_get_complaint_by_reference():
-    response = client.get("/api/v1/complaints/CR-2026-00001")
+    response = client.get("/api/v1/complaints/%2380001")
     assert response.status_code == 200
     data = response.json()
-    assert data["complaint_reference"] == "CR-2026-00001"
+    assert data["complaint_reference"] == "#80001"
     assert data["category"] == "Roads"
     assert len(data["timeline"]) >= 1
 
@@ -46,7 +46,7 @@ def test_create_and_lifecycle():
     create_res = client.post("/api/v1/complaints", json=payload)
     assert create_res.status_code == 201
     created = create_res.json()
-    assert created["complaint_reference"].startswith("CR-2026-")
+    assert created["complaint_reference"].startswith("#")
     ref_id = created["complaint_reference"]
 
     # 2. Assign department
@@ -100,7 +100,7 @@ def test_duplicate_detection():
     data = res.json()
     assert data["has_possible_duplicates"] is True
     assert data["count"] >= 1
-    assert data["matches"][0]["complaint_reference"] == "CR-2026-00001"
+    assert data["matches"][0]["complaint_reference"] == "#80001"
 
 def test_map_markers_and_hotspots():
     res_markers = client.get("/api/v1/map/complaints")

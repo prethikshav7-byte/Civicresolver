@@ -43,12 +43,12 @@ def run_tests():
 
     # 3. Retrieve complaint by reference & timeline
     total += 1
-    c1 = get_complaint("CR-2026-00001")
-    assert c1["complaint_reference"] == "CR-2026-00001"
+    c1 = get_complaint("#80001")
+    assert c1["complaint_reference"] == "#80001"
     assert c1["locality_name"] == "Gandhipuram"
-    tl = get_complaint_timeline("CR-2026-00001")
+    tl = get_complaint_timeline("#80001")
     assert len(tl) >= 3
-    print(f"[PASS] 3. Complaint reference & timeline: ID=CR-2026-00001 in {c1['locality_name']}, {len(tl)} history events", flush=True)
+    print(f"[PASS] 3. Complaint reference & timeline: ID=#80001 in {c1['locality_name']}, {len(tl)} history events", flush=True)
     passed += 1
 
     # 4. Duplicate Check (Near Gandhipuram Bus Stand)
@@ -63,7 +63,7 @@ def run_tests():
     ))
     assert dup_res.has_possible_duplicates is True
     assert dup_res.count >= 1
-    assert dup_res.matches[0].complaint_reference == "CR-2026-00001"
+    assert dup_res.matches[0].complaint_reference == "#80001"
     print(f"[PASS] 4. Proximity duplicate detection: found {dup_res.count} match within {dup_res.matches[0].distance_meters}m", flush=True)
     passed += 1
 
@@ -97,7 +97,7 @@ def run_tests():
         citizen_email="sundaram@test.in"
     ))
     ref = new_c["complaint_reference"]
-    assert ref.startswith("CR-2026-")
+    assert ref.startswith("#8")
 
     # Assign Department
     assign_res = assign_department(

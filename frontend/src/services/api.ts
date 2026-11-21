@@ -12,7 +12,7 @@ const API_BASE = import.meta.env.VITE_API_BASE_URL
 const INITIAL_COIMBATORE_COMPLAINTS: Complaint[] = [
   {
     id: "c-1001",
-    complaint_reference: "CR-2026-00001",
+    complaint_reference: "#80001",
     title: "Deep crater pothole with standing water",
     description: "Dangerous pothole near Gandhipuram Central Bus Stand entry gate. Multiple two-wheelers have skidded during evening hours.",
     category: "Roads",
@@ -42,7 +42,7 @@ const INITIAL_COIMBATORE_COMPLAINTS: Complaint[] = [
   },
   {
     id: "c-1002",
-    complaint_reference: "CR-2026-00002",
+    complaint_reference: "#80002",
     title: "Overflowing community garbage container",
     description: "Commercial waste from nearby eateries overflowing onto DB Road sidewalk for over 36 hours. Stray cattle feeding.",
     category: "Sanitation",
@@ -70,7 +70,7 @@ const INITIAL_COIMBATORE_COMPLAINTS: Complaint[] = [
   },
   {
     id: "c-1003",
-    complaint_reference: "CR-2026-00003",
+    complaint_reference: "#80003",
     title: "Cluster of 5 dead LED streetlights",
     description: "Complete blackout on Avinashi Road service lane near PSG Tech junction creating safety hazard for pedestrians and students.",
     category: "Electrical",
@@ -97,7 +97,7 @@ const INITIAL_COIMBATORE_COMPLAINTS: Complaint[] = [
   },
   {
     id: "c-1004",
-    complaint_reference: "CR-2026-00004",
+    complaint_reference: "#80004",
     title: "High-pressure drinking water main line rupture",
     description: "Massive potable water leakage flooding Trichy Road main carriageway. Clean water gushing continuously into road gutter.",
     category: "Water",
@@ -125,7 +125,7 @@ const INITIAL_COIMBATORE_COMPLAINTS: Complaint[] = [
   },
   {
     id: "c-1005",
-    complaint_reference: "CR-2026-00005",
+    complaint_reference: "#80005",
     title: "Blocked stormwater culvert causing sewage backflow",
     description: "Heavy silt and plastic debris accumulation blocking open canal near Ukkadam Periyakulam, flooding adjacent residential street.",
     category: "Drainage",
@@ -156,7 +156,7 @@ const INITIAL_COIMBATORE_COMPLAINTS: Complaint[] = [
   },
   {
     id: "c-1006",
-    complaint_reference: "CR-2026-00006",
+    complaint_reference: "#80006",
     title: "Fallen banyan tree limb blocking pedestrian jogging loop",
     description: "Large branch snapped during heavy winds, resting across the walkway near Thomas Park. Obstructing senior citizens and joggers.",
     category: "Parks",
@@ -191,7 +191,7 @@ const INITIAL_CIVICPROOF_ITEMS: CivicProofItem[] = [
   {
     id: "proof-1",
     complaint_id: "c-1005",
-    complaint_reference: "CR-2026-00005",
+    complaint_reference: "#80005",
     title: "Monsoon stormwater channel desilting",
     locality_name: "Singanallur",
     ward_number: 55,
@@ -210,7 +210,7 @@ const INITIAL_CIVICPROOF_ITEMS: CivicProofItem[] = [
   {
     id: "proof-2",
     complaint_id: "c-1006",
-    complaint_reference: "CR-2026-00006",
+    complaint_reference: "#80006",
     title: "Broken public park swing set & perimeter fence",
     locality_name: "Race Course",
     ward_number: 72,
@@ -229,7 +229,7 @@ const INITIAL_CIVICPROOF_ITEMS: CivicProofItem[] = [
   {
     id: "proof-3",
     complaint_id: "c-1001",
-    complaint_reference: "CR-2026-00001",
+    complaint_reference: "#80001",
     title: "Deep crater pothole patch repair",
     locality_name: "Gandhipuram",
     ward_number: 70,
@@ -409,7 +409,7 @@ export const CivicApi = {
 
     // Fallback creation
     complaintCounter++;
-    const ref = `CR-2026-${String(complaintCounter).padStart(5, '0')}`;
+    const ref = `#${80000 + complaintCounter}`;
     const newComp: Complaint = {
       id: `c-${Date.now()}`,
       complaint_reference: ref,
@@ -946,7 +946,7 @@ export const CivicApi = {
     const lower = message.toLowerCase();
     if (lower.includes('track') || lower.includes('reference')) {
       return {
-        reply: "To track a grievance, enter your reference number (such as CR-2026-00001 or CR-2026-80019) on the Track Issue page. The system details the full chronological history from Reported to Resolved with before/after audit photos.",
+        reply: "To track a grievance, enter your ticket number (such as #80001 or #80019) on the Track Issue page. The system details the full chronological history from Reported to Resolved with before/after audit photos.",
         suggested_questions: ["What are the resolution SLAs?", "How does CivicProof voting work?", "Which department handles potholes?"]
       };
     }
@@ -957,7 +957,7 @@ export const CivicApi = {
       };
     }
     return {
-      reply: `CivicResolve Assistant (${role.toUpperCase()} mode): How can I assist you with municipal operations, GIS mapping, or resolution auditing in Coimbatore today?`,
+      reply: `CivicResolver Assistant (${role.toUpperCase()} mode): How can I assist you with municipal operations, GIS mapping, or resolution auditing in Coimbatore today?`,
       suggested_questions: ["How do I report a grievance?", "What are the standard resolution SLAs?", "How does CivicProof verify repairs?"]
     };
   }

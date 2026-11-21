@@ -42,7 +42,7 @@ def get_current_profile(role: str = "citizen"):
 @router.get("/roles")
 def get_available_roles():
     return [
-        {"role": "citizen", "label": "Citizen (Priya Sundaram)", "desc": "Report issues, follow CR-2026 progress"},
+        {"role": "citizen", "label": "Citizen (Priya Sundaram)", "desc": "Report issues, follow grievance progress"},
         {"role": "admin", "label": "Administrator (Commissioner Anand Ramanathan)", "desc": "Assign departments, manage triage"},
         {"role": "officer", "label": "Department Officer (Er. Vigneshwaran K.)", "desc": "Update status, upload resolution proof"}
     ]

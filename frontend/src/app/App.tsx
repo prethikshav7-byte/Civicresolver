@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { LanguageProvider } from '../i18n/translations';
 import { Header } from '../components/common/Header';
 import { Footer } from '../components/common/Footer';
 import { LandingPage } from '../pages/public/LandingPage';
@@ -18,49 +19,45 @@ import { CivicAiAssistant } from '../components/chat/CivicAiAssistant';
 export const App: React.FC = () => {
   const [currentRole, setCurrentRole] = useState<'citizen' | 'admin' | 'officer'>('citizen');
   const [highContrast, setHighContrast] = useState(false);
-  const [fontScale, setFontScale] = useState(false);
-  const [language, setLanguage] = useState('en');
 
   return (
-    <BrowserRouter>
-      <div className={`min-h-screen flex flex-col font-sans transition-colors duration-150 ${
-        highContrast ? 'high-contrast bg-black text-white' : 'bg-[#F8FAFC] text-slate-800'
-      } ${fontScale ? 'font-scale-lg' : ''}`}>
-        
-        <Header 
-          currentRole={currentRole} 
-          onRoleChange={(role) => setCurrentRole(role)}
-          highContrast={highContrast}
-          onToggleHighContrast={() => setHighContrast(!highContrast)}
-          fontScale={fontScale}
-          onToggleFontScale={() => setFontScale(!fontScale)}
-          language={language}
-          onLanguageChange={(l) => setLanguage(l)}
-        />
+    <LanguageProvider>
+      <BrowserRouter>
+        <div className={`min-h-screen flex flex-col font-sans transition-colors duration-150 ${
+          highContrast ? 'high-contrast bg-black text-white' : 'bg-[#F8FAFC] text-slate-800'
+        }`}>
+          
+          <Header 
+            currentRole={currentRole} 
+            onRoleChange={(role) => setCurrentRole(role)}
+            highContrast={highContrast}
+            onToggleHighContrast={() => setHighContrast(!highContrast)}
+          />
 
-        <main className="flex-1">
-          <Routes>
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/map" element={<LiveMapPage />} />
-            <Route path="/report" element={<ReportComplaintPage />} />
-            <Route path="/track" element={<TrackComplaintPage />} />
-            <Route path="/dashboard" element={<CitizenDashboard />} />
-            <Route path="/proof" element={<CivicProofPage />} />
-            <Route path="/pulse" element={<CivicPulsePage />} />
-            <Route path="/officer" element={<OfficerPortalPage />} />
-            <Route path="/analytics" element={<CivicAnalyticsPage />} />
-            <Route path="/admin" element={<AdminDashboard />} />
-            <Route path="/commissioner" element={<AdminDashboard />} />
-            <Route path="/auth" element={<AuthPage onLogin={(role) => setCurrentRole(role)} />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </main>
+          <main className="flex-1">
+            <Routes>
+              <Route path="/" element={<LandingPage />} />
+              <Route path="/map" element={<LiveMapPage />} />
+              <Route path="/report" element={<ReportComplaintPage />} />
+              <Route path="/track" element={<TrackComplaintPage />} />
+              <Route path="/dashboard" element={<CitizenDashboard />} />
+              <Route path="/proof" element={<CivicProofPage />} />
+              <Route path="/pulse" element={<CivicPulsePage />} />
+              <Route path="/officer" element={<OfficerPortalPage />} />
+              <Route path="/analytics" element={<CivicAnalyticsPage />} />
+              <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="/commissioner" element={<AdminDashboard />} />
+              <Route path="/auth" element={<AuthPage onLogin={(role) => setCurrentRole(role)} />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </main>
 
-        <Footer />
+          <Footer />
 
-        {/* Global Persistent Civic AI Assistant (Zero emojis, role-tailored) */}
-        <CivicAiAssistant currentRole={currentRole} />
-      </div>
-    </BrowserRouter>
+          {/* Global Persistent Civic AI Assistant */}
+          <CivicAiAssistant currentRole={currentRole} />
+        </div>
+      </BrowserRouter>
+    </LanguageProvider>
   );
 };

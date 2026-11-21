@@ -259,14 +259,14 @@ Location: {req.address or 'Coimbatore'}
             try:
                 from google import genai
                 client = genai.Client(api_key=api_key)
-                system_instruction = f"""You are the official CivicResolve Municipal Intelligence Assistant for Coimbatore City Municipal Corporation.
+                system_instruction = f"""You are the official CivicResolver Municipal Intelligence Assistant for Coimbatore City Municipal Corporation.
 Role context: {role.upper()}.
 Guidelines:
 1. Provide accurate, professional, concise answers about municipal grievances, department routing, SLAs, GIS mapping, and resolution verification in Coimbatore.
 2. NEVER use any emoji characters anywhere in your reply.
 3. Be respectful, authoritative, and direct.
-4. If asked about reporting, explain the Report Issue interface, GPS detection, and automated AI scoring.
-5. If asked about tracking, explain reference format (CR-2026-XXXXX) and the 5-stage lifecycle.
+4. If asked about reporting, explain the Report Issue interface, GPS detection, and automated scoring.
+5. If asked about tracking, explain ticket numbers (such as #80001, #80019) and the 5-stage lifecycle.
 6. If asked about verification, explain CivicProof community auditing with before/after photos.
 7. If asked about predictive radar, explain CivicPulse Poisson spatio-temporal modeling."""
 
@@ -329,9 +329,9 @@ Guidelines:
                 "Which department handles broken streetlights?"
             ]
             if "report" in user_msg or "file" in user_msg or "submit" in user_msg:
-                reply = "To report a civic grievance, open the Report Issue tab. Enter the detailed problem description in English or Tamil, select the location or use the GPS button, and attach optional photos. Our AI engine triages the category and assigns a reference ID (CR-2026-XXXXX)."
+                reply = "To report a civic grievance, open the Report Issue tab. Enter the detailed problem description in English, Tamil, or Hindi, select the location or use the GPS button, and attach optional photos. The triage engine assigns a ticket ID (such as #80019)."
             elif "track" in user_msg or "reference" in user_msg or "status" in user_msg:
-                reply = "You can track any grievance by entering its reference ID (e.g. CR-2026-00001) in the Track Issue section. The five-stage municipal lifecycle is: Reported -> Under Review -> Assigned -> In Progress -> Resolved, accompanied by verifiable audit timestamps."
+                reply = "You can track any grievance by entering its ticket ID (e.g. #80001) in the Track Issue section. The five-stage municipal lifecycle is: Reported -> Under Review -> Assigned -> In Progress -> Resolved, accompanied by verifiable audit timestamps."
             elif "sla" in user_msg or "time" in user_msg or "long" in user_msg:
                 reply = "Resolution SLA benchmarks: Critical hazards (live exposed wires, main water bursts) are addressed within 4 to 12 hours. Carriageway potholes and overflowing waste bins are targeted within 24 to 48 hours. General maintenance is scheduled within 7 days."
             elif "proof" in user_msg or "audit" in user_msg or "verify" in user_msg:
@@ -339,6 +339,6 @@ Guidelines:
             elif "department" in user_msg or "who" in user_msg:
                 reply = "Coimbatore Municipal Corporation departments: Roads & Highways (potholes, cave-ins), Sanitation & Solid Waste (garbage, dumping), Electrical (streetlights, live cables), Water Supply (pipe leaks, supply disruption), Stormwater Drainage (flooding, silted channels), and Parks & Horticulture."
             else:
-                reply = "Welcome to CivicResolve Coimbatore Citizen Support. You can report infrastructure problems, track grievance status with reference IDs, inspect live GIS maps, and audit repairs on CivicProof."
+                reply = "Welcome to CivicResolver Coimbatore Citizen Support. You can report infrastructure problems, track grievance status with ticket numbers, inspect live GIS maps, and audit repairs on CivicProof."
 
         return AIChatResponse(reply=reply, role=role, suggested_questions=suggested)

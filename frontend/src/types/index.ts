@@ -182,6 +182,7 @@ export interface HotspotItem {
 // ==========================================
 export type CivicProofStatus = 
   | 'Community Verified' 
+  | 'Community Confirmed'
   | 'Awaiting Community Verification' 
   | 'Disputed / Escalated' 
   | 'Reopened for Reinspection';
@@ -192,14 +193,18 @@ export interface CivicProofItem {
   complaint_reference: string;
   title: string;
   locality_name: string;
+  locality?: string;
   ward_number: number;
   department_name: string;
   assigned_officer_name: string;
+  officer_name?: string;
+  category?: string;
   resolved_at: string;
   before_image_url: string;
   after_image_url: string;
   rectification_summary: string;
   ai_vision_assessment?: string;
+  ai_vision_confidence?: number;
   votes_resolved: number;
   votes_partial: number;
   votes_still_exists: number;

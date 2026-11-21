@@ -63,7 +63,7 @@ class ComplaintService:
     @staticmethod
     def create_complaint(data: ComplaintCreate, user_id: Optional[str] = None) -> Dict[str, Any]:
         local_store.counter += 1
-        ref_id = f"CR-2026-{local_store.counter:05d}"
+        ref_id = f"#{80000 + local_store.counter}"
         now_str = datetime.utcnow().isoformat()
         
         # Default department routing based on category

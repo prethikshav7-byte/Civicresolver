@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ShieldCheck, UserCheck, Lock, Mail, ArrowRight, User } from 'lucide-react';
+import { useNavigate, Link } from 'react-router-dom';
+import { MapPin, ShieldAlert, CheckCircle2, Compass, ArrowRight, User, ShieldCheck } from 'lucide-react';
+import { useTranslation } from '../../i18n/translations';
 
 interface AuthPageProps {
   onLogin: (role: 'citizen' | 'admin' | 'officer') => void;
@@ -8,148 +9,288 @@ interface AuthPageProps {
 
 export const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
   const navigate = useNavigate();
-  const [isLogin, setIsLogin] = useState(true);
+  const { t } = useTranslation();
+  const [activeTab, setActiveTab] = useState<'citizen' | 'admin'>('citizen');
+  const [isRegister, setIsRegister] = useState(true);
+  const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
-  const personas = [
-    {
-      role: 'citizen' as const,
-      name: 'Priya Sundaram',
-      title: 'Citizen (Ward 70, Gandhipuram)',
-      desc: 'Report civic issues, endorse nearby reports, and follow live progress.'
-    },
-    {
-      role: 'admin' as const,
-      name: 'Dr. Anand Ramanathan, IAS',
-      title: 'Municipal Commissioner (Coimbatore)',
-      desc: 'Zonal triage, departmental workload management, and resolution audit.'
-    },
-    {
-      role: 'officer' as const,
-      name: 'Er. Vigneshwaran K.',
-      title: 'Executive Engineer (Roads Dept)',
-      desc: 'Field verification, dispatch crews, and upload resolution proof.'
-    }
-  ];
-
-  const handlePersonaSelect = (role: 'citizen' | 'admin' | 'officer') => {
-    onLogin(role);
-    if (role === 'admin') navigate('/admin');
-    else if (role === 'citizen') navigate('/dashboard');
-    else navigate('/admin');
-  };
+  const [mobile, setMobile] = useState('');
+  const [zone, setZone] = useState('East');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onLogin('citizen');
-    navigate('/dashboard');
+    if (activeTab === 'admin') {
+      onLogin('admin');
+      navigate('/admin');
+    } else {
+      onLogin('citizen');
+      navigate('/dashboard');
+    }
   };
 
   return (
-    <div className="max-w-lg mx-auto px-4 py-12 space-y-8">
-      {/* Header */}
-      <div className="text-center space-y-2">
-        <div className="w-12 h-12 rounded-xl bg-civic-brand text-white flex items-center justify-center mx-auto shadow-sm">
-          <ShieldCheck className="w-6 h-6" />
-        </div>
-        <h1 className="text-2xl font-display font-extrabold text-civic-text tracking-tight">
-          {isLogin ? 'Sign in to CivicResolve' : 'Create Citizen Profile'}
-        </h1>
-        <p className="text-xs text-civic-muted">
-          Access verified municipal grievance tracking in Coimbatore
-        </p>
-      </div>
+    <div className="relative min-h-[calc(100vh-80px)] w-full overflow-hidden flex flex-col justify-between bg-[#DCF2E4] font-sans">
+      
+      {/* Cadastral Polygon Map Background (matching Image 4) */}
+      <div className="absolute inset-0 z-0 pointer-events-none opacity-90 overflow-hidden">
+        {/* Hexagonal cadastral mesh */}
+        <svg className="w-full h-full object-cover" viewBox="0 0 1200 800" preserveAspectRatio="none">
+          <defs>
+            <pattern id="hex-grid" width="120" height="104" patternUnits="userSpaceOnUse">
+              <path d="M60 0 L120 34.6 L120 104 L60 69.3 L0 104 L0 34.6 Z" fill="none" stroke="#C2E5D0" strokeWidth="2.5" />
+            </pattern>
+            <pattern id="road-dashes" width="400" height="400" patternUnits="userSpaceOnUse">
+              <path d="M -50,150 Q 200,80 450,220" fill="none" stroke="#FFFFFF" strokeWidth="8" strokeDasharray="14 10" opacity="0.85" />
+              <path d="M 120,-50 Q 180,200 140,450" fill="none" stroke="#FFFFFF" strokeWidth="8" strokeDasharray="14 10" opacity="0.85" />
+              <path d="M 280,-50 Q 340,180 300,450" fill="none" stroke="#FFFFFF" strokeWidth="6" strokeDasharray="12 8" opacity="0.75" />
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="#E3F4EA" />
+          <rect width="100%" height="100%" fill="url(#hex-grid)" opacity="0.7" />
+          <rect width="100%" height="100%" fill="url(#road-dashes)" />
+        </svg>
 
-      {/* One-Click Persona Test Switcher for Judging & Evaluation */}
-      <div className="bg-civic-surface border border-civic-brand/20 rounded-2xl p-5 shadow-panel space-y-3">
-        <div className="border-b border-civic-border pb-2">
-          <span className="text-[11px] font-semibold text-civic-brand uppercase tracking-wider block">
-            Demo Evaluation Personas
+        {/* Cadastral Location Pin Labels (from Image 4) */}
+        {/* Pin 1: Drain blocked */}
+        <div className="absolute top-[48%] left-[7%] sm:left-[14%] flex items-center gap-2 transform -translate-y-1/2">
+          <div className="w-8 h-8 rounded-full bg-[#E07A1E] text-white flex items-center justify-center shadow-md">
+            <MapPin className="w-5 h-5 fill-current" />
+          </div>
+          <span className="bg-white/95 backdrop-blur-xs border border-slate-200 text-slate-800 text-[11px] font-bold px-2.5 py-1 rounded-md shadow-xs">
+            Drain blocked • High
           </span>
-          <p className="text-[10px] text-civic-muted">
-            Instant 1-click access to test all role-based experiences
-          </p>
         </div>
 
-        <div className="space-y-2">
-          {personas.map((p) => (
-            <button
-              key={p.role}
-              type="button"
-              onClick={() => handlePersonaSelect(p.role)}
-              className="w-full text-left p-3 rounded-xl bg-civic-bg hover:bg-civic-soft border border-civic-border transition flex items-center justify-between group"
-            >
-              <div>
-                <span className="font-semibold text-xs text-civic-text group-hover:text-civic-brand block">
-                  {p.name}
-                </span>
-                <span className="text-[10px] text-civic-brand font-medium block">
-                  {p.title}
-                </span>
-                <span className="text-[10px] text-civic-muted block mt-0.5">
-                  {p.desc}
-                </span>
-              </div>
-              <ArrowRight className="w-4 h-4 text-civic-muted group-hover:text-civic-brand shrink-0" />
-            </button>
-          ))}
+        {/* Pin 2: Water leakage */}
+        <div className="absolute top-[58%] left-[5%] sm:left-[11%] flex items-center gap-2">
+          <div className="w-8 h-8 rounded-full bg-[#E07A1E] text-white flex items-center justify-center shadow-md">
+            <MapPin className="w-5 h-5 fill-current" />
+          </div>
+          <span className="bg-white/95 backdrop-blur-xs border border-slate-200 text-slate-800 text-[11px] font-bold px-2.5 py-1 rounded-md shadow-xs">
+            Water leakage • High
+          </span>
+        </div>
+
+        {/* Pin 3: Water leakage Right side */}
+        <div className="absolute top-[28%] right-[8%] sm:right-[15%] hidden md:flex items-center gap-2">
+          <div className="w-8 h-8 rounded-full bg-[#E07A1E] text-white flex items-center justify-center shadow-md">
+            <MapPin className="w-5 h-5 fill-current" />
+          </div>
+          <span className="bg-white/95 backdrop-blur-xs border border-slate-200 text-slate-800 text-[11px] font-bold px-2.5 py-1 rounded-md shadow-xs">
+            Water leakage • High
+          </span>
+        </div>
+
+        {/* Pin 4: Resolved green pin */}
+        <div className="absolute top-[22%] right-[4%] sm:right-[9%] hidden md:flex items-center gap-2">
+          <div className="w-9 h-9 rounded-full bg-[#167A4D] text-white flex items-center justify-center shadow-md">
+            <CheckCircle2 className="w-5 h-5" />
+          </div>
         </div>
       </div>
 
-      {/* Standard Form */}
-      <form onSubmit={handleSubmit} className="bg-civic-surface border border-civic-border rounded-2xl p-6 shadow-card space-y-4">
-        <div>
-          <label className="block text-xs font-semibold text-civic-text uppercase tracking-wider mb-1.5">
-            Email Address
-          </label>
-          <div className="relative">
-            <Mail className="w-4 h-4 absolute left-3 top-3 text-civic-muted" />
-            <input
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="name@example.com"
-              className="w-full pl-9 pr-3 py-2 bg-civic-bg border border-civic-border rounded-lg text-xs text-civic-text focus:outline-none focus:border-civic-brand"
-            />
+      {/* Main Centered Card matching Image 4 */}
+      <div className="relative z-10 max-w-md w-full mx-auto px-4 py-8 sm:py-12 flex-1 flex flex-col justify-center">
+        <div className="bg-white/98 rounded-3xl p-6 sm:p-8 shadow-2xl border border-white/60 backdrop-blur-md">
+          
+          {/* Citizen / Admin Pill Switcher */}
+          <div className="grid grid-cols-2 p-1 bg-slate-100 rounded-2xl mb-6">
+            <button
+              type="button"
+              onClick={() => setActiveTab('citizen')}
+              className={`py-2 rounded-xl text-xs font-bold transition ${
+                activeTab === 'citizen'
+                  ? 'bg-white text-slate-900 shadow-xs'
+                  : 'text-slate-500 hover:text-slate-800'
+              }`}
+            >
+              {t.authTabCitizen}
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab('admin')}
+              className={`py-2 rounded-xl text-xs font-bold transition ${
+                activeTab === 'admin'
+                  ? 'bg-[#12382C] text-white shadow-xs'
+                  : 'text-slate-500 hover:text-slate-800'
+              }`}
+            >
+              {t.authTabAdmin}
+            </button>
+          </div>
+
+          {/* Heading & Subtitle */}
+          <div className="mb-6">
+            <h1 className="text-2xl font-black tracking-tight text-slate-900 leading-tight">
+              {activeTab === 'admin'
+                ? 'Municipal Officer & Admin Login'
+                : isRegister 
+                  ? t.authTitleCreate 
+                  : t.authTitleLogin
+              }
+            </h1>
+            <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+              {activeTab === 'admin'
+                ? 'Authoritative dispatch, dispute review and zonal telemetry.'
+                : t.authSubtitle
+              }
+            </p>
+          </div>
+
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {activeTab === 'citizen' && isRegister && (
+              <div>
+                <label className="block text-xs font-bold text-slate-800 mb-1">
+                  {t.authFullName}
+                </label>
+                <input
+                  type="text"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  placeholder={t.authFullNamePlaceholder}
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#167A4D] transition"
+                />
+              </div>
+            )}
+
+            <div>
+              <label className="block text-xs font-bold text-slate-800 mb-1">
+                {t.authEmail}
+              </label>
+              <input
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder={t.authEmailPlaceholder}
+                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#167A4D] transition"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-slate-800 mb-1">
+                {t.authPassword}
+              </label>
+              <input
+                type="password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder={t.authPasswordPlaceholder}
+                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#167A4D] transition"
+              />
+            </div>
+
+            {activeTab === 'citizen' && isRegister && (
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-bold text-slate-800 mb-1">
+                    {t.authMobile}
+                  </label>
+                  <input
+                    type="tel"
+                    value={mobile}
+                    onChange={(e) => setMobile(e.target.value)}
+                    placeholder="+91 98765 43210"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#167A4D] transition"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-800 mb-1">
+                    {t.authZone}
+                  </label>
+                  <select
+                    value={zone}
+                    onChange={(e) => setZone(e.target.value)}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#167A4D] transition cursor-pointer"
+                  >
+                    <option value="East">East Zone</option>
+                    <option value="West">West Zone</option>
+                    <option value="North">North Zone</option>
+                    <option value="South">South Zone</option>
+                    <option value="Central">Central Zone</option>
+                  </select>
+                </div>
+              </div>
+            )}
+
+            <button
+              type="submit"
+              className="w-full py-3 rounded-2xl bg-[#167A4D] hover:bg-[#12603C] text-white text-xs font-bold transition shadow-md hover:shadow-lg mt-2"
+            >
+              {isRegister ? t.authCreateBtn : t.authLoginBtn}
+            </button>
+
+            <div className="text-center pt-2">
+              <button
+                type="button"
+                onClick={() => setIsRegister(!isRegister)}
+                className="text-xs font-medium text-slate-600 hover:text-[#167A4D] transition"
+              >
+                {isRegister ? t.authAlreadyRegistered : t.authDontHaveAccount}
+              </button>
+            </div>
+          </form>
+
+          {/* Quick Demo Evaluation Persona Shortcut */}
+          <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
+            <span>Demo Quick Access:</span>
+            <div className="flex gap-2">
+              <button 
+                type="button" 
+                onClick={() => { onLogin('citizen'); navigate('/dashboard'); }}
+                className="text-[#167A4D] font-bold hover:underline"
+              >
+                Citizen
+              </button>
+              <span>·</span>
+              <button 
+                type="button" 
+                onClick={() => { onLogin('officer'); navigate('/officer'); }}
+                className="text-slate-700 font-bold hover:underline"
+              >
+                Officer
+              </button>
+              <span>·</span>
+              <button 
+                type="button" 
+                onClick={() => { onLogin('admin'); navigate('/admin'); }}
+                className="text-[#12382C] font-bold hover:underline"
+              >
+                Admin
+              </button>
+            </div>
           </div>
         </div>
+      </div>
 
-        <div>
-          <label className="block text-xs font-semibold text-civic-text uppercase tracking-wider mb-1.5">
-            Password
-          </label>
-          <div className="relative">
-            <Lock className="w-4 h-4 absolute left-3 top-3 text-civic-muted" />
-            <input
-              type="password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              className="w-full pl-9 pr-3 py-2 bg-civic-bg border border-civic-border rounded-lg text-xs text-civic-text focus:outline-none focus:border-civic-brand"
-            />
-          </div>
-        </div>
-
-        <button
-          type="submit"
-          className="w-full py-2.5 rounded-lg bg-civic-brand text-white font-semibold text-xs hover:bg-civic-brand-hover transition shadow-sm mt-2"
-        >
-          {isLogin ? 'Sign In' : 'Create Account'}
-        </button>
-
-        <div className="text-center pt-2">
-          <button
-            type="button"
-            onClick={() => setIsLogin(!isLogin)}
-            className="text-xs text-civic-brand hover:underline"
+      {/* Bottom Floating Navigation Pill (Exact match to Image 4) */}
+      <div className="relative z-10 pb-6 flex justify-center">
+        <div className="bg-[#12382C] text-white rounded-full p-1.5 flex items-center gap-1 shadow-xl border border-emerald-900/40">
+          <Link
+            to="/map"
+            className="px-4 py-1.5 rounded-full bg-[#167A4D] text-white text-xs font-bold transition hover:bg-[#198d5a]"
           >
-            {isLogin ? "Don't have an account? Sign up" : 'Already registered? Sign in'}
-          </button>
+            {t.pillGisMap}
+          </Link>
+          <Link
+            to="/report"
+            className="px-4 py-1.5 rounded-full text-emerald-100 hover:text-white text-xs font-medium transition"
+          >
+            {t.pillAiPipeline}
+          </Link>
+          <Link
+            to="/dashboard"
+            className="px-4 py-1.5 rounded-full text-emerald-100 hover:text-white text-xs font-medium transition"
+          >
+            {t.pillDashboard}
+          </Link>
         </div>
-      </form>
+      </div>
+
     </div>
   );
 };

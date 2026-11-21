@@ -1,34 +1,36 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { 
-  LayoutDashboard, Search, Filter, ShieldAlert, CheckCircle2, 
-  Clock, AlertTriangle, Building2, User, Eye, Check, X, ArrowUpDown,
-  Download, ShieldCheck, BrainCircuit, Briefcase 
+  ShieldCheck, Search, Filter, ShieldAlert, CheckCircle2, 
+  Clock, AlertTriangle, Building2, User, Eye, Check, X,
+  Download, BrainCircuit, Briefcase, Compass, MapPin
 } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { CivicApi } from '../../services/api';
 import { Complaint, AdminStats } from '../../types';
+import { useTranslation } from '../../i18n/translations';
 
 const CATEGORY_COLORS: Record<string, string> = {
-  Roads: '#D9534F',
-  Sanitation: '#5B9A5B',
-  Electrical: '#E0A526',
-  Water: '#3B82C4',
-  Drainage: '#8A63C9',
-  Parks: '#2F8F83',
-  Other: '#68736E'
+  Roads: '#DC2626',
+  Sanitation: '#16A34A',
+  Electrical: '#D97706',
+  Water: '#2563EB',
+  Drainage: '#7C3AED',
+  Parks: '#059669',
+  Other: '#64748B'
 };
 
 const DEPARTMENTS = [
-  'Roads Department',
-  'Sanitation Department',
-  'Electrical Department',
-  'Water Supply Department',
-  'Drainage Department',
+  'Roads & Highways',
+  'Sanitation & Waste Management',
+  'Electrical & Street Lighting',
+  'Water Supply & Sewerage',
+  'Drainage & Flood Control',
   'Parks & Horticulture'
 ];
 
 export const AdminDashboard: React.FC = () => {
+  const { t, language } = useTranslation();
   const [complaints, setComplaints] = useState<Complaint[]>([]);
   const [stats, setStats] = useState<AdminStats | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -59,7 +61,6 @@ export const AdminDashboard: React.FC = () => {
     loadAdminData();
   }, []);
 
-  // Filter complaints
   const filtered = complaints.filter(c => {
     const matchCat = categoryFilter === 'All' || c.category === categoryFilter;
     const matchStatus = statusFilter === 'All' || c.status === statusFilter;
@@ -71,13 +72,11 @@ export const AdminDashboard: React.FC = () => {
     return matchCat && matchStatus && matchPriority && matchSearch;
   });
 
-  // Calculate Chart Data
   const categoryCounts = ['Roads', 'Sanitation', 'Electrical', 'Water', 'Drainage', 'Parks'].map(cat => ({
     name: cat,
     count: complaints.filter(c => c.category === cat).length
   }));
 
-  // Handle Department Assignment
   const handleAssignSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!assignModalComplaint) return;
@@ -92,7 +91,6 @@ export const AdminDashboard: React.FC = () => {
     await loadAdminData();
   };
 
-  // Handle Resolution
   const handleResolveSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!resolveModalComplaint || !resolutionNotes.trim()) return;
@@ -111,116 +109,170 @@ export const AdminDashboard: React.FC = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-      {/* Title & Quick Actions */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white border border-civic-border rounded-2xl p-6 shadow-sm">
-        <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-civic-primary text-xs font-semibold mb-2 border border-blue-200">
-            <LayoutDashboard className="w-3.5 h-3.5" />
-            <span>Coimbatore City Municipal Corporation</span>
-          </div>
-          <h1 className="text-2xl sm:text-3xl font-display font-extrabold text-civic-text tracking-tight">
-            Municipal Command & Control Room
-          </h1>
-          <p className="text-xs text-civic-muted mt-1 max-w-xl">
-            Authoritative department triage, field squad dispatch, CivicProof community dispute audits, and non-PII compliance export.
-          </p>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 font-sans">
+      
+      {/* 1. DISTINCT EXECUTIVE COMMAND BAR: Deep Forest Green (#12382C) */}
+      <div className="bg-[#12382C] text-white rounded-3xl p-6 sm:p-8 shadow-xl border border-emerald-950">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+          
+          <div className="space-y-2">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-900/60 text-emerald-300 text-xs font-bold border border-emerald-700/50">
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+              <span>{t.adminBadge}</span>
+              <span className="text-emerald-400">·</span>
+              <span>Coimbatore City Corporation</span>
+            </div>
 
-          {/* Quick Sub-System Navigation Pills */}
-          <div className="flex items-center gap-2 mt-4 flex-wrap">
-            <Link
-              to="/officer"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-civic-bg text-civic-text text-xs font-semibold hover:bg-slate-200 border border-civic-border transition shadow-xs"
-            >
-              <Briefcase className="w-3.5 h-3.5 text-civic-primary" />
-              <span>Officer Execution Queue</span>
-            </Link>
+            <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
+              {t.adminTitle}
+            </h1>
 
-            <Link
-              to="/proof"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-civic-bg text-civic-text text-xs font-semibold hover:bg-slate-200 border border-civic-border transition shadow-xs"
-            >
-              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-              <span>CivicProof Audits</span>
-            </Link>
+            <p className="text-xs sm:text-sm text-emerald-100/80 max-w-xl leading-relaxed">
+              {t.adminSubtitle}
+            </p>
 
-            <Link
-              to="/pulse"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-civic-bg text-civic-text text-xs font-semibold hover:bg-slate-200 border border-civic-border transition shadow-xs"
-            >
-              <BrainCircuit className="w-3.5 h-3.5 text-civic-primary" />
-              <span>CivicPulse Radar</span>
-            </Link>
-          </div>
-        </div>
+            {/* Quick Command Navigation Tabs */}
+            <div className="flex items-center gap-2 pt-2 flex-wrap">
+              <span className="px-3 py-1.5 rounded-xl bg-[#167A4D] text-white text-xs font-bold shadow-xs">
+                Command Console
+              </span>
 
-        {/* Right Admin Controls */}
-        <div className="flex flex-col items-start md:items-end gap-3 shrink-0">
-          <div className="p-2.5 rounded-xl bg-civic-bg border border-civic-border text-xs flex items-center gap-3">
-            <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-            <div className="text-left md:text-right">
-              <span className="font-bold text-civic-text block">Dr. Anand Ramanathan, IAS</span>
-              <span className="text-[10px] text-civic-muted">Municipal Commissioner • Active Session</span>
+              <Link
+                to="/officer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-900/50 hover:bg-emerald-900 text-emerald-200 text-xs font-semibold transition"
+              >
+                <Briefcase className="w-3.5 h-3.5" />
+                <span>Officer Execution</span>
+              </Link>
+
+              <Link
+                to="/proof"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-900/50 hover:bg-emerald-900 text-emerald-200 text-xs font-semibold transition"
+              >
+                <ShieldCheck className="w-3.5 h-3.5" />
+                <span>CivicProof Audits</span>
+              </Link>
+
+              <Link
+                to="/pulse"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-900/50 hover:bg-emerald-900 text-emerald-200 text-xs font-semibold transition"
+              >
+                <BrainCircuit className="w-3.5 h-3.5" />
+                <span>CivicPulse Radar</span>
+              </Link>
+
+              <Link
+                to="/map"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-900/50 hover:bg-emerald-900 text-emerald-200 text-xs font-semibold transition"
+              >
+                <MapPin className="w-3.5 h-3.5" />
+                <span>Live GIS</span>
+              </Link>
             </div>
           </div>
 
-          <button
-            onClick={handleExportCsv}
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-civic-primary hover:bg-civic-primary-hover text-white text-xs font-bold transition shadow-sm"
-            title="Download sanitized non-PII audit report in CSV format"
-          >
-            <Download className="w-4 h-4" />
-            <span>Export Non-PII Audit CSV</span>
-          </button>
+          {/* Right Commissioner Badge & Audit Download */}
+          <div className="flex flex-col items-start md:items-end gap-3 shrink-0">
+            <div className="p-3 rounded-2xl bg-emerald-950/70 border border-emerald-800/40 text-xs flex items-center gap-3">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
+              <div>
+                <span className="font-bold text-white block">Dr. Anand Ramanathan, IAS</span>
+                <span className="text-[10px] text-emerald-300">Municipal Commissioner • Active Session</span>
+              </div>
+            </div>
+
+            <button
+              onClick={handleExportCsv}
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#167A4D] hover:bg-[#12603C] text-white text-xs font-bold transition shadow-md"
+            >
+              <Download className="w-4 h-4" />
+              <span>{t.exportCsvBtn}</span>
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* KPI Metric Summary Cards */}
+      {/* 2. EXECUTIVE METRICS GRID (matching ArcGIS municipal dashboard) */}
       {stats && (
-        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-4">
-          <div className="bg-civic-surface p-4 rounded-xl border border-civic-border shadow-xs">
-            <span className="text-[10px] font-semibold uppercase tracking-wider text-civic-muted block">Total Filed</span>
-            <span className="font-display font-bold text-2xl text-civic-text mt-1 block">{stats.total_complaints}</span>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+          <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block">
+              {t.totalGrievances}
+            </span>
+            <span className="font-black text-2xl text-slate-900 mt-1 block">
+              {stats.total_complaints.toLocaleString()}
+            </span>
           </div>
-          <div className="bg-civic-surface p-4 rounded-xl border border-civic-border shadow-xs">
-            <span className="text-[10px] font-semibold uppercase tracking-wider text-civic-muted block">New Reported</span>
-            <span className="font-display font-bold text-2xl text-amber-600 mt-1 block">{stats.new_reported}</span>
+
+          <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block">
+              {t.inProgressCount}
+            </span>
+            <span className="font-black text-2xl text-blue-600 mt-1 block">
+              {stats.in_progress}
+            </span>
           </div>
-          <div className="bg-civic-surface p-4 rounded-xl border border-civic-border shadow-xs">
-            <span className="text-[10px] font-semibold uppercase tracking-wider text-civic-muted block">In Progress</span>
-            <span className="font-display font-bold text-2xl text-blue-600 mt-1 block">{stats.in_progress}</span>
+
+          <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block">
+              {t.resolvedCount}
+            </span>
+            <span className="font-black text-2xl text-[#167A4D] mt-1 block">
+              {stats.resolved}
+            </span>
           </div>
-          <div className="bg-civic-surface p-4 rounded-xl border border-civic-border shadow-xs">
-            <span className="text-[10px] font-semibold uppercase tracking-wider text-civic-muted block">Resolved</span>
-            <span className="font-display font-bold text-2xl text-civic-resolved mt-1 block">{stats.resolved}</span>
+
+          <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block">
+              {t.criticalUrgency}
+            </span>
+            <span className="font-black text-2xl text-red-600 mt-1 block">
+              {stats.critical_count}
+            </span>
           </div>
-          <div className="bg-civic-surface p-4 rounded-xl border border-civic-border shadow-xs">
-            <span className="text-[10px] font-semibold uppercase tracking-wider text-civic-muted block">Critical Urgency</span>
-            <span className="font-display font-bold text-2xl text-civic-critical mt-1 block">{stats.critical_count}</span>
+
+          <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block">
+              {t.resolutionRate}
+            </span>
+            <span className="font-black text-2xl text-[#167A4D] mt-1 block">
+              {stats.resolution_rate_percent}%
+            </span>
           </div>
-          <div className="bg-civic-surface p-4 rounded-xl border border-civic-border shadow-xs">
-            <span className="text-[10px] font-semibold uppercase tracking-wider text-civic-muted block">Resolution Rate</span>
-            <span className="font-display font-bold text-2xl text-civic-brand mt-1 block">{stats.resolution_rate_percent}%</span>
+
+          <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block">
+              Active Wards
+            </span>
+            <span className="font-black text-2xl text-slate-900 mt-1 block">
+              100 Wards
+            </span>
           </div>
         </div>
       )}
 
-      {/* Category Chart Section */}
-      <div className="bg-civic-surface border border-civic-border rounded-xl p-5 shadow-card space-y-4">
-        <h3 className="font-display font-bold text-sm text-civic-text">
-          Grievance Distribution Across Departments (Coimbatore Corporation)
-        </h3>
+      {/* 3. DEPARTMENT WORKLOAD DISTRIBUTION CHART */}
+      <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-xs space-y-4">
+        <div className="flex items-center justify-between">
+          <h3 className="font-extrabold text-sm text-slate-900">
+            {language === 'ta' ? 'துறை வாரியாக நிலுவையில் உள்ள குறைகள்' : 'Departmental Grievance Distribution'}
+          </h3>
+          <span className="text-[11px] text-slate-500 font-semibold">
+            Live Field Queue Allocation
+          </span>
+        </div>
+
         <div className="h-44 w-full">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={categoryCounts} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
-              <XAxis dataKey="name" stroke="#87998C" fontSize={11} tickLine={false} />
-              <YAxis stroke="#87998C" fontSize={11} tickLine={false} />
+              <XAxis dataKey="name" stroke="#64748B" fontSize={11} tickLine={false} />
+              <YAxis stroke="#64748B" fontSize={11} tickLine={false} />
               <Tooltip 
-                contentStyle={{ backgroundColor: '#FFFFFF', borderColor: '#E3E4DE', borderRadius: '8px', fontSize: '11px' }} 
+                contentStyle={{ backgroundColor: '#FFFFFF', borderColor: '#E2E8F0', borderRadius: '12px', fontSize: '11px' }} 
               />
-              <Bar dataKey="count" radius={[4, 4, 0, 0]}>
+              <Bar dataKey="count" radius={[6, 6, 0, 0]}>
                 {categoryCounts.map((entry) => (
-                  <Cell key={`cell-${entry.name}`} fill={CATEGORY_COLORS[entry.name] || '#203D32'} />
+                  <Cell key={`cell-${entry.name}`} fill={CATEGORY_COLORS[entry.name] || '#167A4D'} />
                 ))}
               </Bar>
             </BarChart>
@@ -228,118 +280,113 @@ export const AdminDashboard: React.FC = () => {
         </div>
       </div>
 
-      {/* Complaint Management Table */}
-      <div className="bg-civic-surface border border-civic-border rounded-xl shadow-card overflow-hidden space-y-4 p-5">
+      {/* 4. MUNICIPAL INCIDENT TABLE & DISPATCH CONTROLS */}
+      <div className="bg-white border border-slate-200 rounded-3xl shadow-xs overflow-hidden space-y-4 p-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <h3 className="font-display font-bold text-base text-civic-text">
-            All Municipal Grievances ({filtered.length})
-          </h3>
+          <div>
+            <h3 className="font-black text-base text-slate-900">
+              {language === 'ta' ? `அனைத்து புகார்கள் (${filtered.length})` : `Municipal Grievance Register (${filtered.length})`}
+            </h3>
+            <p className="text-xs text-slate-500 mt-0.5">
+              Live telemetry and department reassignment
+            </p>
+          </div>
 
-          {/* Search */}
           <div className="relative w-full sm:w-72">
-            <Search className="w-4 h-4 absolute left-3 top-2.5 text-civic-muted" />
+            <Search className="w-4 h-4 absolute left-3 top-2.5 text-slate-400" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Filter by ref, keyword, street..."
-              className="w-full pl-9 pr-3 py-1.5 bg-civic-bg border border-civic-border rounded-lg text-xs text-civic-text focus:outline-none focus:border-civic-brand"
+              placeholder="Search reference, street..."
+              className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-[#167A4D]"
             />
           </div>
         </div>
 
         {/* Filters */}
         <div className="flex flex-wrap items-center gap-2 text-xs pt-1">
-          <div className="flex items-center gap-1.5">
-            <span className="text-civic-muted text-[11px]">Category:</span>
-            <select
-              value={categoryFilter}
-              onChange={(e) => setCategoryFilter(e.target.value)}
-              className="bg-civic-bg border border-civic-border rounded px-2 py-1 text-xs"
-            >
-              <option value="All">All Categories</option>
-              {['Roads', 'Sanitation', 'Electrical', 'Water', 'Drainage', 'Parks'].map(cat => (
-                <option key={cat} value={cat}>{cat}</option>
-              ))}
-            </select>
-          </div>
+          <select
+            value={categoryFilter}
+            onChange={(e) => setCategoryFilter(e.target.value)}
+            className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs font-semibold text-slate-700"
+          >
+            <option value="All">All Categories</option>
+            {['Roads', 'Sanitation', 'Electrical', 'Water', 'Drainage', 'Parks'].map(cat => (
+              <option key={cat} value={cat}>{cat}</option>
+            ))}
+          </select>
 
-          <div className="flex items-center gap-1.5">
-            <span className="text-civic-muted text-[11px]">Status:</span>
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="bg-civic-bg border border-civic-border rounded px-2 py-1 text-xs"
-            >
-              <option value="All">All Statuses</option>
-              {['Reported', 'Assigned', 'In Progress', 'Resolved'].map(st => (
-                <option key={st} value={st}>{st}</option>
-              ))}
-            </select>
-          </div>
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs font-semibold text-slate-700"
+          >
+            <option value="All">All Statuses</option>
+            {['Reported', 'Assigned', 'In Progress', 'Resolved'].map(st => (
+              <option key={st} value={st}>{st}</option>
+            ))}
+          </select>
 
-          <div className="flex items-center gap-1.5">
-            <span className="text-civic-muted text-[11px]">Priority:</span>
-            <select
-              value={priorityFilter}
-              onChange={(e) => setPriorityFilter(e.target.value)}
-              className="bg-civic-bg border border-civic-border rounded px-2 py-1 text-xs"
-            >
-              <option value="All">All Priorities</option>
-              {['Critical', 'High', 'Medium', 'Low'].map(pr => (
-                <option key={pr} value={pr}>{pr}</option>
-              ))}
-            </select>
-          </div>
+          <select
+            value={priorityFilter}
+            onChange={(e) => setPriorityFilter(e.target.value)}
+            className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs font-semibold text-slate-700"
+          >
+            <option value="All">All Priorities</option>
+            {['Critical', 'High', 'Medium', 'Low'].map(pr => (
+              <option key={pr} value={pr}>{pr}</option>
+            ))}
+          </select>
         </div>
 
         {/* Data Table */}
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs border-collapse">
             <thead>
-              <tr className="border-b border-civic-border text-civic-muted font-medium bg-civic-bg/50">
-                <th className="py-2.5 px-3">Reference ID</th>
-                <th className="py-2.5 px-3">Grievance Title</th>
-                <th className="py-2.5 px-3">Category</th>
-                <th className="py-2.5 px-3">Location / Ward</th>
-                <th className="py-2.5 px-3">Priority</th>
-                <th className="py-2.5 px-3">Department</th>
-                <th className="py-2.5 px-3">Status</th>
-                <th className="py-2.5 px-3 text-right">Actions</th>
+              <tr className="border-b border-slate-200 text-slate-500 font-bold bg-slate-50">
+                <th className="py-3 px-3">Ticket ID</th>
+                <th className="py-3 px-3">Grievance Headline</th>
+                <th className="py-3 px-3">Category</th>
+                <th className="py-3 px-3">Ward</th>
+                <th className="py-3 px-3">Priority</th>
+                <th className="py-3 px-3">Department</th>
+                <th className="py-3 px-3">Status</th>
+                <th className="py-3 px-3 text-right">Action</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-civic-border/60">
+            <tbody className="divide-y divide-slate-100">
               {filtered.map((c) => (
-                <tr key={c.id} className="hover:bg-civic-soft/30 transition">
-                  <td className="py-3 px-3 font-mono font-semibold text-civic-brand">
+                <tr key={c.id} className="hover:bg-slate-50/80 transition">
+                  <td className="py-3 px-3 font-mono font-bold text-[#167A4D]">
                     {c.complaint_reference}
                   </td>
-                  <td className="py-3 px-3 font-medium text-civic-text max-w-xs truncate" title={c.title}>
+                  <td className="py-3 px-3 font-semibold text-slate-900 max-w-xs truncate" title={c.title}>
                     {c.title}
                   </td>
                   <td className="py-3 px-3">
-                    <span className="px-2 py-0.5 rounded text-[10px] font-medium" style={{ backgroundColor: `${CATEGORY_COLORS[c.category]}15`, color: CATEGORY_COLORS[c.category] }}>
+                    <span className="px-2 py-0.5 rounded-lg text-[10px] font-bold" style={{ backgroundColor: `${CATEGORY_COLORS[c.category]}15`, color: CATEGORY_COLORS[c.category] }}>
                       {c.category}
                     </span>
                   </td>
-                  <td className="py-3 px-3 text-civic-muted">
+                  <td className="py-3 px-3 text-slate-500">
                     {c.locality_name || 'Central'} (W-{c.ward_number || 70})
                   </td>
                   <td className="py-3 px-3">
-                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${
+                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
                       c.priority === 'Critical' ? 'bg-red-100 text-red-800' :
                       c.priority === 'High' ? 'bg-amber-100 text-amber-800' :
-                      'bg-gray-100 text-gray-800'
+                      'bg-slate-100 text-slate-700'
                     }`}>
                       {c.priority}
                     </span>
                   </td>
-                  <td className="py-3 px-3 text-civic-text font-medium">
+                  <td className="py-3 px-3 text-slate-800 font-medium">
                     {c.department_name || 'Unassigned'}
                   </td>
                   <td className="py-3 px-3">
-                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${
-                      c.status === 'Resolved' ? 'bg-emerald-100 text-emerald-800' :
+                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                      c.status === 'Resolved' ? 'bg-[#E8F4EC] text-[#167A4D]' :
                       c.status === 'In Progress' ? 'bg-blue-100 text-blue-800' :
                       'bg-amber-100 text-amber-800'
                     }`}>
@@ -348,26 +395,22 @@ export const AdminDashboard: React.FC = () => {
                   </td>
                   <td className="py-3 px-3 text-right space-x-1.5 whitespace-nowrap">
                     {c.status !== 'Resolved' && (
-                      <>
-                        <button
-                          onClick={() => {
-                            setAssignModalComplaint(c);
-                            setSelectedDept(c.department_name || DEPARTMENTS[0]);
-                          }}
-                          className="px-2.5 py-1 rounded bg-civic-bg hover:bg-civic-soft border border-civic-border text-civic-brand text-[11px] font-medium transition"
-                        >
-                          Assign Dept
-                        </button>
-                        <button
-                          onClick={() => {
-                            setResolveModalComplaint(c);
-                          }}
-                          className="px-2.5 py-1 rounded bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-medium transition"
-                        >
-                          Verify & Resolve
-                        </button>
-                      </>
+                      <button
+                        onClick={() => {
+                          setAssignModalComplaint(c);
+                          setSelectedDept(c.department_name || DEPARTMENTS[0]);
+                        }}
+                        className="px-2.5 py-1 bg-[#12382C] hover:bg-black text-white rounded-lg text-[11px] font-bold transition shadow-2xs"
+                      >
+                        Reassign
+                      </button>
                     )}
+                    <Link
+                      to={`/track?ref=${c.complaint_reference}`}
+                      className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-lg text-[11px] font-bold transition shadow-2xs inline-block"
+                    >
+                      Audit
+                    </Link>
                   </td>
                 </tr>
               ))}
@@ -376,30 +419,35 @@ export const AdminDashboard: React.FC = () => {
         </div>
       </div>
 
-      {/* Department Assign Modal */}
+      {/* Department Reassignment Modal */}
       {assignModalComplaint && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fadeIn">
-          <div className="bg-civic-surface border border-civic-border rounded-2xl p-6 max-w-md w-full shadow-panel space-y-4">
-            <div className="flex items-center justify-between border-b border-civic-border pb-3">
-              <h3 className="font-display font-bold text-sm text-civic-text">
-                Assign Department & Officer
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xs p-4">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-200">
+              <h3 className="font-bold text-base text-slate-900">
+                Department Squad Reassignment
               </h3>
-              <button onClick={() => setAssignModalComplaint(null)} className="text-civic-muted hover:text-civic-text">
-                <X className="w-4 h-4" />
+              <button 
+                onClick={() => setAssignModalComplaint(null)}
+                className="text-slate-400 hover:text-slate-700 text-sm font-bold p-1"
+              >
+                ✕
               </button>
             </div>
 
-            <p className="text-xs text-civic-muted">
-              Grievance: <span className="font-semibold text-civic-text">{assignModalComplaint.complaint_reference}</span> - {assignModalComplaint.title}
+            <p className="text-xs text-slate-600">
+              Reassigning ticket <strong className="text-slate-900">{assignModalComplaint.complaint_reference}</strong>
             </p>
 
-            <form onSubmit={handleAssignSubmit} className="space-y-4 text-xs">
+            <form onSubmit={handleAssignSubmit} className="space-y-4">
               <div>
-                <label className="block font-semibold text-civic-text mb-1.5">Target Department *</label>
+                <label className="block text-xs font-bold text-slate-800 mb-1">
+                  Responsible Municipal Department
+                </label>
                 <select
                   value={selectedDept}
                   onChange={(e) => setSelectedDept(e.target.value)}
-                  className="w-full px-3 py-2 bg-civic-bg border border-civic-border rounded-lg text-xs"
+                  className="w-full text-xs p-2.5 rounded-xl border border-slate-200 font-semibold"
                 >
                   {DEPARTMENTS.map(d => (
                     <option key={d} value={d}>{d}</option>
@@ -408,40 +456,43 @@ export const AdminDashboard: React.FC = () => {
               </div>
 
               <div>
-                <label className="block font-semibold text-civic-text mb-1.5">Responsible Officer *</label>
+                <label className="block text-xs font-bold text-slate-800 mb-1">
+                  Assigned Executive Engineer
+                </label>
                 <input
                   type="text"
-                  required
                   value={officerName}
                   onChange={(e) => setOfficerName(e.target.value)}
-                  className="w-full px-3 py-2 bg-civic-bg border border-civic-border rounded-lg text-xs"
+                  className="w-full text-xs p-2.5 rounded-xl border border-slate-200"
                 />
               </div>
 
               <div>
-                <label className="block font-semibold text-civic-text mb-1.5">Dispatch Instructions</label>
+                <label className="block text-xs font-bold text-slate-800 mb-1">
+                  Dispatch Directive / Work Order
+                </label>
                 <textarea
-                  rows={2}
                   value={assignInstructions}
                   onChange={(e) => setAssignInstructions(e.target.value)}
-                  placeholder="e.g. Inspect site immediately and dispatch bitumen repair vehicle"
-                  className="w-full px-3 py-2 bg-civic-bg border border-civic-border rounded-lg text-xs"
+                  placeholder="e.g. Deploy emergency pothole crew within 4 hours..."
+                  rows={2}
+                  className="w-full text-xs p-2.5 rounded-xl border border-slate-200"
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-2">
+              <div className="flex justify-end gap-2 pt-2">
                 <button
                   type="button"
                   onClick={() => setAssignModalComplaint(null)}
-                  className="px-4 py-2 rounded-lg bg-civic-bg border border-civic-border font-medium text-civic-text"
+                  className="px-4 py-2 rounded-xl text-xs font-semibold border border-slate-200 text-slate-700 hover:bg-slate-100"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 rounded-lg bg-civic-brand text-white font-semibold hover:bg-civic-brand-hover"
+                  className="px-4 py-2 rounded-xl text-xs font-bold bg-[#167A4D] hover:bg-[#12603C] text-white shadow-2xs"
                 >
-                  Confirm Assignment
+                  Confirm Reassignment
                 </button>
               </div>
             </form>
@@ -449,66 +500,6 @@ export const AdminDashboard: React.FC = () => {
         </div>
       )}
 
-      {/* Resolution Verification Modal */}
-      {resolveModalComplaint && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fadeIn">
-          <div className="bg-civic-surface border border-civic-border rounded-2xl p-6 max-w-md w-full shadow-panel space-y-4">
-            <div className="flex items-center justify-between border-b border-civic-border pb-3">
-              <h3 className="font-display font-bold text-sm text-civic-text">
-                Verify & Record Grievance Resolution
-              </h3>
-              <button onClick={() => setResolveModalComplaint(null)} className="text-civic-muted hover:text-civic-text">
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-
-            <p className="text-xs text-civic-muted">
-              Closing <span className="font-semibold text-civic-text">{resolveModalComplaint.complaint_reference}</span> with municipal audit sign-off.
-            </p>
-
-            <form onSubmit={handleResolveSubmit} className="space-y-4 text-xs">
-              <div>
-                <label className="block font-semibold text-civic-text mb-1.5">Verifying Officer Name *</label>
-                <input
-                  type="text"
-                  required
-                  value={resolveOfficer}
-                  onChange={(e) => setResolveOfficer(e.target.value)}
-                  className="w-full px-3 py-2 bg-civic-bg border border-civic-border rounded-lg text-xs"
-                />
-              </div>
-
-              <div>
-                <label className="block font-semibold text-civic-text mb-1.5">Resolution Description & Rectification Summary *</label>
-                <textarea
-                  required
-                  rows={3}
-                  value={resolutionNotes}
-                  onChange={(e) => setResolutionNotes(e.target.value)}
-                  placeholder="Detail work performed: e.g. Hot mix bitumen patch completed across 4 sq.m cavity, compaction rolled and tested."
-                  className="w-full px-3 py-2 bg-civic-bg border border-civic-border rounded-lg text-xs"
-                />
-              </div>
-
-              <div className="flex items-center justify-end gap-2 pt-2">
-                <button
-                  type="button"
-                  onClick={() => setResolveModalComplaint(null)}
-                  className="px-4 py-2 rounded-lg bg-civic-bg border border-civic-border font-medium text-civic-text"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 rounded-lg bg-emerald-600 text-white font-semibold hover:bg-emerald-700"
-                >
-                  Verify & Mark Resolved
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
