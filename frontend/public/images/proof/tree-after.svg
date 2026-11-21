@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="800" height="450">
+  <rect width="800" height="450" fill="#D1FAE5"/>
+  <!-- Brick Red Jogging Track - Clean & Open -->
+  <rect x="0" y="140" width="800" height="170" fill="#DC2626"/>
+  <line x1="0" y1="225" x2="800" y2="225" stroke="#FFFFFF" stroke-width="4" stroke-dasharray="25 15"/>
+  <!-- Green Lawn Grass -->
+  <circle cx="100" cy="80" r="40" fill="#16A34A"/>
+  <circle cx="700" cy="80" r="40" fill="#16A34A"/>
+  <circle cx="400" cy="70" r="50" fill="#15803D"/>
+  <!-- Swept Clean Pathway Indicators -->
+  <path d="M 280,225 L 340,225 M 460,225 L 520,225" stroke="#FEF08A" stroke-width="3"/>
+  <!-- Verified Badge -->
+  <rect x="30" y="30" width="240" height="42" rx="10" fill="#167A4D"/>
+  <text x="150" y="56" fill="#FFFFFF" font-family="sans-serif" font-size="13" font-weight="900" text-anchor="middle" letter-spacing="1">OBSTACLE CLEARED</text>
+  <circle cx="720" cy="60" r="26" fill="#167A4D" stroke="#FFFFFF" stroke-width="3"/>
+  <path d="M 710,60 L 717,67 L 732,52" stroke="#FFFFFF" stroke-width="4" fill="none" stroke-linecap="round"/>
+</svg>

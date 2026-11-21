@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="800" height="450">
+  <defs>
+    <linearGradient id="sky2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#BAE6FD"/>
+      <stop offset="100%" stop-color="#E0F2FE"/>
+    </linearGradient>
+    <linearGradient id="waterFlow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0284C7"/>
+      <stop offset="100%" stop-color="#0369A1"/>
+    </linearGradient>
+    <linearGradient id="cleanConc" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#94A3B8"/>
+      <stop offset="100%" stop-color="#64748B"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="450" fill="url(#sky2)"/>
+  <!-- Clean Canal Concrete Banks -->
+  <polygon points="0,180 800,180 800,450 0,450" fill="#475569"/>
+  <polygon points="80,180 180,450 620,450 720,180" fill="url(#cleanConc)"/>
+  <polygon points="180,260 220,450 580,450 620,260" fill="#334155"/>
+  <!-- Clear Flowing Blue Water -->
+  <path d="M 210,310 Q 400,295 590,310 L 610,450 L 190,450 Z" fill="url(#waterFlow)"/>
+  <!-- Water Ripple Flow Lines -->
+  <path d="M 250,340 Q 400,330 550,340" stroke="#7DD3FC" stroke-width="3" fill="none" opacity="0.8"/>
+  <path d="M 230,370 Q 400,358 570,370" stroke="#38BDF8" stroke-width="3" fill="none" opacity="0.7"/>
+  <path d="M 260,400 Q 400,390 540,400" stroke="#BAE6FD" stroke-width="2.5" fill="none" opacity="0.6"/>
+  <!-- Verification Badge -->
+  <rect x="30" y="30" width="240" height="42" rx="10" fill="#167A4D"/>
+  <text x="150" y="56" fill="#FFFFFF" font-family="sans-serif" font-size="13" font-weight="900" text-anchor="middle" letter-spacing="1">CLEARED &amp; DESILTED</text>
+  <!-- Verified Checkmark -->
+  <circle cx="720" cy="60" r="26" fill="#167A4D" stroke="#FFFFFF" stroke-width="3"/>
+  <path d="M 710,60 L 717,67 L 732,52" stroke="#FFFFFF" stroke-width="4" fill="none" stroke-linecap="round"/>
+</svg>

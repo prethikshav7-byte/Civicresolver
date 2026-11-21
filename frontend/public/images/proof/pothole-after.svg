@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="800" height="450">
+  <defs>
+    <linearGradient id="road2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#334155"/>
+      <stop offset="100%" stop-color="#1E293B"/>
+    </linearGradient>
+    <linearGradient id="patch" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1E293B"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="450" fill="url(#road2)"/>
+  <!-- Road Lane White Dashes -->
+  <line x1="0" y1="80" x2="800" y2="80" stroke="#F8FAFC" stroke-width="12" stroke-dasharray="60 40" opacity="0.7"/>
+  <line x1="0" y1="380" x2="800" y2="380" stroke="#F8FAFC" stroke-width="12" stroke-dasharray="60 40" opacity="0.7"/>
+  <!-- Freshly Compacted Bitumen Patch -->
+  <rect x="220" y="140" width="360" height="180" rx="16" fill="url(#patch)" stroke="#0F172A" stroke-width="3"/>
+  <!-- Roller texture lines -->
+  <line x1="240" y1="170" x2="560" y2="170" stroke="#334155" stroke-width="3" stroke-dasharray="10 6"/>
+  <line x1="240" y1="210" x2="560" y2="210" stroke="#334155" stroke-width="3" stroke-dasharray="10 6"/>
+  <line x1="240" y1="250" x2="560" y2="250" stroke="#334155" stroke-width="3" stroke-dasharray="10 6"/>
+  <line x1="240" y1="290" x2="560" y2="290" stroke="#334155" stroke-width="3" stroke-dasharray="10 6"/>
+  <!-- Fresh Yellow Lane Stripe across patch -->
+  <line x1="220" y1="230" x2="580" y2="230" stroke="#FBBF24" stroke-width="10"/>
+  <!-- Verified Badge -->
+  <rect x="30" y="30" width="240" height="42" rx="10" fill="#167A4D"/>
+  <text x="150" y="56" fill="#FFFFFF" font-family="sans-serif" font-size="13" font-weight="900" text-anchor="middle" letter-spacing="1">BITUMEN ROLLED</text>
+  <!-- Verified Checkmark -->
+  <circle cx="720" cy="60" r="26" fill="#167A4D" stroke="#FFFFFF" stroke-width="3"/>
+  <path d="M 710,60 L 717,67 L 732,52" stroke="#FFFFFF" stroke-width="4" fill="none" stroke-linecap="round"/>
+</svg>

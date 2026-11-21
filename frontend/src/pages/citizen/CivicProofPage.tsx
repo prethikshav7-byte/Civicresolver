@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  CheckCircle2, AlertTriangle, XCircle, ThumbsUp, ShieldCheck, 
+import {
+  CheckCircle2, AlertTriangle, XCircle, ThumbsUp, ShieldCheck,
   RotateCcw, Sparkles, Filter, Building2, User, MapPin, Calendar, Info
 } from 'lucide-react';
 import { CivicApi } from '../../services/api';
@@ -97,15 +97,19 @@ const getProofMedia = (item: CivicProofItem) => {
   return PROOF_IMAGES["#80001"];
 };
 
-// Rich vector fallback generator in case external image domains are blocked
+// Rich vector fallback generator guaranteed to be valid base64
 const getFallbackSvg = (type: 'before' | 'after', category: string) => {
-  const isBefore = type === 'before';
-  const bgColor = isBefore ? '#FEF2F2' : '#F0FDF4';
-  const strokeColor = isBefore ? '#DC2626' : '#16A34A';
-  const label = isBefore ? 'REPORTED CIVIC HAZARD' : 'OFFICIAL FIELD REPAIR COMPLETED';
-  const sub = isBefore ? `${category} Failure Verified On-Site` : `${category} Squad Restoration Verified`;
-
-  return `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="600" height="340" viewBox="0 0 600 340"><rect width="600" height="340" fill="${bgColor}"/><g stroke="${strokeColor}" stroke-width="2" fill="none" opacity="0.3"><path d="M0,50 Q300,90 600,40 M0,180 Q300,220 600,160 M0,290 Q300,310 600,270"/></g><circle cx="300" cy="140" r="45" fill="${strokeColor}" fill-opacity="0.1" stroke="${strokeColor}" stroke-width="3"/><text x="300" y="146" font-family="sans-serif" font-size="28" font-weight="bold" fill="${strokeColor}" text-anchor="middle">${isBefore ? '!' : '✓'}</text><text x="300" y="225" font-family="sans-serif" font-size="14" font-weight="bold" fill="${strokeColor}" text-anchor="middle" letter-spacing="1.5">${label}</text><text x="300" y="248" font-family="sans-serif" font-size="12" fill="%23475569" text-anchor="middle">${sub}</text></svg>`;
+  const cat = category.toLowerCase();
+  if (cat.includes('drain') || cat.includes('water') || cat.includes('storm')) {
+    return type === 'before' ? PROOF_SVGS.stormwaterBefore : PROOF_SVGS.stormwaterAfter;
+  }
+  if (cat.includes('tree') || cat.includes('park') || cat.includes('swing')) {
+    return type === 'before' ? PROOF_SVGS.treeBefore : PROOF_SVGS.treeAfter;
+  }
+  if (cat.includes('garb') || cat.includes('waste') || cat.includes('sanitat')) {
+    return type === 'before' ? PROOF_SVGS.garbageBefore : PROOF_SVGS.garbageAfter;
+  }
+  return type === 'before' ? PROOF_SVGS.potholeBefore : PROOF_SVGS.potholeAfter;
 };
 
 export const CivicProofPage: React.FC = () => {
@@ -213,7 +217,7 @@ export const CivicProofPage: React.FC = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 font-sans">
-      
+
       {/* Page Header */}
       <div className="bg-white border border-[#E2ECE5] rounded-3xl p-6 sm:p-8 shadow-xs">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -229,7 +233,7 @@ export const CivicProofPage: React.FC = () => {
               {t.proofSubtitle}
             </p>
           </div>
-          
+
           <div className="flex items-center gap-3 bg-[#F8FAF9] p-4 rounded-2xl border border-[#E2ECE5] self-start">
             <div className="text-center px-4 border-r border-slate-200">
               <div className="text-2xl font-black text-[#167A4D]">84%</div>
@@ -256,11 +260,10 @@ export const CivicProofPage: React.FC = () => {
             <button
               key={st.id}
               onClick={() => setFilterStatus(st.id)}
-              className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
-                filterStatus === st.id
-                  ? 'bg-[#167A4D] text-white shadow-2xs'
-                  : 'bg-[#F0F4F2] text-slate-700 hover:text-slate-900 hover:bg-slate-200'
-              }`}
+              className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition ${filterStatus === st.id
+                ? 'bg-[#167A4D] text-white shadow-2xs'
+                : 'bg-[#F0F4F2] text-slate-700 hover:text-slate-900 hover:bg-slate-200'
+                }`}
             >
               {st.label}
             </button>
@@ -301,8 +304,8 @@ export const CivicProofPage: React.FC = () => {
             const afterUrl = curated.after;
 
             return (
-              <div 
-                key={item.id} 
+              <div
+                key={item.id}
                 className="bg-white border border-[#E2ECE5] rounded-3xl overflow-hidden shadow-xs hover:shadow-md transition"
               >
                 {/* Header Bar */}
@@ -337,7 +340,7 @@ export const CivicProofPage: React.FC = () => {
 
                 {/* Body Content */}
                 <div className="p-5 sm:p-6 space-y-6">
-                  
+
                   {/* Photo Comparison: Side-by-Side Images */}
                   <div>
                     <div className="flex items-center justify-between mb-3">
@@ -353,11 +356,13 @@ export const CivicProofPage: React.FC = () => {
                       {/* Before Photo */}
                       <div className="rounded-2xl border border-red-200 overflow-hidden bg-slate-50 group">
                         <div className="relative aspect-video overflow-hidden">
-                          <img 
-                            src={beforeUrl} 
-                            alt="Before field repair" 
+                          <img
+                            src={beforeUrl}
+                            alt="Before field repair"
                             onError={(e) => {
-                              (e.target as HTMLImageElement).src = getFallbackSvg('before', cat);
+                              const target = e.target as HTMLImageElement;
+                              target.onerror = null;
+                              target.src = getFallbackSvg('before', cat);
                             }}
                             className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
                           />
@@ -373,11 +378,13 @@ export const CivicProofPage: React.FC = () => {
                       {/* After Photo */}
                       <div className="rounded-2xl border border-emerald-200 overflow-hidden bg-slate-50 group">
                         <div className="relative aspect-video overflow-hidden">
-                          <img 
-                            src={afterUrl} 
-                            alt="After field repair" 
+                          <img
+                            src={afterUrl}
+                            alt="After field repair"
                             onError={(e) => {
-                              (e.target as HTMLImageElement).src = getFallbackSvg('after', cat);
+                              const target = e.target as HTMLImageElement;
+                              target.onerror = null;
+                              target.src = getFallbackSvg('after', cat);
                             }}
                             className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
                           />
@@ -516,7 +523,7 @@ export const CivicProofPage: React.FC = () => {
                   Reopen Complaint for Official Re-Inspection
                 </h3>
               </div>
-              <button 
+              <button
                 onClick={() => setReopenTarget(null)}
                 className="text-slate-400 hover:text-slate-800 text-sm font-bold p-1"
               >

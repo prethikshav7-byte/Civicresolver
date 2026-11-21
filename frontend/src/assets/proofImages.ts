@@ -1,181 +1,24 @@
-// High-detail self-contained SVG images for CivicProof before & after field inspections
-// Guaranteed to render 100% reliably in any environment without external network dependencies
+// Bulletproof Base64 Data URIs and Static Asset Paths for CivicProof Evidence
+// Guaranteed to render 100% reliably in any browser without URL-encoding issues or external dependencies
 
 export const PROOF_SVGS = {
-  // 1. Stormwater Drain Desilting (#80005)
-  stormwaterBefore: `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="800" height="450">
-    <defs>
-      <linearGradient id="sky1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="%2394A3B8"/><stop offset="100%" stop-color="%23CBD5E1"/></linearGradient>
-      <linearGradient id="sludge" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="%233E2723"/><stop offset="100%" stop-color="%231B100E"/></linearGradient>
-      <linearGradient id="concrete" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="%2364748B"/><stop offset="100%" stop-color="%23475569"/></linearGradient>
-    </defs>
-    <rect width="800" height="450" fill="url(%23sky1)"/>
-    <!-- Canal Concrete Banks -->
-    <polygon points="0,180 800,180 800,450 0,450" fill="%23334155"/>
-    <polygon points="80,180 180,450 620,450 720,180" fill="url(%23concrete)"/>
-    <polygon points="180,260 220,450 580,450 620,260" fill="%231E293B"/>
-    <!-- Toxic stagnant sludge & sewage -->
-    <path d="M 200,320 Q 400,310 600,325 L 610,450 L 190,450 Z" fill="url(%23sludge)"/>
-    <!-- Plastic debris & trash buildup -->
-    <ellipse cx="320" cy="340" rx="45" ry="15" fill="%23EF4444" opacity="0.9"/>
-    <ellipse cx="460" cy="350" rx="55" ry="18" fill="%233B82F6" opacity="0.9"/>
-    <ellipse cx="390" cy="330" rx="40" ry="14" fill="%23F59E0B" opacity="0.9"/>
-    <ellipse cx="270" cy="360" rx="35" ry="12" fill="%23FFFFFF" opacity="0.8"/>
-    <ellipse cx="510" cy="370" rx="50" ry="15" fill="%2310B981" opacity="0.8"/>
-    <path d="M 330,310 L 370,330 L 350,345 Z" fill="%23E2E8F0"/>
-    <path d="M 430,320 L 460,335 L 440,350 Z" fill="%23FDE047"/>
-    <!-- Warning Badge -->
-    <rect x="30" y="30" width="220" height="42" rx="10" fill="%23DC2626"/>
-    <text x="140" y="56" fill="%23FFFFFF" font-family="sans-serif" font-size="13" font-weight="900" text-anchor="middle" letter-spacing="1">BLOCKED CULVERT</text>
-    <!-- Hazard sign -->
-    <circle cx="720" cy="60" r="26" fill="%23EF4444" stroke="%23FFFFFF" stroke-width="3"/>
-    <text x="720" y="70" fill="%23FFFFFF" font-family="sans-serif" font-size="28" font-weight="bold" text-anchor="middle">!</text>
-  </svg>`,
+  "stormwaterBefore": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4MDAgNDUwIiB3aWR0aD0iODAwIiBoZWlnaHQ9IjQ1MCI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9InNreTEiIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSIxIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzk0QTNCOCIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNDQkQ1RTEiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9InNsdWRnZSIgeDE9IjAiIHkxPSIwIiB4Mj0iMCIgeTI9IjEiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjM0UyNzIzIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzFCMTAwRSIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iY29uY3JldGUiIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIwIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzY0NzQ4QiIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiM0NzU1NjkiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgogIDxyZWN0IHdpZHRoPSI4MDAiIGhlaWdodD0iNDUwIiBmaWxsPSJ1cmwoI3NreTEpIi8+CiAgPCEtLSBDYW5hbCBDb25jcmV0ZSBCYW5rcyAtLT4KICA8cG9seWdvbiBwb2ludHM9IjAsMTgwIDgwMCwxODAgODAwLDQ1MCAwLDQ1MCIgZmlsbD0iIzMzNDE1NSIvPgogIDxwb2x5Z29uIHBvaW50cz0iODAsMTgwIDE4MCw0NTAgNjIwLDQ1MCA3MjAsMTgwIiBmaWxsPSJ1cmwoI2NvbmNyZXRlKSIvPgogIDxwb2x5Z29uIHBvaW50cz0iMTgwLDI2MCAyMjAsNDUwIDU4MCw0NTAgNjIwLDI2MCIgZmlsbD0iIzFFMjkzQiIvPgogIDwhLS0gU3RhZ25hbnQgU2x1ZGdlIGFuZCBTZXdhZ2UgLS0+CiAgPHBhdGggZD0iTSAyMDAsMzIwIFEgNDAwLDMxMCA2MDAsMzI1IEwgNjEwLDQ1MCBMIDE5MCw0NTAgWiIgZmlsbD0idXJsKCNzbHVkZ2UpIi8+CiAgPCEtLSBQbGFzdGljIERlYnJpcyAmIFRyYXNoIEJ1aWxkdXAgLS0+CiAgPGVsbGlwc2UgY3g9IjMyMCIgY3k9IjM0MCIgcng9IjQ1IiByeT0iMTUiIGZpbGw9IiNFRjQ0NDQiIG9wYWNpdHk9IjAuOSIvPgogIDxlbGxpcHNlIGN4PSI0NjAiIGN5PSIzNTAiIHJ4PSI1NSIgcnk9IjE4IiBmaWxsPSIjM0I4MkY2IiBvcGFjaXR5PSIwLjkiLz4KICA8ZWxsaXBzZSBjeD0iMzkwIiBjeT0iMzMwIiByeD0iNDAiIHJ5PSIxNCIgZmlsbD0iI0Y1OUUwQiIgb3BhY2l0eT0iMC45Ii8+CiAgPGVsbGlwc2UgY3g9IjI3MCIgY3k9IjM2MCIgcng9IjM1IiByeT0iMTIiIGZpbGw9IiNGRkZGRkYiIG9wYWNpdHk9IjAuOCIvPgogIDxlbGxpcHNlIGN4PSI1MTAiIGN5PSIzNzAiIHJ4PSI1MCIgcnk9IjE1IiBmaWxsPSIjMTBCOTgxIiBvcGFjaXR5PSIwLjgiLz4KICA8cGF0aCBkPSJNIDMzMCwzMTAgTCAzNzAsMzMwIEwgMzUwLDM0NSBaIiBmaWxsPSIjRTJFOEYwIi8+CiAgPHBhdGggZD0iTSA0MzAsMzIwIEwgNDYwLDMzNSBMIDQ0MCwzNTAgWiIgZmlsbD0iI0ZERTA0NyIvPgogIDwhLS0gV2FybmluZyBCYWRnZSAtLT4KICA8cmVjdCB4PSIzMCIgeT0iMzAiIHdpZHRoPSIyMjAiIGhlaWdodD0iNDIiIHJ4PSIxMCIgZmlsbD0iI0RDMjYyNiIvPgogIDx0ZXh0IHg9IjE0MCIgeT0iNTYiIGZpbGw9IiNGRkZGRkYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjEzIiBmb250LXdlaWdodD0iOTAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBsZXR0ZXItc3BhY2luZz0iMSI+QkxPQ0tFRCBDVUxWRVJUPC90ZXh0PgogIDwhLS0gSGF6YXJkIFNpZ24gLS0+CiAgPGNpcmNsZSBjeD0iNzIwIiBjeT0iNjAiIHI9IjI2IiBmaWxsPSIjRUY0NDQ0IiBzdHJva2U9IiNGRkZGRkYiIHN0cm9rZS13aWR0aD0iMyIvPgogIDx0ZXh0IHg9IjcyMCIgeT0iNzAiIGZpbGw9IiNGRkZGRkYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjI4IiBmb250LXdlaWdodD0iYm9sZCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+ITwvdGV4dD4KPC9zdmc+",
+  "stormwaterAfter": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4MDAgNDUwIiB3aWR0aD0iODAwIiBoZWlnaHQ9IjQ1MCI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9InNreTIiIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSIxIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI0JBRTZGRCIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNFMEYyRkUiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9IndhdGVyRmxvdyIgeDE9IjAiIHkxPSIwIiB4Mj0iMCIgeTI9IjEiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjMDI4NEM3Ii8+CiAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzAzNjlBMSIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iY2xlYW5Db25jIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMCI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiM5NEEzQjgiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjNjQ3NDhCIi8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogIDwvZGVmcz4KICA8cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjQ1MCIgZmlsbD0idXJsKCNza3kyKSIvPgogIDwhLS0gQ2xlYW4gQ2FuYWwgQ29uY3JldGUgQmFua3MgLS0+CiAgPHBvbHlnb24gcG9pbnRzPSIwLDE4MCA4MDAsMTgwIDgwMCw0NTAgMCw0NTAiIGZpbGw9IiM0NzU1NjkiLz4KICA8cG9seWdvbiBwb2ludHM9IjgwLDE4MCAxODAsNDUwIDYyMCw0NTAgNzIwLDE4MCIgZmlsbD0idXJsKCNjbGVhbkNvbmMpIi8+CiAgPHBvbHlnb24gcG9pbnRzPSIxODAsMjYwIDIyMCw0NTAgNTgwLDQ1MCA2MjAsMjYwIiBmaWxsPSIjMzM0MTU1Ii8+CiAgPCEtLSBDbGVhciBGbG93aW5nIEJsdWUgV2F0ZXIgLS0+CiAgPHBhdGggZD0iTSAyMTAsMzEwIFEgNDAwLDI5NSA1OTAsMzEwIEwgNjEwLDQ1MCBMIDE5MCw0NTAgWiIgZmlsbD0idXJsKCN3YXRlckZsb3cpIi8+CiAgPCEtLSBXYXRlciBSaXBwbGUgRmxvdyBMaW5lcyAtLT4KICA8cGF0aCBkPSJNIDI1MCwzNDAgUSA0MDAsMzMwIDU1MCwzNDAiIHN0cm9rZT0iIzdERDNGQyIgc3Ryb2tlLXdpZHRoPSIzIiBmaWxsPSJub25lIiBvcGFjaXR5PSIwLjgiLz4KICA8cGF0aCBkPSJNIDIzMCwzNzAgUSA0MDAsMzU4IDU3MCwzNzAiIHN0cm9rZT0iIzM4QkRGOCIgc3Ryb2tlLXdpZHRoPSIzIiBmaWxsPSJub25lIiBvcGFjaXR5PSIwLjciLz4KICA8cGF0aCBkPSJNIDI2MCw0MDAgUSA0MDAsMzkwIDU0MCw0MDAiIHN0cm9rZT0iI0JBRTZGRCIgc3Ryb2tlLXdpZHRoPSIyLjUiIGZpbGw9Im5vbmUiIG9wYWNpdHk9IjAuNiIvPgogIDwhLS0gVmVyaWZpY2F0aW9uIEJhZGdlIC0tPgogIDxyZWN0IHg9IjMwIiB5PSIzMCIgd2lkdGg9IjI0MCIgaGVpZ2h0PSI0MiIgcng9IjEwIiBmaWxsPSIjMTY3QTREIi8+CiAgPHRleHQgeD0iMTUwIiB5PSI1NiIgZmlsbD0iI0ZGRkZGRiIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtd2VpZ2h0PSI5MDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGxldHRlci1zcGFjaW5nPSIxIj5DTEVBUkVEICZhbXA7IERFU0lMVEVEPC90ZXh0PgogIDwhLS0gVmVyaWZpZWQgQ2hlY2ttYXJrIC0tPgogIDxjaXJjbGUgY3g9IjcyMCIgY3k9IjYwIiByPSIyNiIgZmlsbD0iIzE2N0E0RCIgc3Ryb2tlPSIjRkZGRkZGIiBzdHJva2Utd2lkdGg9IjMiLz4KICA8cGF0aCBkPSJNIDcxMCw2MCBMIDcxNyw2NyBMIDczMiw1MiIgc3Ryb2tlPSIjRkZGRkZGIiBzdHJva2Utd2lkdGg9IjQiIGZpbGw9Im5vbmUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8L3N2Zz4=",
+  "potholeBefore": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4MDAgNDUwIiB3aWR0aD0iODAwIiBoZWlnaHQ9IjQ1MCI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9InJvYWQiIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSIxIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzMzNDE1NSIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMxRTI5M0IiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICA8cmFkaWFsR3JhZGllbnQgaWQ9ImNyYXRlciIgY3g9IjUwJSIgY3k9IjUwJSIgcj0iNTAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzBGMTcyQSIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjcwJSIgc3RvcC1jb2xvcj0iIzFFMjkzQiIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiM0NzU1NjkiLz4KICAgIDwvcmFkaWFsR3JhZGllbnQ+CiAgPC9kZWZzPgogIDxyZWN0IHdpZHRoPSI4MDAiIGhlaWdodD0iNDUwIiBmaWxsPSJ1cmwoI3JvYWQpIi8+CiAgPCEtLSBSb2FkIExhbmUgV2hpdGUgRGFzaGVzIC0tPgogIDxsaW5lIHgxPSIwIiB5MT0iODAiIHgyPSI4MDAiIHkyPSI4MCIgc3Ryb2tlPSIjRjhGQUZDIiBzdHJva2Utd2lkdGg9IjEyIiBzdHJva2UtZGFzaGFycmF5PSI2MCA0MCIgb3BhY2l0eT0iMC43Ii8+CiAgPGxpbmUgeDE9IjAiIHkxPSIzODAiIHgyPSI4MDAiIHkyPSIzODAiIHN0cm9rZT0iI0Y4RkFGQyIgc3Ryb2tlLXdpZHRoPSIxMiIgc3Ryb2tlLWRhc2hhcnJheT0iNjAgNDAiIG9wYWNpdHk9IjAuNyIvPgogIDwhLS0gRGVlcCBDcmF0ZXIgRGVwcmVzc2lvbiB3aXRoIHJhZ2dlZCBmcmFjdHVyZXMgLS0+CiAgPGVsbGlwc2UgY3g9IjQwMCIgY3k9IjIzMCIgcng9IjE4MCIgcnk9IjkwIiBmaWxsPSJ1cmwoI2NyYXRlcikiLz4KICA8cGF0aCBkPSJNIDIzMCwyMjAgUSAyMTAsMTgwIDE4MCwxNzAgTSA1NzAsMjMwIFEgNjEwLDIxMCA2NTAsMjIwIE0gNDEwLDMyMCBRIDQyMCwzNjAgNDUwLDM4MCBNIDM1MCwxNDAgUSAzMzAsMTEwIDMyMCw5MCIgc3Ryb2tlPSIjMEYxNzJBIiBzdHJva2Utd2lkdGg9IjUiIGZpbGw9Im5vbmUiLz4KICA8IS0tIEV4cG9zZWQgQWdncmVnYXRlIFJvY2tzICYgcG9vbGVkIGRpcnR5IHdhdGVyIC0tPgogIDxlbGxpcHNlIGN4PSIzODAiIGN5PSIyNDAiIHJ4PSIxMDAiIHJ5PSI0MCIgZmlsbD0iIzQ3NTU2OSIgb3BhY2l0eT0iMC45Ii8+CiAgPGNpcmNsZSBjeD0iMzQwIiBjeT0iMjM1IiByPSIxMiIgZmlsbD0iIzk0QTNCOCIvPgogIDxjaXJjbGUgY3g9IjQyMCIgY3k9IjI1MCIgcj0iMTUiIGZpbGw9IiM2NDc0OEIiLz4KICA8Y2lyY2xlIGN4PSI0NTAiIGN5PSIyMjUiIHI9IjEwIiBmaWxsPSIjOTRBM0I4Ii8+CiAgPGNpcmNsZSBjeD0iMzEwIiBjeT0iMjQ1IiByPSI5IiBmaWxsPSIjQ0JENUUxIi8+CiAgPCEtLSBXYXJuaW5nIEJhZGdlIC0tPgogIDxyZWN0IHg9IjMwIiB5PSIzMCIgd2lkdGg9IjIyMCIgaGVpZ2h0PSI0MiIgcng9IjEwIiBmaWxsPSIjREMyNjI2Ii8+CiAgPHRleHQgeD0iMTQwIiB5PSI1NiIgZmlsbD0iI0ZGRkZGRiIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtd2VpZ2h0PSI5MDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGxldHRlci1zcGFjaW5nPSIxIj5ST0FEIENBVklUQVRJT048L3RleHQ+CiAgPGNpcmNsZSBjeD0iNzIwIiBjeT0iNjAiIHI9IjI2IiBmaWxsPSIjREMyNjI2IiBzdHJva2U9IiNGRkZGRkYiIHN0cm9rZS13aWR0aD0iMyIvPgogIDx0ZXh0IHg9IjcyMCIgeT0iNzAiIGZpbGw9IiNGRkZGRkYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjI4IiBmb250LXdlaWdodD0iYm9sZCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+ITwvdGV4dD4KPC9zdmc+",
+  "potholeAfter": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4MDAgNDUwIiB3aWR0aD0iODAwIiBoZWlnaHQ9IjQ1MCI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9InJvYWQyIiB4MT0iMCIgeTE9IjAiIHgyPSIwIiB5Mj0iMSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiMzMzQxNTUiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjMUUyOTNCIi8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJwYXRjaCIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjMUUyOTNCIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzBGMTcyQSIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICA8L2RlZnM+CiAgPHJlY3Qgd2lkdGg9IjgwMCIgaGVpZ2h0PSI0NTAiIGZpbGw9InVybCgjcm9hZDIpIi8+CiAgPCEtLSBSb2FkIExhbmUgV2hpdGUgRGFzaGVzIC0tPgogIDxsaW5lIHgxPSIwIiB5MT0iODAiIHgyPSI4MDAiIHkyPSI4MCIgc3Ryb2tlPSIjRjhGQUZDIiBzdHJva2Utd2lkdGg9IjEyIiBzdHJva2UtZGFzaGFycmF5PSI2MCA0MCIgb3BhY2l0eT0iMC43Ii8+CiAgPGxpbmUgeDE9IjAiIHkxPSIzODAiIHgyPSI4MDAiIHkyPSIzODAiIHN0cm9rZT0iI0Y4RkFGQyIgc3Ryb2tlLXdpZHRoPSIxMiIgc3Ryb2tlLWRhc2hhcnJheT0iNjAgNDAiIG9wYWNpdHk9IjAuNyIvPgogIDwhLS0gRnJlc2hseSBDb21wYWN0ZWQgQml0dW1lbiBQYXRjaCAtLT4KICA8cmVjdCB4PSIyMjAiIHk9IjE0MCIgd2lkdGg9IjM2MCIgaGVpZ2h0PSIxODAiIHJ4PSIxNiIgZmlsbD0idXJsKCNwYXRjaCkiIHN0cm9rZT0iIzBGMTcyQSIgc3Ryb2tlLXdpZHRoPSIzIi8+CiAgPCEtLSBSb2xsZXIgdGV4dHVyZSBsaW5lcyAtLT4KICA8bGluZSB4MT0iMjQwIiB5MT0iMTcwIiB4Mj0iNTYwIiB5Mj0iMTcwIiBzdHJva2U9IiMzMzQxNTUiIHN0cm9rZS13aWR0aD0iMyIgc3Ryb2tlLWRhc2hhcnJheT0iMTAgNiIvPgogIDxsaW5lIHgxPSIyNDAiIHkxPSIyMTAiIHgyPSI1NjAiIHkyPSIyMTAiIHN0cm9rZT0iIzMzNDE1NSIgc3Ryb2tlLXdpZHRoPSIzIiBzdHJva2UtZGFzaGFycmF5PSIxMCA2Ii8+CiAgPGxpbmUgeDE9IjI0MCIgeTE9IjI1MCIgeDI9IjU2MCIgeTI9IjI1MCIgc3Ryb2tlPSIjMzM0MTU1IiBzdHJva2Utd2lkdGg9IjMiIHN0cm9rZS1kYXNoYXJyYXk9IjEwIDYiLz4KICA8bGluZSB4MT0iMjQwIiB5MT0iMjkwIiB4Mj0iNTYwIiB5Mj0iMjkwIiBzdHJva2U9IiMzMzQxNTUiIHN0cm9rZS13aWR0aD0iMyIgc3Ryb2tlLWRhc2hhcnJheT0iMTAgNiIvPgogIDwhLS0gRnJlc2ggWWVsbG93IExhbmUgU3RyaXBlIGFjcm9zcyBwYXRjaCAtLT4KICA8bGluZSB4MT0iMjIwIiB5MT0iMjMwIiB4Mj0iNTgwIiB5Mj0iMjMwIiBzdHJva2U9IiNGQkJGMjQiIHN0cm9rZS13aWR0aD0iMTAiLz4KICA8IS0tIFZlcmlmaWVkIEJhZGdlIC0tPgogIDxyZWN0IHg9IjMwIiB5PSIzMCIgd2lkdGg9IjI0MCIgaGVpZ2h0PSI0MiIgcng9IjEwIiBmaWxsPSIjMTY3QTREIi8+CiAgPHRleHQgeD0iMTUwIiB5PSI1NiIgZmlsbD0iI0ZGRkZGRiIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtd2VpZ2h0PSI5MDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGxldHRlci1zcGFjaW5nPSIxIj5CSVRVTUVOIFJPTExFRDwvdGV4dD4KICA8IS0tIFZlcmlmaWVkIENoZWNrbWFyayAtLT4KICA8Y2lyY2xlIGN4PSI3MjAiIGN5PSI2MCIgcj0iMjYiIGZpbGw9IiMxNjdBNEQiIHN0cm9rZT0iI0ZGRkZGRiIgc3Ryb2tlLXdpZHRoPSIzIi8+CiAgPHBhdGggZD0iTSA3MTAsNjAgTCA3MTcsNjcgTCA3MzIsNTIiIHN0cm9rZT0iI0ZGRkZGRiIgc3Ryb2tlLXdpZHRoPSI0IiBmaWxsPSJub25lIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KPC9zdmc+",
+  "treeBefore": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4MDAgNDUwIiB3aWR0aD0iODAwIiBoZWlnaHQ9IjQ1MCI+CiAgPHJlY3Qgd2lkdGg9IjgwMCIgaGVpZ2h0PSI0NTAiIGZpbGw9IiNEMUZBRTUiLz4KICA8IS0tIEJyaWNrIFJlZCBKb2dnaW5nIFRyYWNrIC0tPgogIDxyZWN0IHg9IjAiIHk9IjE0MCIgd2lkdGg9IjgwMCIgaGVpZ2h0PSIxNzAiIGZpbGw9IiNCOTFDMUMiLz4KICA8IS0tIEpvZ2dpbmcgVHJhY2sgTGluZXMgLS0+CiAgPGxpbmUgeDE9IjAiIHkxPSIyMjUiIHgyPSI4MDAiIHkyPSIyMjUiIHN0cm9rZT0iI0ZGRkZGRiIgc3Ryb2tlLXdpZHRoPSI0IiBzdHJva2UtZGFzaGFycmF5PSIyNSAxNSIvPgogIDwhLS0gRmFsbGVuIE1hc3NpdmUgQmFueWFuIFRpbWJlciBibG9ja2luZyB0aGUgdHJhY2sgLS0+CiAgPHBhdGggZD0iTSAxNjAsMjgwIFEgMzgwLDE4MCA2MjAsMjQwIEwgNjQwLDI5MCBRIDM5MCwyNDAgMTgwLDM0MCBaIiBmaWxsPSIjNUMzQTIxIi8+CiAgPCEtLSBCcm9rZW4gYm91Z2hzICYgbGVhZnkgZGVicmlzIC0tPgogIDxlbGxpcHNlIGN4PSIzMjAiIGN5PSIyMDAiIHJ4PSI2MCIgcnk9IjM1IiBmaWxsPSIjMTU4MDNEIiBvcGFjaXR5PSIwLjkiLz4KICA8ZWxsaXBzZSBjeD0iNDQwIiBjeT0iMjIwIiByeD0iNzUiIHJ5PSI0MCIgZmlsbD0iIzE2NjUzNCIgb3BhY2l0eT0iMC45Ii8+CiAgPGVsbGlwc2UgY3g9IjU0MCIgY3k9IjI2MCIgcng9IjUwIiByeT0iMzAiIGZpbGw9IiMxNTgwM0QiIG9wYWNpdHk9IjAuOCIvPgogIDwhLS0gQmFycmllciBUYXBlIC0tPgogIDxsaW5lIHgxPSIxMjAiIHkxPSIxMzAiIHgyPSI2ODAiIHkyPSIzMjAiIHN0cm9rZT0iI0VBQjMwOCIgc3Ryb2tlLXdpZHRoPSI4IiBzdHJva2UtZGFzaGFycmF5PSIyMCAxNSIvPgogIDwhLS0gV2FybmluZyBCYWRnZSAtLT4KICA8cmVjdCB4PSIzMCIgeT0iMzAiIHdpZHRoPSIyMjAiIGhlaWdodD0iNDIiIHJ4PSIxMCIgZmlsbD0iI0RDMjYyNiIvPgogIDx0ZXh0IHg9IjE0MCIgeT0iNTYiIGZpbGw9IiNGRkZGRkYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjEzIiBmb250LXdlaWdodD0iOTAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBsZXR0ZXItc3BhY2luZz0iMSI+UEFUSFdBWSBCTE9DS0VEPC90ZXh0PgogIDxjaXJjbGUgY3g9IjcyMCIgY3k9IjYwIiByPSIyNiIgZmlsbD0iI0RDMjYyNiIgc3Ryb2tlPSIjRkZGRkZGIiBzdHJva2Utd2lkdGg9IjMiLz4KICA8dGV4dCB4PSI3MjAiIHk9IjcwIiBmaWxsPSIjRkZGRkZGIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIyOCIgZm9udC13ZWlnaHQ9ImJvbGQiIHRleHQtYW5jaG9yPSJtaWRkbGUiPiE8L3RleHQ+Cjwvc3ZnPg==",
+  "treeAfter": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4MDAgNDUwIiB3aWR0aD0iODAwIiBoZWlnaHQ9IjQ1MCI+CiAgPHJlY3Qgd2lkdGg9IjgwMCIgaGVpZ2h0PSI0NTAiIGZpbGw9IiNEMUZBRTUiLz4KICA8IS0tIEJyaWNrIFJlZCBKb2dnaW5nIFRyYWNrIC0gQ2xlYW4gJiBPcGVuIC0tPgogIDxyZWN0IHg9IjAiIHk9IjE0MCIgd2lkdGg9IjgwMCIgaGVpZ2h0PSIxNzAiIGZpbGw9IiNEQzI2MjYiLz4KICA8bGluZSB4MT0iMCIgeTE9IjIyNSIgeDI9IjgwMCIgeTI9IjIyNSIgc3Ryb2tlPSIjRkZGRkZGIiBzdHJva2Utd2lkdGg9IjQiIHN0cm9rZS1kYXNoYXJyYXk9IjI1IDE1Ii8+CiAgPCEtLSBHcmVlbiBMYXduIEdyYXNzIC0tPgogIDxjaXJjbGUgY3g9IjEwMCIgY3k9IjgwIiByPSI0MCIgZmlsbD0iIzE2QTM0QSIvPgogIDxjaXJjbGUgY3g9IjcwMCIgY3k9IjgwIiByPSI0MCIgZmlsbD0iIzE2QTM0QSIvPgogIDxjaXJjbGUgY3g9IjQwMCIgY3k9IjcwIiByPSI1MCIgZmlsbD0iIzE1ODAzRCIvPgogIDwhLS0gU3dlcHQgQ2xlYW4gUGF0aHdheSBJbmRpY2F0b3JzIC0tPgogIDxwYXRoIGQ9Ik0gMjgwLDIyNSBMIDM0MCwyMjUgTSA0NjAsMjI1IEwgNTIwLDIyNSIgc3Ryb2tlPSIjRkVGMDhBIiBzdHJva2Utd2lkdGg9IjMiLz4KICA8IS0tIFZlcmlmaWVkIEJhZGdlIC0tPgogIDxyZWN0IHg9IjMwIiB5PSIzMCIgd2lkdGg9IjI0MCIgaGVpZ2h0PSI0MiIgcng9IjEwIiBmaWxsPSIjMTY3QTREIi8+CiAgPHRleHQgeD0iMTUwIiB5PSI1NiIgZmlsbD0iI0ZGRkZGRiIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtd2VpZ2h0PSI5MDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGxldHRlci1zcGFjaW5nPSIxIj5PQlNUQUNMRSBDTEVBUkVEPC90ZXh0PgogIDxjaXJjbGUgY3g9IjcyMCIgY3k9IjYwIiByPSIyNiIgZmlsbD0iIzE2N0E0RCIgc3Ryb2tlPSIjRkZGRkZGIiBzdHJva2Utd2lkdGg9IjMiLz4KICA8cGF0aCBkPSJNIDcxMCw2MCBMIDcxNyw2NyBMIDczMiw1MiIgc3Ryb2tlPSIjRkZGRkZGIiBzdHJva2Utd2lkdGg9IjQiIGZpbGw9Im5vbmUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8L3N2Zz4=",
+  "garbageBefore": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4MDAgNDUwIiB3aWR0aD0iODAwIiBoZWlnaHQ9IjQ1MCI+CiAgPHJlY3Qgd2lkdGg9IjgwMCIgaGVpZ2h0PSI0NTAiIGZpbGw9IiNFMkU4RjAiLz4KICA8cmVjdCB4PSIwIiB5PSIyNDAiIHdpZHRoPSI4MDAiIGhlaWdodD0iMjEwIiBmaWxsPSIjNjQ3NDhCIi8+CiAgPCEtLSBDdXJiIC0tPgogIDxyZWN0IHg9IjAiIHk9IjIyNSIgd2lkdGg9IjgwMCIgaGVpZ2h0PSIyNSIgZmlsbD0iIzk0QTNCOCIvPgogIDwhLS0gT3ZlcmZsb3dpbmcgRHVtcHN0ZXIgLS0+CiAgPHJlY3QgeD0iMjgwIiB5PSIxMjAiIHdpZHRoPSIyNDAiIGhlaWdodD0iMTYwIiByeD0iOCIgZmlsbD0iIzE1ODAzRCIvPgogIDwhLS0gU3BpbGxlZCBCYWdzIGFuZCBSdWJiaXNoIC0tPgogIDxlbGxpcHNlIGN4PSIyNjAiIGN5PSIyNzAiIHJ4PSI0MCIgcnk9IjIwIiBmaWxsPSIjRUY0NDQ0Ii8+CiAgPGVsbGlwc2UgY3g9IjMyMCIgY3k9IjI4NSIgcng9IjUwIiByeT0iMjUiIGZpbGw9IiMzQjgyRjYiLz4KICA8ZWxsaXBzZSBjeD0iNDQwIiBjeT0iMjgwIiByeD0iNjAiIHJ5PSIyMiIgZmlsbD0iI0Y1OUUwQiIvPgogIDxlbGxpcHNlIGN4PSI1MzAiIGN5PSIyNzUiIHJ4PSI0NSIgcnk9IjE4IiBmaWxsPSIjRkZGRkZGIi8+CiAgPGVsbGlwc2UgY3g9IjM4MCIgY3k9IjExMCIgcng9IjcwIiByeT0iMzAiIGZpbGw9IiMxRTI5M0IiLz4KICA8cmVjdCB4PSIzMCIgeT0iMzAiIHdpZHRoPSIyMjAiIGhlaWdodD0iNDIiIHJ4PSIxMCIgZmlsbD0iI0RDMjYyNiIvPgogIDx0ZXh0IHg9IjE0MCIgeT0iNTYiIGZpbGw9IiNGRkZGRkYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjEzIiBmb250LXdlaWdodD0iOTAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBsZXR0ZXItc3BhY2luZz0iMSI+R0FSQkFHRSBPVkVSRkxPVzwvdGV4dD4KICA8Y2lyY2xlIGN4PSI3MjAiIGN5PSI2MCIgcj0iMjYiIGZpbGw9IiNEQzI2MjYiIHN0cm9rZT0iI0ZGRkZGRiIgc3Ryb2tlLXdpZHRoPSIzIi8+CiAgPHRleHQgeD0iNzIwIiB5PSI3MCIgZmlsbD0iI0ZGRkZGRiIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjgiIGZvbnQtd2VpZ2h0PSJib2xkIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj4hPC90ZXh0Pgo8L3N2Zz4=",
+  "garbageAfter": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4MDAgNDUwIiB3aWR0aD0iODAwIiBoZWlnaHQ9IjQ1MCI+CiAgPHJlY3Qgd2lkdGg9IjgwMCIgaGVpZ2h0PSI0NTAiIGZpbGw9IiNGMUY1RjkiLz4KICA8cmVjdCB4PSIwIiB5PSIyNDAiIHdpZHRoPSI4MDAiIGhlaWdodD0iMjEwIiBmaWxsPSIjNjQ3NDhCIi8+CiAgPCEtLSBDdXJiIEJsZWFjaGVkIENsZWFuIHdpdGggTGltZSBwb3dkZXIgLS0+CiAgPHJlY3QgeD0iMCIgeT0iMjI1IiB3aWR0aD0iODAwIiBoZWlnaHQ9IjI1IiBmaWxsPSIjQ0JENUUxIi8+CiAgPGxpbmUgeDE9IjAiIHkxPSIyMzciIHgyPSI4MDAiIHkyPSIyMzciIHN0cm9rZT0iI0ZGRkZGRiIgc3Ryb2tlLXdpZHRoPSI2IiBzdHJva2UtZGFzaGFycmF5PSIxNSAxMCIvPgogIDwhLS0gU2FuaXRpemVkIENsb3NlZCBEdW1wc3RlciAtLT4KICA8cmVjdCB4PSIyODAiIHk9IjEyMCIgd2lkdGg9IjI0MCIgaGVpZ2h0PSIxNjAiIHJ4PSI4IiBmaWxsPSIjMTZBMzRBIi8+CiAgPHJlY3QgeD0iMjcwIiB5PSIxMTAiIHdpZHRoPSIyNjAiIGhlaWdodD0iMjAiIHJ4PSI1IiBmaWxsPSIjMTU4MDNEIi8+CiAgPCEtLSBWZXJpZmllZCBCYWRnZSAtLT4KICA8cmVjdCB4PSIzMCIgeT0iMzAiIHdpZHRoPSIyNDAiIGhlaWdodD0iNDIiIHJ4PSIxMCIgZmlsbD0iIzE2N0E0RCIvPgogIDx0ZXh0IHg9IjE1MCIgeT0iNTYiIGZpbGw9IiNGRkZGRkYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjEzIiBmb250LXdlaWdodD0iOTAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBsZXR0ZXItc3BhY2luZz0iMSI+U0FOSVRJWkVEICZhbXA7IFNXRVBUPC90ZXh0PgogIDxjaXJjbGUgY3g9IjcyMCIgY3k9IjYwIiByPSIyNiIgZmlsbD0iIzE2N0E0RCIgc3Ryb2tlPSIjRkZGRkZGIiBzdHJva2Utd2lkdGg9IjMiLz4KICA8cGF0aCBkPSJNIDcxMCw2MCBMIDcxNyw2NyBMIDczMiw1MiIgc3Ryb2tlPSIjRkZGRkZGIiBzdHJva2Utd2lkdGg9IjQiIGZpbGw9Im5vbmUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8L3N2Zz4="
+};
 
-  stormwaterAfter: `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="800" height="450">
-    <defs>
-      <linearGradient id="sky2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="%23BAE6FD"/><stop offset="100%" stop-color="%23E0F2FE"/></linearGradient>
-      <linearGradient id="waterFlow" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="%230284C7"/><stop offset="100%" stop-color="%230369A1"/></linearGradient>
-      <linearGradient id="cleanConc" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="%2394A3B8"/><stop offset="100%" stop-color="%2364748B"/></linearGradient>
-    </defs>
-    <rect width="800" height="450" fill="url(%23sky2)"/>
-    <!-- Clean Canal Concrete Banks -->
-    <polygon points="0,180 800,180 800,450 0,450" fill="%23475569"/>
-    <polygon points="80,180 180,450 620,450 720,180" fill="url(%23cleanConc)"/>
-    <polygon points="180,260 220,450 580,450 620,260" fill="%23334155"/>
-    <!-- Clear Flowing Blue Water -->
-    <path d="M 210,310 Q 400,295 590,310 L 610,450 L 190,450 Z" fill="url(%23waterFlow)"/>
-    <!-- Water Ripple Flow Lines -->
-    <path d="M 250,340 Q 400,330 550,340" stroke="%237DD3FC" stroke-width="3" fill="none" opacity="0.8"/>
-    <path d="M 230,370 Q 400,358 570,370" stroke="%2338BDF8" stroke-width="3" fill="none" opacity="0.7"/>
-    <path d="M 260,400 Q 400,390 540,400" stroke="%23BAE6FD" stroke-width="2.5" fill="none" opacity="0.6"/>
-    <!-- Verification Badge -->
-    <rect x="30" y="30" width="240" height="42" rx="10" fill="%23167A4D"/>
-    <text x="150" y="56" fill="%23FFFFFF" font-family="sans-serif" font-size="13" font-weight="900" text-anchor="middle" letter-spacing="1">CLEARED & DESILTED</text>
-    <!-- Verified Checkmark -->
-    <circle cx="720" cy="60" r="26" fill="%23167A4D" stroke="%23FFFFFF" stroke-width="3"/>
-    <path d="M 710,60 L 717,67 L 732,52" stroke="%23FFFFFF" stroke-width="4" fill="none" stroke-linecap="round"/>
-  </svg>`,
-
-  // 2. Road Pothole Crater Patch (#80001)
-  potholeBefore: `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="800" height="450">
-    <defs>
-      <linearGradient id="road" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="%23334155"/><stop offset="100%" stop-color="%231E293B"/></linearGradient>
-      <radialGradient id="crater" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="%230F172A"/><stop offset="70%" stop-color="%231E293B"/><stop offset="100%" stop-color="%23475569"/></radialGradient>
-    </defs>
-    <rect width="800" height="450" fill="url(%23road)"/>
-    <!-- Road Lane White Dashes -->
-    <line x1="0" y1="80" x2="800" y2="80" stroke="%23F8FAFC" stroke-width="12" stroke-dasharray="60 40" opacity="0.7"/>
-    <line x1="0" y1="380" x2="800" y2="380" stroke="%23F8FAFC" stroke-width="12" stroke-dasharray="60 40" opacity="0.7"/>
-    <!-- Deep Crater Depression with ragged fractures -->
-    <ellipse cx="400" cy="230" rx="180" ry="90" fill="url(%23crater)"/>
-    <path d="M 230,220 Q 210,180 180,170 M 570,230 Q 610,210 650,220 M 410,320 Q 420,360 450,380 M 350,140 Q 330,110 320,90" stroke="%230F172A" stroke-width="5" fill="none"/>
-    <!-- Exposed Aggregate Rocks & pooled dirty water -->
-    <ellipse cx="380" cy="240" rx="100" ry="40" fill="%23475569" opacity="0.9"/>
-    <circle cx="340" cy="235" r="12" fill="%2394A3B8"/>
-    <circle cx="420" cy="250" r="15" fill="%2364748B"/>
-    <circle cx="450" cy="225" r="10" fill="%2394A3B8"/>
-    <circle cx="310" cy="245" r="9" fill="%23CBD5E1"/>
-    <!-- Warning Badge -->
-    <rect x="30" y="30" width="220" height="42" rx="10" fill="%23DC2626"/>
-    <text x="140" y="56" fill="%23FFFFFF" font-family="sans-serif" font-size="13" font-weight="900" text-anchor="middle" letter-spacing="1">ROAD CAVITATION</text>
-  </svg>`,
-
-  potholeAfter: `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="800" height="450">
-    <defs>
-      <linearGradient id="road2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="%23334155"/><stop offset="100%" stop-color="%231E293B"/></linearGradient>
-      <linearGradient id="patch" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="%231E293B"/><stop offset="100%" stop-color="%230F172A"/></linearGradient>
-    </defs>
-    <rect width="800" height="450" fill="url(%23road2)"/>
-    <!-- Road Lane White Dashes -->
-    <line x1="0" y1="80" x2="800" y2="80" stroke="%23F8FAFC" stroke-width="12" stroke-dasharray="60 40" opacity="0.7"/>
-    <line x1="0" y1="380" x2="800" y2="380" stroke="%23F8FAFC" stroke-width="12" stroke-dasharray="60 40" opacity="0.7"/>
-    <!-- Freshly Compacted Bitumen Patch -->
-    <rect x="220" y="140" width="360" height="180" rx="16" fill="url(%23patch)" stroke="%230F172A" stroke-width="3"/>
-    <!-- Roller texture lines -->
-    <line x1="240" y1="170" x2="560" y2="170" stroke="%23334155" stroke-width="3" stroke-dasharray="10 6"/>
-    <line x1="240" y1="210" x2="560" y2="210" stroke="%23334155" stroke-width="3" stroke-dasharray="10 6"/>
-    <line x1="240" y1="250" x2="560" y2="250" stroke="%23334155" stroke-width="3" stroke-dasharray="10 6"/>
-    <line x1="240" y1="290" x2="560" y2="290" stroke="%23334155" stroke-width="3" stroke-dasharray="10 6"/>
-    <!-- Fresh Yellow Lane Stripe across patch -->
-    <line x1="220" y1="230" x2="580" y2="230" stroke="%23FBBF24" stroke-width="10"/>
-    <!-- Verified Badge -->
-    <rect x="30" y="30" width="240" height="42" rx="10" fill="%23167A4D"/>
-    <text x="150" y="56" fill="%23FFFFFF" font-family="sans-serif" font-size="13" font-weight="900" text-anchor="middle" letter-spacing="1">BITUMEN ROLLED</text>
-    <!-- Verified Checkmark -->
-    <circle cx="720" cy="60" r="26" fill="%23167A4D" stroke="%23FFFFFF" stroke-width="3"/>
-    <path d="M 710,60 L 717,67 L 732,52" stroke="%23FFFFFF" stroke-width="4" fill="none" stroke-linecap="round"/>
-  </svg>`,
-
-  // 3. Fallen Tree Obstruction (#80006)
-  treeBefore: `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="800" height="450">
-    <rect width="800" height="450" fill="%23D1FAE5"/>
-    <!-- Brick Red Jogging Track -->
-    <rect x="0" y="140" width="800" height="170" fill="%23B91C1C"/>
-    <!-- Jogging Track Lines -->
-    <line x1="0" y1="225" x2="800" y2="225" stroke="%23FFFFFF" stroke-width="4" stroke-dasharray="25 15"/>
-    <!-- Fallen Massive Banyan Timber blocking the track -->
-    <path d="M 160,280 Q 380,180 620,240 L 640,290 Q 390,240 180,340 Z" fill="%235C3A21"/>
-    <!-- Broken boughs & leafy debris -->
-    <ellipse cx="320" cy="200" rx="60" ry="35" fill="%2315803D" opacity="0.9"/>
-    <ellipse cx="440" cy="220" rx="75" ry="40" fill="%23166534" opacity="0.9"/>
-    <ellipse cx="540" cy="260" rx="50" ry="30" fill="%2315803D" opacity="0.8"/>
-    <!-- Barrier Tape -->
-    <line x1="120" y1="130" x2="680" y2="320" stroke="%23EAB308" stroke-width="8" stroke-dasharray="20 15"/>
-    <!-- Warning Badge -->
-    <rect x="30" y="30" width="220" height="42" rx="10" fill="%23DC2626"/>
-    <text x="140" y="56" fill="%23FFFFFF" font-family="sans-serif" font-size="13" font-weight="900" text-anchor="middle" letter-spacing="1">PATHWAY BLOCKED</text>
-  </svg>`,
-
-  treeAfter: `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="800" height="450">
-    <rect width="800" height="450" fill="%23D1FAE5"/>
-    <!-- Brick Red Jogging Track - Clean & Open -->
-    <rect x="0" y="140" width="800" height="170" fill="%23DC2626"/>
-    <line x1="0" y1="225" x2="800" y2="225" stroke="%23FFFFFF" stroke-width="4" stroke-dasharray="25 15"/>
-    <!-- Green Lawn Grass -->
-    <circle cx="100" cy="80" r="40" fill="%2316A34A"/>
-    <circle cx="700" cy="80" r="40" fill="%2316A34A"/>
-    <circle cx="400" cy="70" r="50" fill="%2315803D"/>
-    <!-- Swept clean pathway indicator -->
-    <path d="M 280,225 L 340,225 M 460,225 L 520,225" stroke="%23FEF08A" stroke-width="3"/>
-    <!-- Verified Badge -->
-    <rect x="30" y="30" width="240" height="42" rx="10" fill="%23167A4D"/>
-    <text x="150" y="56" fill="%23FFFFFF" font-family="sans-serif" font-size="13" font-weight="900" text-anchor="middle" letter-spacing="1">OBSTACLE CLEARED</text>
-    <circle cx="720" cy="60" r="26" fill="%23167A4D" stroke="%23FFFFFF" stroke-width="3"/>
-    <path d="M 710,60 L 717,67 L 732,52" stroke="%23FFFFFF" stroke-width="4" fill="none" stroke-linecap="round"/>
-  </svg>`,
-
-  // 4. Garbage Overflow (#80002)
-  garbageBefore: `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="800" height="450">
-    <rect width="800" height="450" fill="%23E2E8F0"/>
-    <rect x="0" y="240" width="800" height="210" fill="%2364748B"/>
-    <!-- Curb -->
-    <rect x="0" y="225" width="800" height="25" fill="%2394A3B8"/>
-    <!-- Overflowing Dumpster -->
-    <rect x="280" y="120" width="240" height="160" rx="8" fill="%2315803D"/>
-    <!-- Spilled bags and rubbish -->
-    <ellipse cx="260" cy="270" rx="40" ry="20" fill="%23EF4444"/>
-    <ellipse cx="320" cy="285" rx="50" ry="25" fill="%233B82F6"/>
-    <ellipse cx="440" cy="280" rx="60" ry="22" fill="%23F59E0B"/>
-    <ellipse cx="530" cy="275" rx="45" ry="18" fill="%23FFFFFF"/>
-    <ellipse cx="380" cy="110" rx="70" ry="30" fill="%231E293B"/>
-    <rect x="30" y="30" width="220" height="42" rx="10" fill="%23DC2626"/>
-    <text x="140" y="56" fill="%23FFFFFF" font-family="sans-serif" font-size="13" font-weight="900" text-anchor="middle" letter-spacing="1">GARBAGE OVERFLOW</text>
-  </svg>`,
-
-  garbageAfter: `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="800" height="450">
-    <rect width="800" height="450" fill="%23F1F5F9"/>
-    <rect x="0" y="240" width="800" height="210" fill="%2364748B"/>
-    <!-- Curb Bleached Clean with Lime powder -->
-    <rect x="0" y="225" width="800" height="25" fill="%23CBD5E1"/>
-    <line x1="0" y1="237" x2="800" y2="237" stroke="%23FFFFFF" stroke-width="6" stroke-dasharray="15 10"/>
-    <!-- Sanitized Closed Dumpster -->
-    <rect x="280" y="120" width="240" height="160" rx="8" fill="%2316A34A"/>
-    <rect x="270" y="110" width="260" height="20" rx="5" fill="%2315803D"/>
-    <!-- Verified Badge -->
-    <rect x="30" y="30" width="240" height="42" rx="10" fill="%23167A4D"/>
-    <text x="150" y="56" fill="%23FFFFFF" font-family="sans-serif" font-size="13" font-weight="900" text-anchor="middle" letter-spacing="1">SANITIZED & SWEPT</text>
-    <circle cx="720" cy="60" r="26" fill="%23167A4D" stroke="%23FFFFFF" stroke-width="3"/>
-    <path d="M 710,60 L 717,67 L 732,52" stroke="%23FFFFFF" stroke-width="4" fill="none" stroke-linecap="round"/>
-  </svg>`
+export const PROOF_PATHS = {
+  stormwaterBefore: "/images/proof/stormwater-before.svg",
+  stormwaterAfter: "/images/proof/stormwater-after.svg",
+  potholeBefore: "/images/proof/pothole-before.svg",
+  potholeAfter: "/images/proof/pothole-after.svg",
+  treeBefore: "/images/proof/tree-before.svg",
+  treeAfter: "/images/proof/tree-after.svg",
+  garbageBefore: "/images/proof/garbage-before.svg",
+  garbageAfter: "/images/proof/garbage-after.svg",
 };

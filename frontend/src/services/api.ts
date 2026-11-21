@@ -1,12 +1,12 @@
-import { 
-  Complaint, AIAnalysisResult, DuplicateCheckResult, 
+import {
+  Complaint, AIAnalysisResult, DuplicateCheckResult,
   AdminStats, DepartmentMetric, MapMarkerItem, HotspotItem, UserProfile,
   CivicProofItem, CommunityVoteRequest, AdminReopenRequest, CivicPulseOverview, OfficerQueueResponse
 } from '../types';
 import { PROOF_SVGS } from '../assets/proofImages';
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL 
-  ? `${import.meta.env.VITE_API_BASE_URL}/api/v1` 
+const API_BASE = import.meta.env.VITE_API_BASE_URL
+  ? `${import.meta.env.VITE_API_BASE_URL}/api/v1`
   : 'http://localhost:8000/api/v1';
 
 // Seed initial Coimbatore records for standalone preview & resilient fallback
@@ -378,9 +378,9 @@ export const CivicApi = {
     if (params?.status) items = items.filter(c => c.status.toLowerCase() === params.status!.toLowerCase());
     if (params?.search) {
       const q = params.search.toLowerCase();
-      items = items.filter(c => 
-        c.title.toLowerCase().includes(q) || 
-        c.description.toLowerCase().includes(q) || 
+      items = items.filter(c =>
+        c.title.toLowerCase().includes(q) ||
+        c.description.toLowerCase().includes(q) ||
         c.complaint_reference.toLowerCase().includes(q)
       );
     }
@@ -391,7 +391,7 @@ export const CivicApi = {
     try {
       const res = await fetch(`${API_BASE}/complaints/${idOrRef}`, { signal: AbortSignal.timeout(3000) });
       if (res.ok) return await res.json();
-    } catch (e) {}
+    } catch (e) { }
 
     const found = localStoreComplaints.find(c => c.id === idOrRef || c.complaint_reference === idOrRef);
     return found || null;
@@ -406,7 +406,7 @@ export const CivicApi = {
         signal: AbortSignal.timeout(4000)
       });
       if (res.ok) return await res.json();
-    } catch (e) {}
+    } catch (e) { }
 
     // Fallback creation
     complaintCounter++;
@@ -456,7 +456,7 @@ export const CivicApi = {
         signal: AbortSignal.timeout(6000)
       });
       if (res.ok) return await res.json();
-    } catch (e) {}
+    } catch (e) { }
 
     // Deterministic client fallback if backend is unreachable
     const text = `${title} ${description}`.toLowerCase();
@@ -540,7 +540,7 @@ export const CivicApi = {
         signal: AbortSignal.timeout(3000)
       });
       if (res.ok) return await res.json();
-    } catch (e) {}
+    } catch (e) { }
 
     // Fallback: check against nearest seeded complaints
     const matches = localStoreComplaints.filter(c => {
@@ -561,8 +561,8 @@ export const CivicApi = {
       has_possible_duplicates: matches.length > 0,
       count: matches.length,
       matches,
-      recommendation: matches.length > 0 
-        ? "Similar report located within 100 meters. You can endorse it to escalate urgency." 
+      recommendation: matches.length > 0
+        ? "Similar report located within 100 meters. You can endorse it to escalate urgency."
         : "No active duplicate complaints detected within this immediate zone."
     };
   },
@@ -574,7 +574,7 @@ export const CivicApi = {
         const data = await res.json();
         return data.markers;
       }
-    } catch (e) {}
+    } catch (e) { }
 
     return localStoreComplaints.map(c => ({
       id: c.id,
@@ -601,7 +601,7 @@ export const CivicApi = {
         const data = await res.json();
         return data.hotspots;
       }
-    } catch (e) {}
+    } catch (e) { }
 
     return localStoreComplaints.map(c => ({
       lat: c.latitude,
@@ -615,7 +615,7 @@ export const CivicApi = {
     try {
       const res = await fetch(`${API_BASE}/admin/overview`, { signal: AbortSignal.timeout(3000) });
       if (res.ok) return await res.json();
-    } catch (e) {}
+    } catch (e) { }
 
     const total = localStoreComplaints.length;
     const resolved = localStoreComplaints.filter(c => c.status === 'Resolved').length;
@@ -649,7 +649,7 @@ export const CivicApi = {
         const data = await res.json();
         return data.complaint;
       }
-    } catch (e) {}
+    } catch (e) { }
 
     const target = localStoreComplaints.find(c => c.complaint_reference === complaintRef || c.id === complaintRef);
     if (target) {
@@ -687,7 +687,7 @@ export const CivicApi = {
         const data = await res.json();
         return data.complaint;
       }
-    } catch (e) {}
+    } catch (e) { }
 
     const target = localStoreComplaints.find(c => c.complaint_reference === complaintRef || c.id === complaintRef);
     if (target) {
@@ -715,7 +715,7 @@ export const CivicApi = {
         const d = await res.json();
         return d.supports_count;
       }
-    } catch (e) {}
+    } catch (e) { }
 
     const target = localStoreComplaints.find(c => c.complaint_reference === ref || c.id === ref);
     if (target) {
@@ -730,12 +730,12 @@ export const CivicApi = {
   // ==========================================
   async getProofList(status?: string): Promise<CivicProofItem[]> {
     try {
-      const url = status && status !== 'All' 
-        ? `${API_BASE}/civicproof/list?status=${encodeURIComponent(status)}` 
+      const url = status && status !== 'All'
+        ? `${API_BASE}/civicproof/list?status=${encodeURIComponent(status)}`
         : `${API_BASE}/civicproof/list`;
       const res = await fetch(url, { signal: AbortSignal.timeout(3000) });
       if (res.ok) return await res.json();
-    } catch (e) {}
+    } catch (e) { }
 
     if (status && status !== 'All') {
       return localStoreProof.filter(p => p.proof_status.toLowerCase() === status.toLowerCase());
@@ -755,7 +755,7 @@ export const CivicApi = {
         const data = await res.json();
         return data.proof_item;
       }
-    } catch (e) {}
+    } catch (e) { }
 
     const p = localStoreProof.find(item => item.id === idOrRef || item.complaint_reference === idOrRef);
     if (p) {
@@ -786,7 +786,7 @@ export const CivicApi = {
         const data = await res.json();
         return data.proof_item;
       }
-    } catch (e) {}
+    } catch (e) { }
 
     const p = localStoreProof.find(item => item.id === idOrRef || item.complaint_reference === idOrRef);
     if (p) {
@@ -804,7 +804,7 @@ export const CivicApi = {
     try {
       const res = await fetch(`${API_BASE}/civicpulse/overview`, { signal: AbortSignal.timeout(3000) });
       if (res.ok) return await res.json();
-    } catch (e) {}
+    } catch (e) { }
     return INITIAL_CIVICPULSE_OVERVIEW;
   },
 
@@ -817,11 +817,11 @@ export const CivicApi = {
         signal: AbortSignal.timeout(3000)
       });
       if (res.ok) return await res.json();
-    } catch (e) {}
+    } catch (e) { }
 
     const assigned = localStoreComplaints.filter(
       c => (c.department_name || "").toLowerCase() === department.toLowerCase() &&
-           ['Assigned', 'In Progress', 'Reopened'].includes(c.status)
+        ['Assigned', 'In Progress', 'Reopened'].includes(c.status)
     );
     return {
       department,
@@ -841,7 +841,7 @@ export const CivicApi = {
         const data = await res.json();
         return data.complaint;
       }
-    } catch (e) {}
+    } catch (e) { }
 
     const target = localStoreComplaints.find(c => c.complaint_reference === idOrRef || c.id === idOrRef);
     if (target) {
@@ -872,7 +872,7 @@ export const CivicApi = {
         const data = await res.json();
         return data.complaint;
       }
-    } catch (e) {}
+    } catch (e) { }
 
     const target = localStoreComplaints.find(c => c.complaint_reference === idOrRef || c.id === idOrRef);
     if (target) {
@@ -912,11 +912,11 @@ export const CivicApi = {
         window.URL.revokeObjectURL(url);
         return;
       }
-    } catch (e) {}
+    } catch (e) { }
 
     // Fallback CSV download from local memory
     const headers = "Reference_ID,Title,Category,Priority,Status,Locality,Ward,Department,Assigned_Officer,Created_At,Resolved_At\n";
-    const rows = localStoreComplaints.map(c => 
+    const rows = localStoreComplaints.map(c =>
       `"${c.complaint_reference}","${c.title.replace(/"/g, '""')}","${c.category}","${c.priority}","${c.status}","${c.locality_name || ''}","${c.ward_number || ''}","${c.department_name || ''}","${c.assigned_officer_name || ''}","${c.created_at}","${c.resolved_at || ''}"`
     ).join("\n");
     const blob = new Blob([headers + rows], { type: "text/csv;charset=utf-8;" });
@@ -942,7 +942,7 @@ export const CivicApi = {
         signal: AbortSignal.timeout(4000)
       });
       if (res.ok) return await res.json();
-    } catch (e) {}
+    } catch (e) { }
 
     const lower = message.toLowerCase();
     if (lower.includes('track') || lower.includes('reference')) {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { 
-  ShieldCheck, Search, Filter, ShieldAlert, CheckCircle2, 
+import {
+  ShieldCheck, Search, Filter, ShieldAlert, CheckCircle2,
   Clock, AlertTriangle, Building2, User, Eye, Check, X,
   Download, BrainCircuit, Briefcase, Compass, MapPin
 } from 'lucide-react';
@@ -65,8 +65,8 @@ export const AdminDashboard: React.FC = () => {
     const matchCat = categoryFilter === 'All' || c.category === categoryFilter;
     const matchStatus = statusFilter === 'All' || c.status === statusFilter;
     const matchPriority = priorityFilter === 'All' || c.priority === priorityFilter;
-    const matchSearch = !searchQuery || 
-      c.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    const matchSearch = !searchQuery ||
+      c.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       c.complaint_reference.toLowerCase().includes(searchQuery.toLowerCase()) ||
       c.address.toLowerCase().includes(searchQuery.toLowerCase());
     return matchCat && matchStatus && matchPriority && matchSearch;
@@ -110,11 +110,11 @@ export const AdminDashboard: React.FC = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 font-sans">
-      
+
       {/* 1. DISTINCT EXECUTIVE COMMAND BAR: Deep Forest Green (#12382C) */}
       <div className="bg-[#12382C] text-white rounded-3xl p-6 sm:p-8 shadow-xl border border-emerald-950">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-          
+
           <div className="space-y-2">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-900/60 text-emerald-300 text-xs font-bold border border-emerald-700/50">
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
@@ -259,8 +259,8 @@ export const AdminDashboard: React.FC = () => {
             <BarChart data={categoryCounts} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
               <XAxis dataKey="name" stroke="#64748B" fontSize={11} tickLine={false} />
               <YAxis stroke="#64748B" fontSize={11} tickLine={false} />
-              <Tooltip 
-                contentStyle={{ backgroundColor: '#FFFFFF', borderColor: '#E2E8F0', borderRadius: '12px', fontSize: '11px' }} 
+              <Tooltip
+                contentStyle={{ backgroundColor: '#FFFFFF', borderColor: '#E2E8F0', borderRadius: '12px', fontSize: '11px' }}
               />
               <Bar dataKey="count" radius={[6, 6, 0, 0]}>
                 {categoryCounts.map((entry) => (
@@ -365,11 +365,10 @@ export const AdminDashboard: React.FC = () => {
                     {c.locality_name || 'Central'} (W-{c.ward_number || 70})
                   </td>
                   <td className="py-3 px-3">
-                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                      c.priority === 'Critical' ? 'bg-red-100 text-red-800' :
+                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${c.priority === 'Critical' ? 'bg-red-100 text-red-800' :
                       c.priority === 'High' ? 'bg-amber-100 text-amber-800' :
-                      'bg-slate-100 text-slate-700'
-                    }`}>
+                        'bg-slate-100 text-slate-700'
+                      }`}>
                       {c.priority}
                     </span>
                   </td>
@@ -377,11 +376,10 @@ export const AdminDashboard: React.FC = () => {
                     {c.department_name || 'Unassigned'}
                   </td>
                   <td className="py-3 px-3">
-                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                      c.status === 'Resolved' ? 'bg-[#E8F4EC] text-[#167A4D]' :
+                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${c.status === 'Resolved' ? 'bg-[#E8F4EC] text-[#167A4D]' :
                       c.status === 'In Progress' ? 'bg-blue-100 text-blue-800' :
-                      'bg-amber-100 text-amber-800'
-                    }`}>
+                        'bg-amber-100 text-amber-800'
+                      }`}>
                       {c.status}
                     </span>
                   </td>
@@ -419,7 +417,7 @@ export const AdminDashboard: React.FC = () => {
               <h3 className="font-bold text-base text-slate-900">
                 Department Squad Reassignment
               </h3>
-              <button 
+              <button
                 onClick={() => setAssignModalComplaint(null)}
                 className="text-slate-400 hover:text-slate-700 text-sm font-bold p-1"
               >
